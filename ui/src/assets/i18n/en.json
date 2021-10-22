@@ -215,10 +215,10 @@
       }
     },
     "NOTEBOOKS": {
-      "NOTEBOOKS": "notebooks",
+      "NOTEBOOKS": "application",
       "NEW_INSTANCE": {
-        "NEW_INSTANCE": "NEW_INSTANCE",
-        "NEW_NOTEBOOK_INSTANCE": "New notebook instance",
+        "NEW_INSTANCE": "new application",
+        "NEW_NOTEBOOK_INSTANCE": "New application",
         "REGION": "Region",
         "INSTANCE_PROPERTIES": "Instance properties",
         "BOOT_DISK": "Boot disk",
@@ -239,7 +239,7 @@
         "SEARCH": "Enter property name or value"
       },
       "LIST": {
-        "INSTANCE_LIST": "instance list",
+        "INSTANCE_LIST": "notebooks list",
         "INSTANCE_NAME": "Instance name",
         "ZONE": "Zone",
         "AUTO_UPGRADE": "Auto-upgrade",

@@ -1,44 +1,16 @@
 <div class="instanc-warp">
-  <div class="btn-group">
+  <!-- <div class="btn-group">
     <button class="btn" [ngClass]="{'btn-primary': currentButton}" (click)="toggleCurrentButton()">实例</button>
     <button class="btn" [ngClass]="{'btn-primary': !currentButton}" (click)="toggleCurrentButton()">集群</button>
-  </div>
+  </div> -->
   <div class="instanc-content" [hidden]="!currentButton">
     <div class="python" (click)="openInstanceModal()">
-      <img src="assets/img/python.png" alt="">
-      <p>Python 3</p>
+      <img src="assets/img/jupyter.svg" alt="">
+      <p>Jupyter</p>
     </div>
-    <div class="python-crud" (click)="openInstanceModal()">
-      <img src="assets/img/python.png" alt="">
-      <p>Python 3(CRUD Toolkit 11.0)</p>
-    </div>
-    <div class="tensorflow" (click)="openInstanceModal()">
-      <img src="assets/img/tensorflow.png" alt="">
-      <p>TensorTlow EnterPrise</p>
-    </div>
-    <div class="pytorch" (click)="openInstanceModal()">
-      <img src="assets/img/pytorch.png" alt="">
-      <p>Pytorch</p>
-    </div>
-    <div class="Rlogo" (click)="openInstanceModal()">
-      <img src="assets/img/Rlogo.png" alt="">
-      <p>R 4.0</p>
-    </div>
-    <div class="rapids" (click)="openInstanceModal()">
-      <img src="assets/img/rapids.png" alt="">
-      <p>RAPIDS 0.18[EXPERIMENTAL]</p>
-    </div>
-    <div class="kaggle" (click)="openInstanceModal()">
-      <img src="assets/img/kaggle.png" alt="">
-      <p>Kaggle Python[BETA]</p>
-    </div>
-    <div class="theia" (click)="openInstanceModal()">
-      <img src="assets/img/theia.svg" alt="">
-      <p>Theia IDE[EXPERIMENTAL]</p>
-    </div>
-    <div class="smart" (click)="openInstanceModal()">
-      <img src="assets/img/smart.svg" alt="">
-      <p>Smart Analytics Frameworks</p>
+    <div class="gromacs" (click)="openInstanceModal()">
+      <img src="assets/img/gromacs.png" alt="">
+      <p>Gromacs</p>
     </div>
   </div>
   <div class="modal" *ngIf="createInstanceFlag">

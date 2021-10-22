@@ -224,10 +224,10 @@
       }
     },
     "NOTEBOOKS": {
-      "NOTEBOOKS": "notebooks",
+      "NOTEBOOKS": "应用程序",
       "NEW_INSTANCE": {
-        "NEW_INSTANCE" : "创建新实例",
-        "NEW_NOTEBOOK_INSTANCE": "新建notebooks实例",
+        "NEW_INSTANCE" : "创建新应用程序",
+        "NEW_NOTEBOOK_INSTANCE": "新建应用程序",
         "REGION": "行政区",
         "INSTANCE_PROPERTIES": "实例属性",
         "BOOT_DISK": "启动盘",
@@ -248,7 +248,7 @@
         "SEARCH": "输入名称或者值"
       },
       "LIST": {
-        "INSTANCE_LIST": "实例列表",
+        "INSTANCE_LIST": "notebooks 列表",
         "INSTANCE_NAME": "实例名称",
         "ZONE": "地区",
         "AUTO_UPGRADE": "自动升级",
