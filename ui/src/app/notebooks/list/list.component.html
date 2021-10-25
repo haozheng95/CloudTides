@@ -15,30 +15,31 @@
       </div>
   </div>
 </form>
-<clr-datagrid [(clrDgSelected)]="selected" class="table-list">
+<clr-datagrid class="table-list">
   <clr-dg-column [clrDgField]="'name'">{{'HOME.NOTEBOOKS.LIST.INSTANCE_NAME' | translate}}</clr-dg-column>
   <clr-dg-column>LOGO</clr-dg-column>
-  <!-- <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.AUTO_UPGRADE' | translate}}</clr-dg-column>
-  <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.ENVIRONMENT' | translate}}</clr-dg-column>
-  <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.MACHINE_TYPE' | translate}}</clr-dg-column>
-  <clr-dg-column>GPUs</clr-dg-column>
-  <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.PERMISSION' | translate}}</clr-dg-column>
-  <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.LAST_MODIFIED' | translate}}</clr-dg-column> -->
   <clr-dg-column>{{'HOME.NOTEBOOKS.LIST.OPERATE' | translate}}</clr-dg-column>
-  <clr-dg-row class="clr-align-items-center" *ngFor="let item of users">
+  <clr-dg-row class="clr-align-items-center" *clrDgItems="let item of appList" [clrDgItem]="item">
     <clr-dg-cell>{{item.name}}</clr-dg-cell>
     <clr-dg-cell>
       <img width="100px" height="50px" [src]="item.logo" alt="">
     </clr-dg-cell>
-    <!-- <clr-dg-cell>{{item.creation | date}}</clr-dg-cell>
-    <clr-dg-cell>{{item.color}}</clr-dg-cell>
-    <clr-dg-cell>{{item.color}}</clr-dg-cell>
-    <clr-dg-cell>{{item.color}}</clr-dg-cell>
-    <clr-dg-cell>{{item.color}}</clr-dg-cell> -->
     <clr-dg-cell>
-      <clr-icon (click)="toJupyter()" shape="play" solid></clr-icon>
+      <clr-icon class="icon" (click)="toJupyter(item)" shape="play" solid></clr-icon>
+      <clr-icon class="icon" (click)="modifyApp(item)" shape="form"></clr-icon>
+      <clr-icon shape="trash"(click)="deleteApp(item)" ></clr-icon>
     </clr-dg-cell>
   </clr-dg-row>
-
-  <!-- <clr-dg-footer>{{users.length}} instance</clr-dg-footer> -->
 </clr-datagrid>
+<div class="modal" *ngIf="sureDeleteFalg">
+  <div class="modal-dialog modal-sm" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <p>{{'HOME.NOTEBOOKS.LIST.PLACE_CONFIRM' | translate}}</p>
+      <div class="btns">
+        <button (click)="cancel()" class="btn btn-outline">{{'HOME.POLICY.DIALOG.CANCEL' | translate}}</button>
+        <button (click)="sure()" class="btn btn-primary">{{'HOME.POLICY.DIALOG.SURE' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="sureDeleteFalg" class="modal-backdrop" aria-hidden="true"></div>

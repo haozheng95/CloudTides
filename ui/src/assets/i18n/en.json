@@ -160,6 +160,7 @@
         "MEMORY": "Memory",
         "DISK": "Disk",
         "CANCEL": "Cancel",
+        "SURE": "Sure",
         "SAVE": "Save",
         "SELECT_START": "Select the percentage when to start",
         "SELECT_STOP": "Select the percentage when to stop",
@@ -219,6 +220,7 @@
       "NEW_INSTANCE": {
         "NEW_INSTANCE": "new application",
         "NEW_NOTEBOOK_INSTANCE": "New application",
+        "MODIFY_NOTEBOOK_INSTANCE": "modify application",
         "REGION": "Region",
         "INSTANCE_PROPERTIES": "Instance properties",
         "BOOT_DISK": "Boot disk",
@@ -230,6 +232,9 @@
       },
       "REFRESH": "REFRESH",
       "CREATE": "CREATE",
+      "MODIFY": "MODIFY",
+      "Create": "Create",
+      "Modify": "Modify",
       "START": "START",
       "STOP": "STOP",
       "RESET": "RESET",
@@ -247,7 +252,8 @@
         "MACHINE_TYPE": "Machine type",
         "PERMISSION": "Permission",
         "LAST_MODIFIED": "Last modified",
-        "OPERATE": "operate"
+        "OPERATE": "operate",
+        "PLACE_CONFIRM": "Are you sure you want to delete this application?"
       }
 
     },

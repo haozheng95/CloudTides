@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import '@cds/core/icon/register.js';
-// import { ClarityIcons, searchIcon, filter2Icon} from '@cds/core/icon'
-// ClarityIcons.addIcons(searchIcon)
-// ClarityIcons.addIcons(filter2Icon)
+import { NotebooksService } from '../notebooks.service'
 @Component({
   selector: 'tide-list',
   templateUrl: './list.component.html',
@@ -10,21 +7,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListComponent implements OnInit {
 
-  constructor() { }
+  constructor(private nd: NotebooksService) {
+  }
 
   ngOnInit(): void {
   }
-  users = [
+  appList:AppModel[] = [
     {
       name: 'Jupyter',
-      logo: 'assets/img/jupyter.svg'
+      logo: 'assets/img/jupyter.svg',
+      token: '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8',
+      link: "http://120.133.15.12:8888/lab"
     }
   ]
   selected= 'selected'
+  sureDeleteFalg = false
   filterSearchValue: string = ''
-  toJupyter () {
+  token = ''
+  toJupyter (app: AppModel) {
     let form = document.createElement('form')
-    form.action="http://120.133.15.12:8888/lab"
+    form.action= app.link
     form.method='get'
     form.target = '_blank'
     const body = document.documentElement
@@ -32,12 +34,35 @@ export class ListComponent implements OnInit {
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = 'token'
-    input.value = '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8'
+    input.value = app.token
     form.appendChild(input)
     setTimeout(() => {
       form.submit()
       form = null
     }, 1000)
   }
-
+  modifyApp (app: AppModel) {
+    this.nd.createInstanceFlag = true
+    this.nd.createInstanceTitle = 'HOME.NOTEBOOKS.Modify'
+  }
+  deleteApp (app: AppModel) {
+    this.sureDeleteFalg = true
+    this.token = app.token
+  }
+  sure () {
+    this.nd.deleteApp(this.token).subscribe(data => {
+      console.log(data);
+      this.sureDeleteFalg = false
+    })
+  }
+  cancel () {
+    this.sureDeleteFalg = false
+    this.token = ''
+  }
+}
+interface AppModel {
+  name: string
+  link: string
+  token: string
+  logo: string
 }

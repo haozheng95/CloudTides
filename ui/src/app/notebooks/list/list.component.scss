@@ -33,4 +33,21 @@
       transform: translateY(-50%);
     }
   }
+  .icon {
+    margin-right: 10px;
+  }
+}
+.modal {
+  .modal-content {
+    width: 500px;
+    p {
+      margin-top: 0px;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .btns {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
 }

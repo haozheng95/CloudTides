@@ -79,4 +79,75 @@
   .note-container {
     flex: 1;
   }
+  .modal {
+    .modal-dialog {
+      .modal-content {
+        .clr-control-label {
+          width: 100px;
+          height: 30px;
+          line-height: 30px;
+          &.label2 {
+            margin-left: 30px;
+          }
+        }
+        .create-title{
+          margin-top: 0px;
+          font-size: 20px;
+          font-weight: blod;
+        }
+        .option {
+          .option-title {
+            margin: 20px 0;
+            font-size: 16px;
+            font-weight: blod;
+          }
+          .option-list {
+            list-style: none;
+            li ::ng-deep{
+              border-top: 1px solid #ccc;
+              display: flex;
+              align-items: center;
+              padding: 5px 0;
+              .clr-form-control {
+                margin-top: 0px;
+              }
+              .clr-control-label {
+                width: 150px;
+              }
+              .clr-input {
+                border: none;
+                width: 300px;
+              }
+              #example4 {
+                width: 300px;
+                border: none;
+              }
+            }
+            li:last-of-type {
+              border-bottom: 1px solid #ccc;
+            }
+          }
+          .footer {
+            margin-top: 20PX;
+            display: flex;
+            justify-content: space-between;
+            P {
+              margin-top: 0px;
+              font-weight: blod;
+              font-size: 16px;
+            }
+            .btn {
+              border: none;
+            }
+            .btn-outline {
+              color: #333;
+            }
+          }
+        }
+      }
+    }
+  }
+  .fade.in {
+    opacity: 0.5;
+  }
 }
