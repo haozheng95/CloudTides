@@ -2325,6 +2325,138 @@ paths:
               message:
                 type: string
 
+  /application/instance:
+    get:
+      operationId: 'listApplicationInstance'
+      description: 'list application instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                instanceName:
+                  type: string
+                link:
+                  type: string
+                token:
+                  type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+    post:
+      operationId: 'createApplicationInstance'
+      description: 'create application instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              instanceName:
+                type: string
+              port:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              link:
+                type: string
+              token:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+    put:
+      operationId: 'updateApplicationInstance'
+      description: 'update application instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              instanceName:
+                type: string
+              env:
+                type: string
+              type:
+                type: string
+              bootDisk:
+                type: string
+              proxy:
+                type: string
+              licences:
+                type: string
+              GPUtype:
+                type: string
+              MachineType:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+
+  /application/instance/{token}:
+    delete:
+      operationId: 'deleteApplicationInstance'
+      description: 'delete application instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+
 definitions:
   ResourceAddItem:
     type: object

@@ -136,6 +136,8 @@ func (o *UserLoginOKBody) validateUserInfo(formats strfmt.Registry) error {
 		if err := o.UserInfo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("userLoginOK" + "." + "userInfo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("userLoginOK" + "." + "userInfo")
 			}
 			return err
 		}
@@ -164,6 +166,8 @@ func (o *UserLoginOKBody) contextValidateUserInfo(ctx context.Context, formats s
 		if err := o.UserInfo.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("userLoginOK" + "." + "userInfo")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("userLoginOK" + "." + "userInfo")
 			}
 			return err
 		}

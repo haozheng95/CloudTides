@@ -19,6 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
+	"tides-server/pkg/restapi/operations/application"
 	"tides-server/pkg/restapi/operations/org"
 	"tides-server/pkg/restapi/operations/policy"
 	"tides-server/pkg/restapi/operations/port"
@@ -104,11 +105,17 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceContributeResourceHandler: resource.ContributeResourceHandlerFunc(func(params resource.ContributeResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ContributeResource has not yet been implemented")
 		}),
+		ApplicationCreateApplicationInstanceHandler: application.CreateApplicationInstanceHandlerFunc(func(params application.CreateApplicationInstanceParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.CreateApplicationInstance has not yet been implemented")
+		}),
 		OrgDeleteOrgHandler: org.DeleteOrgHandlerFunc(func(params org.DeleteOrgParams) middleware.Responder {
 			return middleware.NotImplemented("operation org.DeleteOrg has not yet been implemented")
 		}),
 		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
+		}),
+		ApplicationDeleteApplicationInstanceHandler: application.DeleteApplicationInstanceHandlerFunc(func(params application.DeleteApplicationInstanceParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.DeleteApplicationInstance has not yet been implemented")
 		}),
 		ProjectDeleteProjectHandler: project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
@@ -154,6 +161,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		UserListUserOfOrgHandler: user.ListUserOfOrgHandlerFunc(func(params user.ListUserOfOrgParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ListUserOfOrg has not yet been implemented")
+		}),
+		ApplicationListApplicationInstanceHandler: application.ListApplicationInstanceHandlerFunc(func(params application.ListApplicationInstanceParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.ListApplicationInstance has not yet been implemented")
 		}),
 		OrgListOrgHandler: org.ListOrgHandlerFunc(func(params org.ListOrgParams) middleware.Responder {
 			return middleware.NotImplemented("operation org.ListOrg has not yet been implemented")
@@ -202,6 +212,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		UserSendVerificationHandler: user.SendVerificationHandlerFunc(func(params user.SendVerificationParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.SendVerification has not yet been implemented")
+		}),
+		ApplicationUpdateApplicationInstanceHandler: application.UpdateApplicationInstanceHandlerFunc(func(params application.UpdateApplicationInstanceParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.UpdateApplicationInstance has not yet been implemented")
 		}),
 		PolicyUpdatePolicyHandler: policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.UpdatePolicy has not yet been implemented")
@@ -298,10 +311,14 @@ type CloudTidesAPI struct {
 	ResourceAssignPolicyHandler resource.AssignPolicyHandler
 	// ResourceContributeResourceHandler sets the operation handler for the contribute resource operation
 	ResourceContributeResourceHandler resource.ContributeResourceHandler
+	// ApplicationCreateApplicationInstanceHandler sets the operation handler for the create application instance operation
+	ApplicationCreateApplicationInstanceHandler application.CreateApplicationInstanceHandler
 	// OrgDeleteOrgHandler sets the operation handler for the delete org operation
 	OrgDeleteOrgHandler org.DeleteOrgHandler
 	// UserDeleteUserHandler sets the operation handler for the delete user operation
 	UserDeleteUserHandler user.DeleteUserHandler
+	// ApplicationDeleteApplicationInstanceHandler sets the operation handler for the delete application instance operation
+	ApplicationDeleteApplicationInstanceHandler application.DeleteApplicationInstanceHandler
 	// ProjectDeleteProjectHandler sets the operation handler for the delete project operation
 	ProjectDeleteProjectHandler project.DeleteProjectHandler
 	// UsageDeleteResourceUsageHandler sets the operation handler for the delete resource usage operation
@@ -332,6 +349,8 @@ type CloudTidesAPI struct {
 	ResourceGetVcdResourceHandler resource.GetVcdResourceHandler
 	// UserListUserOfOrgHandler sets the operation handler for the list user of org operation
 	UserListUserOfOrgHandler user.ListUserOfOrgHandler
+	// ApplicationListApplicationInstanceHandler sets the operation handler for the list application instance operation
+	ApplicationListApplicationInstanceHandler application.ListApplicationInstanceHandler
 	// OrgListOrgHandler sets the operation handler for the list org operation
 	OrgListOrgHandler org.ListOrgHandler
 	// PolicyListPolicyHandler sets the operation handler for the list policy operation
@@ -364,6 +383,8 @@ type CloudTidesAPI struct {
 	UserResetPasswordHandler user.ResetPasswordHandler
 	// UserSendVerificationHandler sets the operation handler for the send verification operation
 	UserSendVerificationHandler user.SendVerificationHandler
+	// ApplicationUpdateApplicationInstanceHandler sets the operation handler for the update application instance operation
+	ApplicationUpdateApplicationInstanceHandler application.UpdateApplicationInstanceHandler
 	// PolicyUpdatePolicyHandler sets the operation handler for the update policy operation
 	PolicyUpdatePolicyHandler policy.UpdatePolicyHandler
 	// ProjectUpdateProjectHandler sets the operation handler for the update project operation
@@ -508,11 +529,17 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceContributeResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ContributeResourceHandler")
 	}
+	if o.ApplicationCreateApplicationInstanceHandler == nil {
+		unregistered = append(unregistered, "application.CreateApplicationInstanceHandler")
+	}
 	if o.OrgDeleteOrgHandler == nil {
 		unregistered = append(unregistered, "org.DeleteOrgHandler")
 	}
 	if o.UserDeleteUserHandler == nil {
 		unregistered = append(unregistered, "user.DeleteUserHandler")
+	}
+	if o.ApplicationDeleteApplicationInstanceHandler == nil {
+		unregistered = append(unregistered, "application.DeleteApplicationInstanceHandler")
 	}
 	if o.ProjectDeleteProjectHandler == nil {
 		unregistered = append(unregistered, "project.DeleteProjectHandler")
@@ -558,6 +585,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.UserListUserOfOrgHandler == nil {
 		unregistered = append(unregistered, "user.ListUserOfOrgHandler")
+	}
+	if o.ApplicationListApplicationInstanceHandler == nil {
+		unregistered = append(unregistered, "application.ListApplicationInstanceHandler")
 	}
 	if o.OrgListOrgHandler == nil {
 		unregistered = append(unregistered, "org.ListOrgHandler")
@@ -606,6 +636,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.UserSendVerificationHandler == nil {
 		unregistered = append(unregistered, "user.SendVerificationHandler")
+	}
+	if o.ApplicationUpdateApplicationInstanceHandler == nil {
+		unregistered = append(unregistered, "application.UpdateApplicationInstanceHandler")
 	}
 	if o.PolicyUpdatePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.UpdatePolicyHandler")
@@ -785,6 +818,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/resource/contribute/{id}"] = resource.NewContributeResource(o.context, o.ResourceContributeResourceHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/application/instance"] = application.NewCreateApplicationInstance(o.context, o.ApplicationCreateApplicationInstanceHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -793,6 +830,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/user/{id}"] = user.NewDeleteUser(o.context, o.UserDeleteUserHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/application/instance/{token}"] = application.NewDeleteApplicationInstance(o.context, o.ApplicationDeleteApplicationInstanceHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -853,6 +894,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/user/{orgName}"] = user.NewListUserOfOrg(o.context, o.UserListUserOfOrgHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/application/instance"] = application.NewListApplicationInstance(o.context, o.ApplicationListApplicationInstanceHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -917,6 +962,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/users/reset/verify"] = user.NewSendVerification(o.context, o.UserSendVerificationHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/application/instance"] = application.NewUpdateApplicationInstance(o.context, o.ApplicationUpdateApplicationInstanceHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

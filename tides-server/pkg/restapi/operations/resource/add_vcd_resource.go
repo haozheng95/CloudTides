@@ -192,6 +192,8 @@ func (o *AddVcdResourceOKBody) validateResults(formats strfmt.Registry) error {
 		if err := o.Results.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("addVcdResourceOK" + "." + "results")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("addVcdResourceOK" + "." + "results")
 			}
 			return err
 		}
@@ -220,6 +222,8 @@ func (o *AddVcdResourceOKBody) contextValidateResults(ctx context.Context, forma
 		if err := o.Results.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("addVcdResourceOK" + "." + "results")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("addVcdResourceOK" + "." + "results")
 			}
 			return err
 		}
