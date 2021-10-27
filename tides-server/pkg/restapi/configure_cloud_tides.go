@@ -5,6 +5,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"tides-server/pkg/restapi/operations/application"
 	"tides-server/pkg/restapi/operations/org"
 	"tides-server/pkg/restapi/operations/port"
 	"tides-server/pkg/restapi/operations/vapp"
@@ -47,6 +48,10 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
+
+	api.ApplicationCreateApplicationInstanceHandler = application.CreateApplicationInstanceHandlerFunc(handler.CreateApplicationInstance)
+	api.ApplicationDeleteApplicationInstanceHandler = application.DeleteApplicationInstanceHandlerFunc(handler.DeleteApplicationInstance)
+	api.ApplicationListApplicationInstanceHandler = application.ListApplicationInstanceHandlerFunc(handler.ListApplicationInstance)
 
 	api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(handler.AddResourceUsageHandler)
 
@@ -148,9 +153,9 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.OrgAddOrgHandler = org.AddOrgHandlerFunc(handler.AddOrgHandler)
 
-	api.OrgListOrgHandler= org.ListOrgHandlerFunc(handler.ListOrgHandler)
+	api.OrgListOrgHandler = org.ListOrgHandlerFunc(handler.ListOrgHandler)
 
-	api.OrgDeleteOrgHandler= org.DeleteOrgHandlerFunc(handler.DeleteOrgHandler)
+	api.OrgDeleteOrgHandler = org.DeleteOrgHandlerFunc(handler.DeleteOrgHandler)
 
 	api.UserAddUserHandler = user.AddUserHandlerFunc(handler.AddUserHandler)
 
