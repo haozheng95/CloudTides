@@ -21,12 +21,23 @@
     <div class="modal-dialog fadeDown in" role="dialog" aria-hidden="true">
       <div class="modal-content">
         <p class="create-title">{{noteBook.createInstanceTitle | translate}} {{'HOME.APPLICATION.APPLICATION' | translate}}</p>
-
-        <form class="clr-form clr-form-horizontal" [formGroup]="instanceForm">
-          <div class="clr-form-control">
+        <div class="alert alert-danger" *ngIf="errorMsg!== ''">
+          <div class="alert-items" >
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <clr-icon shape="exclamation-circle"></clr-icon>
+              </div>
+              <span class="alert-text">
+                {{errorMsg}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <form class="clr-form clr-form-horizontal" [formGroup]="instanceForm" (ngSubmit)='create(instanceForm.value)'>
+          <div class="clr-form-control first-form-control">
             <clr-input-container>
-              <label for="example1" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
-              <input name="instance-name" clrInput [(ngModel)]="instanceName" type="text" formControlName="instanceName"/>
+              <label for="instanceName" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
+              <input name="instanceName" id="instanceName" clrInput type="text" formControlName="instanceName"/>
               <clr-control-error>{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
             </clr-input-container>
           </div>
@@ -93,8 +104,8 @@
               </li>
               <li>
                 <clr-input-container>
-                  <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
-                  <input clrInput type="text" name="instance-port" id="inputport" formControlName='port' required>
+                  <label class="clr-control-label" for="port">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
+                  <input clrInput type="text" name="port" id="port" formControlName='port' required>
                   <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
                 </clr-input-container>
               </li>
@@ -121,11 +132,14 @@
               <!-- <p (click)="advancedOptions()" class="other-option">{{'HOME.APPLICATION.NEW_INSTANCE.ADVANCED_OPTIONS' | translate}}</p> -->
               <div>
                 <button (click)="cancel()" class="btn btn-outline">{{'HOME.POLICY.DIALOG.CANCEL' | translate}}</button>
-                <button (click)="create()" type="submit" class="btn btn-info-outline">{{noteBook.createInstanceTitle | translate}}</button>
+                <button type="submit" class="btn btn-info-outline" [disabled]="disabled">{{noteBook.createInstanceTitle | translate}}</button>
               </div>
             </div>
           </div>
         </form>
+        <div class="loding-warp" *ngIf="flag">
+          <clr-spinner class="loading">Loading ...</clr-spinner>
+        </div>
       </div>
     </div>
   </div>

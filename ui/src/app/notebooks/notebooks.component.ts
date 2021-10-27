@@ -13,13 +13,18 @@ export class NotebooksComponent implements OnInit {
   constructor(public router: Router, private nb: NotebooksService, private fb: FormBuilder) {
     this.noteBook = this.nb
     this.instanceForm = this.nb.instanceForm
-    console.log(this.instanceForm);
-    
   }
   ngOnInit(): void {
   }
   noteBook: NotebooksService
-  instanceName =''
+  flag:boolean = false
+  errorMsg = ''
+  get disabled () {
+    if (this.instanceForm.get('instanceName').value !== '' && this.instanceForm.get('port').value !== '') {
+      return false
+    }
+    return true
+  }
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -36,24 +41,36 @@ export class NotebooksComponent implements OnInit {
   cancel () {    
     this.noteBook.createInstanceFlag = false
   }
-  create () {
-    console.log('this.instanceForm', this.instanceForm);
-    if (!this.instanceForm.valid) {
-      for (const i in this.instanceForm.controls) {
-        if (this.instanceForm.controls[i].status === "INVALID") {
-          this.instanceName = this.instanceForm.controls[i].value
-          console.log('this.instanceForm.get(i)', this.instanceForm.get(i).dirty);
-          
-        }
-      }
-      return
+  create (data) {
+    console.log('data',data);
+    this.errorMsg = ''
+    this.flag = true
+    const str = 'HOME.APPLICATION.Create'
+    const form = {
+      instanceName: data.instanceName,
+      port: data.port
     }
-    const str = 'HOME.NOTEBOOKS.Create'
     if (this.nb.createInstanceTitle === str) {
-      this.nb.createNewApp().subscribe(data => {})
+      this.nb.createNewApp(form).subscribe(data => {
+        console.log('data', data);
+        this.flag = false
+        this.noteBook.createInstanceFlag = false
+      },
+      err => {
+        console.log('err', err);
+        
+        this.errorMsg = err.statusText
+        this.flag = false
+      })
     } else {
-      this.nb.modifyApp().subscribe(data => {})
+      this.nb.modifyApp(form).subscribe(data => {
+        this.flag = false
+        this.noteBook.createInstanceFlag = false
+      },
+      err => {
+        this.errorMsg = err.msg
+        this.flag = false
+      })
     }
-    this.noteBook.createInstanceFlag = false
   }
 }
