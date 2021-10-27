@@ -6,11 +6,11 @@
     <clr-vertical-nav>
       <a clrVerticalNavLink routerLink="/cloudtides/notebooks/newInstance" routerLinkActive="active">
         <clr-icon shape="plus-circle" solid></clr-icon>
-        {{'HOME.NOTEBOOKS.NEW_INSTANCE.NEW_INSTANCE' | translate}}
+        {{'HOME.APPLICATION.NEW_INSTANCE.NEW_INSTANCE' | translate}}
       </a>
       <a clrVerticalNavLink routerLink="/cloudtides/notebooks/list" routerLinkActive="active">
         <clr-icon shape="list" solid></clr-icon>
-        {{'HOME.NOTEBOOKS.LIST.INSTANCE_LIST' | translate}}
+        {{'HOME.APPLICATION.LIST.INSTANCE_LIST' | translate}}
       </a>
     </clr-vertical-nav>
   </div>
@@ -20,45 +20,41 @@
   <div class="modal" *ngIf="noteBook.createInstanceFlag">
     <div class="modal-dialog fadeDown in" role="dialog" aria-hidden="true">
       <div class="modal-content">
-        <p class="create-title">{{noteBook.createInstanceTitle | translate}} {{'HOME.NOTEBOOKS.NOTEBOOKS' | translate}}</p>
-        <form class="clr-form clr-form-horizontal">
+        <p class="create-title">{{noteBook.createInstanceTitle | translate}} {{'HOME.APPLICATION.APPLICATION' | translate}}</p>
+
+        <form class="clr-form clr-form-horizontal" [formGroup]="instanceForm">
           <div class="clr-form-control">
-            <label for="example1" class="clr-control-label">{{'HOME.NOTEBOOKS.LIST.INSTANCE_NAME' | translate}}</label>
-            <div class="clr-control-container">
-              <div class="clr-input-wrapper">
-                <input name="instance-name" type="text" id="example1" [(ngModel)]="instanceForm.name" placeholder="Placeholder"  class="clr-input" />
-              </div>
-            </div>
+            <clr-input-container>
+              <label for="example1" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
+              <input name="instance-name" clrInput [(ngModel)]="instanceName" type="text" formControlName="instanceName"/>
+              <clr-control-error>{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+            </clr-input-container>
           </div>
           <div class="clr-form-control">
-            <label for="example2" class="clr-control-label">{{'HOME.NOTEBOOKS.NEW_INSTANCE.REGION' | translate}}</label>
+            <label for="example2" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.REGION' | translate}}</label>
             <div class="clr-control-container">
               <div class="clr-select-wrapper">
-                <select placeholder="Select Option" name="region" id="example2" [(ngModel)]="instanceForm.region">
+                <select placeholder="Select Option" name="region" id="example2"  formControlName="region">
                   <option>Option 1</option>
                   <option>Option 2</option>
                   <option>Option 3</option>
                 </select>
                 <clr-signpost>
                   <clr-signpost-content *clrIfOpen>
-                    <h3>Default Signpost</h3>
-                    <p>Position: <code class="clr-code">right-middle</code></p>
                   </clr-signpost-content>
                 </clr-signpost>
               </div>
             </div>
-            <label for="example3" class="clr-control-label label2">{{'HOME.NOTEBOOKS.LIST.ZONE' | translate}}</label>
+            <label for="example3" class="clr-control-label label2">{{'HOME.APPLICATION.LIST.ZONE' | translate}}</label>
             <div class="clr-control-container">
               <div class="clr-select-wrapper">
-                <select placeholder="Select Option" id="example3" [(ngModel)]="instanceForm.zone" name="zone">
+                <select placeholder="Select Option" id="example3" name="zone" formControlName="zone">
                   <option>Option 1</option>
                   <option>Option 2</option>
                   <option>Option 3</option>
                 </select>
                 <clr-signpost>
                   <clr-signpost-content *clrIfOpen>
-                    <h3>Default Signpost</h3>
-                    <p>Position: <code class="clr-code">right-middle</code></p>
                   </clr-signpost-content>
                 </clr-signpost>
               </div>
@@ -66,24 +62,24 @@
           </div>
           <div class="option">
             <p class="option-title">
-              {{'HOME.NOTEBOOKS.NEW_INSTANCE.INSTANCE_PROPERTIES' | translate}}
+              {{'HOME.APPLICATION.NEW_INSTANCE.INSTANCE_PROPERTIES' | translate}}
               <clr-icon shape="pencil" solid></clr-icon>
 
             </p>
             <ul class="option-list">
               <li>
-                <label class="clr-control-label" for="input1">{{'HOME.NOTEBOOKS.LIST.ENVIRONMENT' | translate}}</label>
-                <input clrInput type="text" name="environment" id="input1" [(ngModel)]="instanceForm.environment" >
+                <label class="clr-control-label" for="input1">{{'HOME.APPLICATION.LIST.ENVIRONMENT' | translate}}</label>
+                <input clrInput type="text" name="environment" id="input1" formControlName="environment">
               </li>
               <li>
-                <label class="clr-control-label" for="input3">{{'HOME.NOTEBOOKS.NEW_INSTANCE.BOOT_DISK' | translate}}</label>
-                <input clrInput type="text" name="bootdisk" id="input3" [(ngModel)]="instanceForm.bootDisk" >
+                <label class="clr-control-label" for="input3">{{'HOME.APPLICATION.NEW_INSTANCE.BOOT_DISK' | translate}}</label>
+                <input clrInput type="text" name="bootdisk" id="input3" formControlName="bootDisk">
               </li>
               <li>
-                <label for="example4" class="clr-control-label">{{'HOME.NOTEBOOKS.NEW_INSTANCE.SUBNETWORK' | translate}}</label>
+                <label for="example4" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.SUBNETWORK' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" name="subnetwork" id="example4" [(ngModel)]="instanceForm.subnetwork">
+                    <select placeholder="Select Option" name="subnetwork" id="example4" formControlName="subnetwork">
                       <option>Option 1</option>
                       <option>Option 2</option>
                       <option>Option 3</option>
@@ -92,22 +88,29 @@
                 </div>
               </li>
               <li>
-                <label class="clr-control-label" for="input4">{{'HOME.NOTEBOOKS.NEW_INSTANCE.EXTERNAL_IP' | translate}}</label>
-                <input clrInput type="text" name="instance-externalip" id="input4" [(ngModel)]="instanceForm.externalIp" >
+                <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.EXTERNAL_IP' | translate}}</label>
+                <input clrInput type="text" name="instance-externalip" id="input4" formControlName="externalIp">
               </li>
               <li>
-                <label class="clr-control-label" for="input5">{{'HOME.NOTEBOOKS.LIST.PERMISSION' | translate}}</label>
-                <input clrInput type="text" name="instance-permission" id="input5" [(ngModel)]="instanceForm.permission" >
+                <clr-input-container>
+                  <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
+                  <input clrInput type="text" name="instance-port" id="inputport" formControlName='port' required>
+                  <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+                </clr-input-container>
               </li>
               <li>
-                <label class="clr-control-label" for="input6">{{'HOME.NOTEBOOKS.NEW_INSTANCE.GPU_TYPE' | translate}}</label>
-                <input clrInput type="text" name="instance-gpu" id="input6" [(ngModel)]="instanceForm.GPU" >
+                <label class="clr-control-label" for="input5">{{'HOME.APPLICATION.LIST.PERMISSION' | translate}}</label>
+                <input clrInput type="text" name="instance-permission" id="input5" formControlName="permission">
               </li>
               <li>
-                <label class="clr-control-label" for="input7">{{'HOME.NOTEBOOKS.NEW_INSTANCE.Machine_TYPE' | translate}}</label>
+                <label class="clr-control-label" for="input6">{{'HOME.APPLICATION.NEW_INSTANCE.GPU_TYPE' | translate}}</label>
+                <input clrInput type="text" name="instance-gpu" id="input6" formControlName="GPU">
+              </li>
+              <li>
+                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.Machine_TYPE' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" id="input7" name="machinetype" [(ngModel)]="instanceForm.machineType">
+                    <select placeholder="Select Option" id="input7" name="machinetype" formControlName="machineType">
                       <option>n1-standard-4(4 vCPUs,15 GB RAm)</option>
                     </select>
                   </div>
@@ -115,10 +118,10 @@
               </li>
             </ul>
             <div class="footer">
-              <!-- <p (click)="advancedOptions()" class="other-option">{{'HOME.NOTEBOOKS.NEW_INSTANCE.ADVANCED_OPTIONS' | translate}}</p> -->
+              <!-- <p (click)="advancedOptions()" class="other-option">{{'HOME.APPLICATION.NEW_INSTANCE.ADVANCED_OPTIONS' | translate}}</p> -->
               <div>
                 <button (click)="cancel()" class="btn btn-outline">{{'HOME.POLICY.DIALOG.CANCEL' | translate}}</button>
-                <button (click)="create()" class="btn btn-info-outline">{{noteBook.createInstanceTitle | translate}}</button>
+                <button (click)="create()" type="submit" class="btn btn-info-outline">{{noteBook.createInstanceTitle | translate}}</button>
               </div>
             </div>
           </div>

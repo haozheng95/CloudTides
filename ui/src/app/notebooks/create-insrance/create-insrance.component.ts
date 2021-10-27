@@ -34,7 +34,7 @@ export class CreateInsranceComponent implements OnInit {
   }
   openInstanceModal () {
     this.noteBook.createInstanceFlag = true
-    this.noteBook.createInstanceTitle = 'HOME.NOTEBOOKS.Create'
+    this.noteBook.createInstanceTitle = 'HOME.APPLICATION.Create'
   }
   toggleCurrentButton () {
     this.currentButton = !this.currentButton

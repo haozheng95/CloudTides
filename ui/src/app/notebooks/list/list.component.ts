@@ -11,6 +11,12 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getApplictionList()
+  }
+  getApplictionList () {
+    this.nd.getAppList().subscribe((data:AppModel[]) => {
+      this.appList = data
+    })
   }
   appList:AppModel[] = [
     {
@@ -43,7 +49,7 @@ export class ListComponent implements OnInit {
   }
   modifyApp (app: AppModel) {
     this.nd.createInstanceFlag = true
-    this.nd.createInstanceTitle = 'HOME.NOTEBOOKS.Modify'
+    this.nd.createInstanceTitle = 'HOME.APPLICATION.Modify'
   }
   deleteApp (app: AppModel) {
     this.sureDeleteFalg = true

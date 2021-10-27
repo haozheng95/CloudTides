@@ -215,17 +215,18 @@
         "PHONE":"Phone Number"
       }
     },
-    "NOTEBOOKS": {
-      "NOTEBOOKS": "application",
+    "APPLICATION": {
+      "APPLICATION": "application",
       "NEW_INSTANCE": {
         "NEW_INSTANCE": "new application",
-        "NEW_NOTEBOOK_INSTANCE": "New application",
-        "MODIFY_NOTEBOOK_INSTANCE": "modify application",
+        "NEW_APPLICATION_INSTANCE": "New application",
+        "MODIFY_APPLICATION_INSTANCE": "modify application",
         "REGION": "Region",
         "INSTANCE_PROPERTIES": "Instance properties",
         "BOOT_DISK": "Boot disk",
         "SUBNETWORK": "Subnetwork",
         "EXTERNAL_IP": "External IP",
+        "PORT": "Port",
         "ADVANCED_OPTIONS": "ADVANCED_OPTIONS",
         "GPU_TYPE": "GPU type",
         "Machine_TYPE": "Machine type"
@@ -244,7 +245,7 @@
         "SEARCH": "Enter property name or value"
       },
       "LIST": {
-        "INSTANCE_LIST": "notebooks list",
+        "INSTANCE_LIST": "Appliction list",
         "INSTANCE_NAME": "Instance name",
         "ZONE": "Zone",
         "AUTO_UPGRADE": "Auto-upgrade",
@@ -256,6 +257,9 @@
         "PLACE_CONFIRM": "Are you sure you want to delete this application?"
       }
 
+    },
+    "VALIDATION": {
+      "REQUIRED": "This is required"
     },
     "PRODUCT_NAME": "CloudTides",
     "PROFILE": "Profile",
