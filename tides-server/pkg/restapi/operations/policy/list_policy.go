@@ -102,6 +102,8 @@ func (o *ListPolicyOKBody) validateResults(formats strfmt.Registry) error {
 			if err := o.Results[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -134,6 +136,8 @@ func (o *ListPolicyOKBody) contextValidateResults(ctx context.Context, formats s
 			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
