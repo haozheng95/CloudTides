@@ -2347,6 +2347,8 @@ paths:
                   type: string
                 token:
                   type: string
+                appType:
+                  type: string
         401:
           description: 'Unauthorized'
         403:
@@ -2367,6 +2369,16 @@ paths:
               instanceName:
                 type: string
               port:
+                type: string
+              sshHost:
+                type: string
+              sshUser:
+                type: string
+              sshPassword:
+                type: string
+              sshPort:
+                type: integer
+              appType:
                 type: string
       responses:
         200:

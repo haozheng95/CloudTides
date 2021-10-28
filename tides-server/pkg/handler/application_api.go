@@ -5,25 +5,23 @@ import (
 	"fmt"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofrs/uuid"
+	"github.com/mitchellh/mapstructure"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
 	"strconv"
 	"sync"
+	"tides-server/pkg/config"
+	"tides-server/pkg/models"
 	"tides-server/pkg/restapi/operations/application"
 	"time"
 )
 
 var sshPool sync.Map
-var tokenPool sync.Map
 var tokenIndex sync.Map
 var (
-	sshHost     = "120.133.15.12"
-	sshUser     = "root"
-	sshPassword = "ca$hc0w"
-	sshType     = "password" //password or key
-	sshKeyPath  = ""         //ssh id_rsa.id path"
-	sshPort     = 20023
+	sshType    = "password" //password or key
+	sshKeyPath = ""         //ssh id_rsa.id path"
 )
 
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
@@ -32,19 +30,20 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		return application.NewCreateApplicationInstanceUnauthorized()
 	}
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+
 	body := params.ReqBody
 
 	//create sshp config
-	config := &ssh.ClientConfig{
+	sshConfig := &ssh.ClientConfig{
 		Timeout:         time.Second,
-		User:            sshUser,
+		User:            body.SSHUser,
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		//HostKeyCallback: hostKeyCallBackFunc(h.Host),
 	}
 	if sshType == "password" {
-		config.Auth = []ssh.AuthMethod{ssh.Password(sshPassword)}
+		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(body.SSHPassword)}
 	} else {
-		config.Auth = []ssh.AuthMethod{publicKeyAuthFunc(sshKeyPath)}
+		sshConfig.Auth = []ssh.AuthMethod{publicKeyAuthFunc(sshKeyPath)}
 	}
 
 	myuuid, err := uuid.NewV4()
@@ -53,7 +52,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	}
 	token := fmt.Sprintf("%x", sha256.Sum256(myuuid.Bytes()))
 	log.Println("token", token)
-	session := getSession(sshHost, sshPort, config)
+	session := getSession(body.SSHHost, int(body.SSHPort), sshConfig)
 
 	containerName := "jupyterlab-" + token
 	containerPort := body.Port
@@ -70,37 +69,37 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		})
 	}
 	log.Println("cmd output:", string(combo))
-	sshPortStr := strconv.Itoa(sshPort)
+	sshPortStr := strconv.Itoa(int(body.SSHPort))
 	row := map[string]string{
-		"link":          fmt.Sprintf("%s:%s/lab?token=%s", sshHost, containerPort, token),
+		"link":          fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
 		"containerID":   string(combo),
 		"containerName": containerName,
 		"instanceName":  body.InstanceName,
 		"token":         token,
-		"uid":           string(uid),
-		"sshHost":       sshHost,
-		"sshUser":       sshUser,
-		"sshPassword":   sshPassword,
+		"uid":           strconv.Itoa(int(uid)),
+		"sshHost":       body.SSHHost,
+		"sshUser":       body.SSHUser,
+		"sshPassword":   body.SSHPassword,
 		"sshType":       sshType,
 		"sshKeyPath":    sshKeyPath,
 		"sshPort":       sshPortStr,
+		"appType":       body.AppType,
 	}
 
-	var col []map[string]string
-	colStock, has := tokenPool.Load(uid)
-	if has {
-		col = colStock.([]map[string]string)
-		tokenIndex.Store(token, len(col))
-		col = append(col, row)
-		tokenPool.Store(uid, col)
-	} else {
-		col = []map[string]string{row}
-		tokenPool.Store(uid, col)
-		tokenIndex.Store(token, 0)
+	var data models.Application
+
+	if err := mapstructure.Decode(row, &data); err != nil {
+		log.Println("map to struct error ", err)
 	}
+	db := config.GetDB()
+	if err := db.Create(&data).Error; err != nil {
+		log.Println("db install error", err)
+	}
+	log.Println("row Id ", data.ID)
+	tokenIndex.Store(token, data.ID)
 
 	result := &application.CreateApplicationInstanceOKBody{
-		Link:  fmt.Sprintf("%s:%s/lab?token=%s", sshHost, containerPort, token),
+		Link:  fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
 		Token: token,
 	}
 	return application.NewCreateApplicationInstanceOK().WithPayload(result)
@@ -110,37 +109,37 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 	if !VerifyUser(params.HTTPRequest) {
 		return application.NewCreateApplicationInstanceUnauthorized()
 	}
-	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
-
-	colStock, has := tokenPool.Load(uid)
-	if !has {
-		return application.NewDeleteApplicationInstanceForbidden()
-	}
-
-	colList := colStock.([]map[string]string)
 
 	indexStock, has := tokenIndex.Load(params.Token)
-
-	if !has {
-		return application.NewDeleteApplicationInstanceForbidden()
+	db := config.GetDB()
+	var index uint
+	data := new(models.Application)
+	if has {
+		index = indexStock.(uint)
+		db.First(&data, index)
+	} else {
+		db.Where("token = ?", params.Token).First(data)
 	}
-	index := indexStock.(int)
-	row := colList[index]
 
 	//create sshp config
-	config := &ssh.ClientConfig{
+	sshConfig := &ssh.ClientConfig{
 		Timeout:         time.Second,
-		User:            row["sshUser"],
+		User:            data.SshUser,
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	log.Println(row)
 
-	port, err := strconv.Atoi(row["sshPort"])
+	if sshType == "password" {
+		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(data.SshPassword)}
+	} else {
+		sshConfig.Auth = []ssh.AuthMethod{publicKeyAuthFunc(data.SshPassword)}
+	}
+
+	port, err := strconv.Atoi(data.SshPort)
 	if err != nil {
 		log.Println("strconv error", err)
 	}
-	session := getSession(row["sshHost"], port, config)
-	cmd := fmt.Sprintf("docker kill %s", row["containerID"][:12])
+	session := getSession(data.SshHost, port, sshConfig)
+	cmd := fmt.Sprintf("docker kill %s", data.ContainerID[:12])
 	log.Println("cmd ", cmd)
 	combo, err := session.CombinedOutput(cmd)
 
@@ -150,28 +149,9 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 	}
 	log.Println("cmd output:", string(combo))
 	log.Println("index :", index)
-	if index == 0 {
-		log.Println("len colList", len(colList))
-		if len(colList) > 1 {
-			colList = colList[1:]
-		} else {
-			colList = make([]map[string]string, 0, 0)
-		}
-	} else if index+1 == len(colList) {
-		colList = colList[:index]
-	}
-	if len(colList) != 0 {
-		colList = append(colList[:index], colList[index+1:]...)
-	}
-	if len(colList) != 0 {
-		tokenPool.Store(uid, colList)
-	} else {
-		tokenPool.Delete(uid)
-	}
-	tokenIndex.Delete(params.Token)
 
-	token := params.Token
-	log.Println("will delete token", token)
+	tokenIndex.Delete(params.Token)
+	db.Delete(data)
 
 	return application.NewDeleteApplicationInstanceOK().WithPayload(&application.DeleteApplicationInstanceOKBody{
 		Msg: "success",
@@ -183,17 +163,18 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 		return application.NewCreateApplicationInstanceUnauthorized()
 	}
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
-	colStock, has := tokenPool.Load(uid)
-	if !has {
-		return application.NewListApplicationInstanceOK()
-	}
-	colList := colStock.([]map[string]string)
-	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(colList), len(colList))
-	for i := range colList {
+	db := config.GetDB()
+	var data []models.Application
+	db.Where("uid = ?", fmt.Sprintf("%d", uid)).Find(&data)
+	log.Println("data", data)
+
+	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(data), len(data))
+	for i := range data {
 		tmp := &application.ListApplicationInstanceOKBodyItems0{
-			Link:         colList[i]["link"],
-			Token:        colList[i]["token"],
-			InstanceName: colList[i]["instanceName"],
+			Link:         data[i].Link,
+			Token:        data[i].Token,
+			InstanceName: data[i].InstanceName,
+			AppType:      data[i].AppType,
 		}
 		payload[i] = tmp
 	}
@@ -214,9 +195,10 @@ func publicKeyAuthFunc(kPath string) ssh.AuthMethod {
 	return ssh.PublicKeys(signer)
 }
 
-func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) *ssh.Session {
+func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session *ssh.Session) {
 
 	addr := fmt.Sprintf("%s:%d", sshHost, sshPort)
+	log.Println("ssh addr ", addr)
 	sshClientStock, has := sshPool.Load(addr)
 	var sshClient *ssh.Client
 
@@ -235,6 +217,20 @@ func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) *ssh.Sess
 		log.Println("map existing sshClient")
 		sshClient = sshClientStock.(*ssh.Client)
 	}
+
+	defer func(addr string) {
+		err := recover()
+		if err != nil {
+			log.Println("recover ", err)
+			sshClient, err := ssh.Dial("tcp", addr, config)
+			log.Println("defer", err)
+			log.Println("defer existing sshClient")
+			sshPool.Delete(addr)
+			sshPool.Store(addr, sshClient)
+			session, err = sshClient.NewSession()
+			log.Println("defer", err)
+		}
+	}(addr)
 
 	//create ssh-session
 	session, err := sshClient.NewSession()

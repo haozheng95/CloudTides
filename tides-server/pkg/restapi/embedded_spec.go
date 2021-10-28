@@ -43,6 +43,9 @@ func init() {
               "items": {
                 "type": "object",
                 "properties": {
+                  "appType": {
+                    "type": "string"
+                  },
                   "instanceName": {
                     "type": "string"
                   },
@@ -147,10 +150,25 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "appType": {
+                  "type": "string"
+                },
                 "instanceName": {
                   "type": "string"
                 },
                 "port": {
+                  "type": "string"
+                },
+                "sshHost": {
+                  "type": "string"
+                },
+                "sshPassword": {
+                  "type": "string"
+                },
+                "sshPort": {
+                  "type": "integer"
+                },
+                "sshUser": {
                   "type": "string"
                 }
               }
@@ -4098,10 +4116,25 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "appType": {
+                  "type": "string"
+                },
                 "instanceName": {
                   "type": "string"
                 },
                 "port": {
+                  "type": "string"
+                },
+                "sshHost": {
+                  "type": "string"
+                },
+                "sshPassword": {
+                  "type": "string"
+                },
+                "sshPort": {
+                  "type": "integer"
+                },
+                "sshUser": {
                   "type": "string"
                 }
               }
@@ -7515,6 +7548,9 @@ func init() {
     "ListApplicationInstanceOKBodyItems0": {
       "type": "object",
       "properties": {
+        "appType": {
+          "type": "string"
+        },
         "instanceName": {
           "type": "string"
         },
