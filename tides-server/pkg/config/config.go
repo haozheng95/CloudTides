@@ -17,9 +17,9 @@ var (
 )
 
 const (
-	URLSuffix = "cloudtides.vthink.cloud"
+	URLSuffix    = "cloudtides.vthink.cloud"
 	ROLE_HIGHEST = "SITE_ADMIN"
-	ORG_HIGHEST = "SITE"
+	ORG_HIGHEST  = "SITE"
 )
 
 func init() {
@@ -89,6 +89,7 @@ func StartDB() {
 	db.AutoMigrate(&models.ResVapp{})
 	db.AutoMigrate(&models.ResTemplate{})
 
+	db.AutoMigrate(&models.Application{})
 
 	fmt.Println("DB connection success")
 	CreateAdmin()
@@ -104,9 +105,9 @@ func CreateAdmin() {
 			Username: config.AdminUser,
 			Password: config.AdminPassword,
 			Priority: models.UserPriorityHigh,
-			Role: ROLE_HIGHEST,
-			OrgName: ORG_HIGHEST,
-			PwReset: true,
+			Role:     ROLE_HIGHEST,
+			OrgName:  ORG_HIGHEST,
+			PwReset:  true,
 		}
 		db.Create(&admin)
 	}
@@ -127,7 +128,6 @@ func TemplateSetup() {
 			Name:             "tides-boinc-attached",
 			ProvisionedSpace: 16,
 			VMName:           "tides-gromacs",
-			
 		}
 		db.Create(&newTem)
 	}
