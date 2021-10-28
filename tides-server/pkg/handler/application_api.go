@@ -40,6 +40,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		//HostKeyCallback: hostKeyCallBackFunc(h.Host),
 	}
+
 	if sshType == "password" {
 		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(body.SSHPassword)}
 	} else {
