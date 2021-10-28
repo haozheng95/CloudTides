@@ -80,17 +80,19 @@
               <li>
                 <clr-input-container>
                   <label class="clr-control-label" for="port">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
-                  <input clrInput type="text" name="port" id="port" formControlName='port' required>
+                  <input *ngIf="noteBook.modifiable" clrInput type="text" name="port" id="port" formControlName='port' required>
+                  <input *ngIf-="!noteBook.modifiable" clrInput type="text" name="port" id="port" formControlName='port' disabled>
                   <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
                 </clr-input-container>
               </li>
               <li>
                 <label class="clr-control-label" for="input1">{{'HOME.APPLICATION.LIST.SSHHOST' | translate}}</label>
-                <input clrInput type="text" name="sshHost" id="input1" formControlName="sshHost">
+                <input *ngIf="noteBook.modifiable" clrInput type="text" name="sshHost" id="input1" formControlName="sshHost" required>
+                <input *ngIf="!noteBook.modifiable" clrInput type="text" name="sshHost" id="input1" formControlName="sshHost" disabled>
               </li>
               <li>
                 <label class="clr-control-label" for="input3">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPASSWORD' | translate}}</label>
-                <input clrInput type="text" name="sshPassword" id="input3" formControlName="sshPassword">
+                <input clrInput type="password" name="sshPassword" id="input3" formControlName="sshPassword" required>
               </li>
               <!-- <li>
                 <label for="example4" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.SUBNETWORK' | translate}}</label>
@@ -106,11 +108,13 @@
               </li> -->
               <li>
                 <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPORT' | translate}}</label>
-                <input clrInput type="text" name="sshPort" id="input4" formControlName="sshPort">
+                <input *ngIf="noteBook.modifiable"  clrInput type="text" name="sshPort" id="input4" formControlName="sshPort" required>
+                <input *ngIf="!noteBook.modifiable"  clrInput type="text" name="sshPort" id="input4" formControlName="sshPort" disabled>
               </li>
               <li>
                 <label class="clr-control-label" for="input5">{{'HOME.APPLICATION.LIST.SSHUSER' | translate}}</label>
-                <input clrInput type="text" name="sshUser" id="input5" formControlName="sshUser">
+                <input *ngIf="noteBook.modifiable" clrInput type="text" name="sshUser" id="input5" formControlName="sshUser" required>
+                <input *ngIf="!noteBook.modifiable" clrInput type="text" name="sshUser" id="input5" formControlName="sshUser" disabled>
               </li>
               <!-- <li>
                 <label class="clr-control-label" for="input6">{{'HOME.APPLICATION.NEW_INSTANCE.GPU_TYPE' | translate}}</label>
@@ -120,7 +124,11 @@
                 <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.APPTYPE' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" id="input7" name="appType" formControlName="appType">
+                    <select *ngIf="noteBook.modifiable" placeholder="Select Option" id="input7" name="appType" formControlName="appType">
+                      <option value='jupyter'>jupyter</option>
+                      <option value='gromacs'>gromacs</option>
+                    </select>
+                    <select *ngIf="!noteBook.modifiable" placeholder="Select Option" id="input7" name="appType" formControlName="appType" disabled>
                       <option value='jupyter'>jupyter</option>
                       <option value='gromacs'>gromacs</option>
                     </select>

@@ -12,6 +12,7 @@ export class NotebooksService {
 
   constructor(private readonly http: HttpClient,private readonly router: Router, private fb: FormBuilder) { }
   createInstanceFlag:boolean = false
+  modifiable = true
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],

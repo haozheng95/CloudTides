@@ -23,6 +23,7 @@ export class CreateInsranceComponent implements OnInit {
   openInstanceModal (type: string) {
     this.noteBook.createInstanceFlag = true
     this.noteBook.createInstanceTitle = 'HOME.APPLICATION.Create'
+    this.noteBook.modifiable= true
     this.noteBook.instanceForm.get('appType').setValue(type)
   }
   toggleCurrentButton () {

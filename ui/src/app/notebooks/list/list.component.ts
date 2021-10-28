@@ -23,12 +23,12 @@ export class ListComponent implements OnInit {
     })
   }
   appList:AppModel[] = [
-    {
-      instanceName: 'Jupyter',
-      logo: 'assets/img/jupyter.svg',
-      token: '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8',
-      link: "http://120.133.15.12:8888/lab"
-    }
+    // {
+    //   instanceName: 'Jupyter',
+    //   logo: 'assets/img/jupyter.svg',
+    //   token: '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8',
+    //   link: "http://120.133.15.12:8888/lab"
+    // }
   ]
   selected= 'selected'
   sureDeleteFalg = false
@@ -54,6 +54,18 @@ export class ListComponent implements OnInit {
   modifyApp (app: AppModel) {
     this.nd.createInstanceFlag = true
     this.nd.createInstanceTitle = 'HOME.APPLICATION.Modify'
+    this.nd.modifiable = false
+    console.log('app', app);
+    
+    this.nd.instanceForm.setValue({
+      instanceName: app.instanceName,
+      port: app.port,
+      appType: app.appType,
+      sshHost: app.sshHost,
+      sshPassword: app.sshPassword,
+      sshPort: app.sshPort,
+      sshUser: app.sshUser
+    })
   }
   deleteApp (app: AppModel) {
     this.sureDeleteFalg = true
@@ -76,4 +88,11 @@ interface AppModel {
   link: string
   token: string
   logo: string
+  port: string,
+  appType: string,
+  sshHost: string,
+  sshPassword: string
+  sshPort: string
+  sshUser: string
+
 }
