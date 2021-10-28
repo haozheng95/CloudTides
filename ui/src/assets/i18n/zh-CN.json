@@ -224,17 +224,18 @@
         "PHONE": "联系电话"
       }
     },
-    "NOTEBOOKS": {
-      "NOTEBOOKS": "应用程序",
+    "APPLICATION": {
+      "APPLICATION": "应用程序",
       "NEW_INSTANCE": {
         "NEW_INSTANCE" : "创建新应用程序",
-        "NEW_NOTEBOOK_INSTANCE": "新建应用程序",
-        "MODIFY_NOTEBOOK_INSTANCE": "修改应用程序",
+        "NEW_APPLICATION_INSTANCE": "新建应用程序",
+        "MODIFY_APPLICATION_INSTANCE": "修改应用程序",
         "REGION": "行政区",
         "INSTANCE_PROPERTIES": "实例属性",
         "BOOT_DISK": "启动盘",
         "SUBNETWORK": "代理地址",
         "EXTERNAL_IP": "外部IP",
+        "PORT": "端口",
         "ADVANCED_OPTIONS": "高级选项",
         "GPU_TYPE": "GPU类型",
         "Machine_TYPE": "机器类型"
@@ -253,7 +254,7 @@
         "SEARCH": "输入名称或者值"
       },
       "LIST": {
-        "INSTANCE_LIST": "notebooks 列表",
+        "INSTANCE_LIST": "应用程序列表",
         "INSTANCE_NAME": "实例名称",
         "ZONE": "地区",
         "AUTO_UPGRADE": "自动升级",
@@ -264,6 +265,9 @@
         "OPERATE": "操作",
         "PLACE_CONFIRM": "你确定要删除这个应用程序吗？"
       }
+    },
+    "VALIDATION": {
+      "REQUIRED": "当前项是必填项"
     },
     "PRODUCT_NAME": "云汐",
     "PROFILE": "个人信息",

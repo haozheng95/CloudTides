@@ -11,10 +11,20 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getApplictionList()
+  }
+  getApplictionList () {
+    this.appList = [] 
+    this.nd.getAppList().subscribe((data:AppModel[]) => {
+      data.forEach(el => {
+        el.logo = 'assets/img/jupyter.svg',
+        this.appList.push(el)
+      })
+    })
   }
   appList:AppModel[] = [
     {
-      name: 'Jupyter',
+      instanceName: 'Jupyter',
       logo: 'assets/img/jupyter.svg',
       token: '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8',
       link: "http://120.133.15.12:8888/lab"
@@ -43,7 +53,7 @@ export class ListComponent implements OnInit {
   }
   modifyApp (app: AppModel) {
     this.nd.createInstanceFlag = true
-    this.nd.createInstanceTitle = 'HOME.NOTEBOOKS.Modify'
+    this.nd.createInstanceTitle = 'HOME.APPLICATION.Modify'
   }
   deleteApp (app: AppModel) {
     this.sureDeleteFalg = true
@@ -53,6 +63,7 @@ export class ListComponent implements OnInit {
     this.nd.deleteApp(this.token).subscribe(data => {
       console.log(data);
       this.sureDeleteFalg = false
+      this.getApplictionList()
     })
   }
   cancel () {
@@ -61,7 +72,7 @@ export class ListComponent implements OnInit {
   }
 }
 interface AppModel {
-  name: string
+  instanceName: string
   link: string
   token: string
   logo: string
