@@ -4,11 +4,11 @@
     <button class="btn" [ngClass]="{'btn-primary': !currentButton}" (click)="toggleCurrentButton()">集群</button>
   </div> -->
   <div class="instanc-content" [hidden]="!currentButton">
-    <div class="python" (click)="openInstanceModal()">
+    <div class="python" (click)="openInstanceModal('jupyter')">
       <img src="assets/img/jupyter.svg" alt="">
       <p>Jupyter</p>
     </div>
-    <div class="gromacs" (click)="openInstanceModal()">
+    <div class="gromacs" (click)="openInstanceModal('gromacs')">
       <img src="assets/img/gromacs.png" alt="">
       <p>Gromacs</p>
     </div>

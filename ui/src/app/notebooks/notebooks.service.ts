@@ -15,15 +15,11 @@ export class NotebooksService {
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
-    region: [''],
-    zone: [''],
-    environment: [''],
-    bootDisk: [''],
-    subnetwork: [''],
-    externalIp: [''],
-    permission: [''],
-    GPU: [''],
-    machineType: ['']
+    appType: [''],
+    sshHost: [''],
+    sshPassword: [''],
+    sshPort: [''],
+    sshUser: ['']
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
   getAppList () {

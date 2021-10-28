@@ -28,15 +28,11 @@ export class NotebooksComponent implements OnInit {
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
-    region: [''],
-    zone: [''],
-    environment: [''],
-    bootDisk: [''],
-    subnetwork: [''],
-    externalIp: [''],
-    permission: [''],
-    GPU: [''],
-    machineType: ['']
+    appType: [''],
+    sshHost: [''],
+    sshPassword: [''],
+    sshPort: [''],
+    sshUser: ['']
   })
   cancel () {    
     this.noteBook.createInstanceFlag = false
@@ -55,6 +51,16 @@ export class NotebooksComponent implements OnInit {
         console.log('data', data);
         this.flag = false
         this.noteBook.createInstanceFlag = false
+        this.instanceForm.setValue({
+          instanceName: '',
+          port: '',
+          appType: '',
+          sshHost: '',
+          sshPassword: '',
+          sshPort: '',
+          sshUser: ''
+      
+        })
       },
       err => {
         console.log('err', err);
