@@ -18,6 +18,9 @@ export class ListComponent implements OnInit {
     this.nd.getAppList().subscribe((data:AppModel[]) => {
       data.forEach(el => {
         el.logo = 'assets/img/jupyter.svg',
+        el.link = 'http://' + el.link.split('?')[0]
+        console.log('link', el);
+        
         this.appList.push(el)
       })
     })

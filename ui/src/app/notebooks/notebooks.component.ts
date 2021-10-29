@@ -17,8 +17,10 @@ export class NotebooksComponent implements OnInit {
   ngOnInit(): void {
   }
   noteBook: NotebooksService
+  // error tip flag
   flag:boolean = false
   errorMsg = ''
+  // create disable for get
   get disabled () {
     const arr = []
     for (const key in this.instanceForm.controls) {
