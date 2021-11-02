@@ -17,44 +17,62 @@ export class NotebooksComponent implements OnInit {
   ngOnInit(): void {
   }
   noteBook: NotebooksService
+  // error tip flag
   flag:boolean = false
   errorMsg = ''
+  // create disable for get
   get disabled () {
-    if (this.instanceForm.get('instanceName').value !== '' && this.instanceForm.get('port').value !== '') {
-      return false
+    const arr = []
+    for (const key in this.instanceForm.controls) {
+      if (this.instanceForm.controls[key].value !== 'jupyter' && this.instanceForm.controls[key].value !== 'gromacs') {
+        arr.push(this.instanceForm.controls[key].value)
+      }
     }
-    return true
+    const rsg = arr.every(el => el !== '')
+    return !rsg
   }
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
-    region: [''],
-    zone: [''],
-    environment: [''],
-    bootDisk: [''],
-    subnetwork: [''],
-    externalIp: [''],
-    permission: [''],
-    GPU: [''],
-    machineType: ['']
+    appType: [''],
+    sshHost: [''],
+    sshPassword: [''],
+    sshPort: [''],
+    sshUser: ['']
   })
   cancel () {    
     this.noteBook.createInstanceFlag = false
+    this.instanceForm.setValue({
+      instanceName: '',
+      port: '',
+      appType: '',
+      sshHost: '',
+      sshPassword: '',
+      sshPort: '',
+      sshUser: ''
+    })
+    this.errorMsg = ''
+    this.flag = false
+
   }
   create (data) {
-    console.log('data',data);
     this.errorMsg = ''
     this.flag = true
     const str = 'HOME.APPLICATION.Create'
-    const form = {
-      instanceName: data.instanceName,
-      port: data.port
-    }
+    data.sshPort = +data.sshPort
     if (this.nb.createInstanceTitle === str) {
-      this.nb.createNewApp(form).subscribe(data => {
-        console.log('data', data);
+      this.nb.createNewApp(data).subscribe(data => {
         this.flag = false
         this.noteBook.createInstanceFlag = false
+        this.instanceForm.setValue({
+          instanceName: '',
+          port: '',
+          appType: '',
+          sshHost: '',
+          sshPassword: '',
+          sshPort: '',
+          sshUser: ''
+        })
       },
       err => {
         console.log('err', err);
@@ -63,7 +81,7 @@ export class NotebooksComponent implements OnInit {
         this.flag = false
       })
     } else {
-      this.nb.modifyApp(form).subscribe(data => {
+      this.nb.modifyApp(data).subscribe(data => {
         this.flag = false
         this.noteBook.createInstanceFlag = false
       },

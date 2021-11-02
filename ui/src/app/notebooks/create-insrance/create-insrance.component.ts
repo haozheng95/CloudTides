@@ -8,18 +8,6 @@ import { Router } from '@angular/router'
 })
 export class CreateInsranceComponent implements OnInit {
   noteBook: NotebooksService
-  instanceForm:NotebookModel = {
-    name: '',
-    region: '',
-    zone: '',
-    environment: '',
-    machineType: '',
-    bootDisk: '',
-    subnetwork:'',
-    externalIp:'',
-    permission: '',
-    GPU: ''
-  }
   constructor(private noteBooks: NotebooksService, private router: Router) {
     this.noteBook = this.noteBooks
   }
@@ -32,9 +20,11 @@ export class CreateInsranceComponent implements OnInit {
     this.router.navigate(['/cloudtides/notebooks/list'])
     // this.noteBook.createInstance = true
   }
-  openInstanceModal () {
+  openInstanceModal (type: string) {
     this.noteBook.createInstanceFlag = true
     this.noteBook.createInstanceTitle = 'HOME.APPLICATION.Create'
+    this.noteBook.modifiable= true
+    this.noteBook.instanceForm.get('appType').setValue(type)
   }
   toggleCurrentButton () {
     this.currentButton = !this.currentButton

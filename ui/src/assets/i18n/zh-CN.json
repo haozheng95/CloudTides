@@ -232,13 +232,13 @@
         "MODIFY_APPLICATION_INSTANCE": "修改应用程序",
         "REGION": "行政区",
         "INSTANCE_PROPERTIES": "实例属性",
-        "BOOT_DISK": "启动盘",
+        "SSHPASSWORD": "SSH 密码",
         "SUBNETWORK": "代理地址",
-        "EXTERNAL_IP": "外部IP",
+        "SSHPORT": "SSH 端口",
         "PORT": "端口",
         "ADVANCED_OPTIONS": "高级选项",
         "GPU_TYPE": "GPU类型",
-        "Machine_TYPE": "机器类型"
+        "APPTYPE": "应用程序类型"
       },
       "REFRESH": "刷新",
       "CREATE": "创建",
@@ -258,9 +258,9 @@
         "INSTANCE_NAME": "实例名称",
         "ZONE": "地区",
         "AUTO_UPGRADE": "自动升级",
-        "ENVIRONMENT": "环境",
+        "SSHHOST": "SSH 主机IP",
         "MACHINE_TYPE": "机器类型",
-        "PERMISSION": "许可",
+        "SSHUSER": "SSH 用户名",
         "LAST_MODIFIED": "最后修改",
         "OPERATE": "操作",
         "PLACE_CONFIRM": "你确定要删除这个应用程序吗？"

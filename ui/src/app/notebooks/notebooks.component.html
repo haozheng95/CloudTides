@@ -42,13 +42,12 @@
             </clr-input-container>
           </div>
           <div class="clr-form-control">
-            <label for="example2" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.REGION' | translate}}</label>
+            <!-- <label for="example2" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.REGION' | translate}}</label>
             <div class="clr-control-container">
               <div class="clr-select-wrapper">
-                <select placeholder="Select Option" name="region" id="example2"  formControlName="region">
-                  <option>Option 1</option>
-                  <option>Option 2</option>
-                  <option>Option 3</option>
+                <select placeholder="Select Option" name="appType" id="example2"  formControlName="appType">
+                  <option>jupyter</option>
+                  <option>gromacs</option>
                 </select>
                 <clr-signpost>
                   <clr-signpost-content *clrIfOpen>
@@ -69,7 +68,7 @@
                   </clr-signpost-content>
                 </clr-signpost>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="option">
             <p class="option-title">
@@ -79,14 +78,23 @@
             </p>
             <ul class="option-list">
               <li>
-                <label class="clr-control-label" for="input1">{{'HOME.APPLICATION.LIST.ENVIRONMENT' | translate}}</label>
-                <input clrInput type="text" name="environment" id="input1" formControlName="environment">
+                <clr-input-container>
+                  <label class="clr-control-label" for="port">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
+                  <input *ngIf="noteBook.modifiable" clrInput type="text" name="port" id="port" formControlName='port' required>
+                  <input *ngIf-="!noteBook.modifiable" clrInput type="text" name="port" id="port" formControlName='port' disabled>
+                  <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+                </clr-input-container>
               </li>
               <li>
-                <label class="clr-control-label" for="input3">{{'HOME.APPLICATION.NEW_INSTANCE.BOOT_DISK' | translate}}</label>
-                <input clrInput type="text" name="bootdisk" id="input3" formControlName="bootDisk">
+                <label class="clr-control-label" for="input1">{{'HOME.APPLICATION.LIST.SSHHOST' | translate}}</label>
+                <input *ngIf="noteBook.modifiable" clrInput type="text" name="sshHost" id="input1" formControlName="sshHost" required>
+                <input *ngIf="!noteBook.modifiable" clrInput type="text" name="sshHost" id="input1" formControlName="sshHost" disabled>
               </li>
               <li>
+                <label class="clr-control-label" for="input3">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPASSWORD' | translate}}</label>
+                <input clrInput type="password" name="sshPassword" id="input3" formControlName="sshPassword" required>
+              </li>
+              <!-- <li>
                 <label for="example4" class="clr-control-label">{{'HOME.APPLICATION.NEW_INSTANCE.SUBNETWORK' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
@@ -97,32 +105,32 @@
                     </select>
                   </div>
                 </div>
+              </li> -->
+              <li>
+                <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPORT' | translate}}</label>
+                <input *ngIf="noteBook.modifiable"  clrInput type="text" name="sshPort" id="input4" formControlName="sshPort" required>
+                <input *ngIf="!noteBook.modifiable"  clrInput type="text" name="sshPort" id="input4" formControlName="sshPort" disabled>
               </li>
               <li>
-                <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.EXTERNAL_IP' | translate}}</label>
-                <input clrInput type="text" name="instance-externalip" id="input4" formControlName="externalIp">
+                <label class="clr-control-label" for="input5">{{'HOME.APPLICATION.LIST.SSHUSER' | translate}}</label>
+                <input *ngIf="noteBook.modifiable" clrInput type="text" name="sshUser" id="input5" formControlName="sshUser" required>
+                <input *ngIf="!noteBook.modifiable" clrInput type="text" name="sshUser" id="input5" formControlName="sshUser" disabled>
               </li>
-              <li>
-                <clr-input-container>
-                  <label class="clr-control-label" for="port">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
-                  <input clrInput type="text" name="port" id="port" formControlName='port' required>
-                  <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
-                </clr-input-container>
-              </li>
-              <li>
-                <label class="clr-control-label" for="input5">{{'HOME.APPLICATION.LIST.PERMISSION' | translate}}</label>
-                <input clrInput type="text" name="instance-permission" id="input5" formControlName="permission">
-              </li>
-              <li>
+              <!-- <li>
                 <label class="clr-control-label" for="input6">{{'HOME.APPLICATION.NEW_INSTANCE.GPU_TYPE' | translate}}</label>
                 <input clrInput type="text" name="instance-gpu" id="input6" formControlName="GPU">
-              </li>
+              </li> -->
               <li>
-                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.Machine_TYPE' | translate}}</label>
+                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.APPTYPE' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" id="input7" name="machinetype" formControlName="machineType">
-                      <option>n1-standard-4(4 vCPUs,15 GB RAm)</option>
+                    <select *ngIf="noteBook.modifiable" placeholder="Select Option" id="input7" name="appType" formControlName="appType">
+                      <option value='jupyter'>jupyter</option>
+                      <option value='gromacs'>gromacs</option>
+                    </select>
+                    <select *ngIf="!noteBook.modifiable" placeholder="Select Option" id="input7" name="appType" formControlName="appType" disabled>
+                      <option value='jupyter'>jupyter</option>
+                      <option value='gromacs'>gromacs</option>
                     </select>
                   </div>
                 </div>
