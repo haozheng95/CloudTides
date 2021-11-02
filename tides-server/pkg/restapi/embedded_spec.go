@@ -52,6 +52,21 @@ func init() {
                   "link": {
                     "type": "string"
                   },
+                  "port": {
+                    "type": "string"
+                  },
+                  "sshHost": {
+                    "type": "string"
+                  },
+                  "sshPassword": {
+                    "type": "string"
+                  },
+                  "sshPort": {
+                    "type": "string"
+                  },
+                  "sshUser": {
+                    "type": "string"
+                  },
                   "token": {
                     "type": "string"
                   }
@@ -83,31 +98,28 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "GPUtype": {
+                "appType": {
                   "type": "string"
-                },
-                "MachineType": {
-                  "type": "string"
-                },
-                "bootDisk": {
-                  "type": "string"
-                },
-                "env": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "integer"
                 },
                 "instanceName": {
                   "type": "string"
                 },
-                "licences": {
+                "port": {
                   "type": "string"
                 },
-                "proxy": {
+                "sshHost": {
                   "type": "string"
                 },
-                "type": {
+                "sshPassword": {
+                  "type": "string"
+                },
+                "sshPort": {
+                  "type": "integer"
+                },
+                "sshUser": {
+                  "type": "string"
+                },
+                "token": {
                   "type": "string"
                 }
               }
@@ -120,8 +132,11 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "integer"
+                "link": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
                 }
               }
             }
@@ -130,7 +145,15 @@ func init() {
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -4049,31 +4072,28 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "GPUtype": {
+                "appType": {
                   "type": "string"
-                },
-                "MachineType": {
-                  "type": "string"
-                },
-                "bootDisk": {
-                  "type": "string"
-                },
-                "env": {
-                  "type": "string"
-                },
-                "id": {
-                  "type": "integer"
                 },
                 "instanceName": {
                   "type": "string"
                 },
-                "licences": {
+                "port": {
                   "type": "string"
                 },
-                "proxy": {
+                "sshHost": {
                   "type": "string"
                 },
-                "type": {
+                "sshPassword": {
+                  "type": "string"
+                },
+                "sshPort": {
+                  "type": "integer"
+                },
+                "sshUser": {
+                  "type": "string"
+                },
+                "token": {
                   "type": "string"
                 }
               }
@@ -4086,8 +4106,11 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "integer"
+                "link": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string"
                 }
               }
             }
@@ -4096,7 +4119,15 @@ func init() {
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -7555,6 +7586,21 @@ func init() {
           "type": "string"
         },
         "link": {
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        },
+        "sshHost": {
+          "type": "string"
+        },
+        "sshPassword": {
+          "type": "string"
+        },
+        "sshPort": {
+          "type": "string"
+        },
+        "sshUser": {
           "type": "string"
         },
         "token": {

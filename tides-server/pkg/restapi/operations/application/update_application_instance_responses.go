@@ -87,6 +87,11 @@ const UpdateApplicationInstanceForbiddenCode int = 403
 swagger:response updateApplicationInstanceForbidden
 */
 type UpdateApplicationInstanceForbidden struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *UpdateApplicationInstanceForbiddenBody `json:"body,omitempty"`
 }
 
 // NewUpdateApplicationInstanceForbidden creates UpdateApplicationInstanceForbidden with default headers values
@@ -95,10 +100,25 @@ func NewUpdateApplicationInstanceForbidden() *UpdateApplicationInstanceForbidden
 	return &UpdateApplicationInstanceForbidden{}
 }
 
+// WithPayload adds the payload to the update application instance forbidden response
+func (o *UpdateApplicationInstanceForbidden) WithPayload(payload *UpdateApplicationInstanceForbiddenBody) *UpdateApplicationInstanceForbidden {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the update application instance forbidden response
+func (o *UpdateApplicationInstanceForbidden) SetPayload(payload *UpdateApplicationInstanceForbiddenBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *UpdateApplicationInstanceForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(403)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }

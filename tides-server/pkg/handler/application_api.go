@@ -33,35 +33,22 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 
 	body := params.ReqBody
 
-	//create sshp config
-	sshConfig := &ssh.ClientConfig{
-		Timeout:         time.Second,
-		User:            body.SSHUser,
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		//HostKeyCallback: hostKeyCallBackFunc(h.Host),
-	}
-
-	if sshType == "password" {
-		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(body.SSHPassword)}
-	} else {
-		sshConfig.Auth = []ssh.AuthMethod{publicKeyAuthFunc(sshKeyPath)}
-	}
-
 	myuuid, err := uuid.NewV4()
 	if err != nil {
 		log.Println("Generating UUIDs error", err)
 	}
 	token := fmt.Sprintf("%x", sha256.Sum256(myuuid.Bytes()))
 	log.Println("token", token)
-	session := getSession(body.SSHHost, int(body.SSHPort), sshConfig)
-
 	containerName := "jupyterlab-" + token
 	containerPort := body.Port
 	containerToken := token
 	cmd := fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
 
 	//run remote shell
-	combo, err := session.CombinedOutput(cmd)
+	combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
+		SshPassword: body.SSHPassword,
+		SshUser:     body.SSHUser,
+	}, cmd)
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -85,6 +72,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		"sshKeyPath":    sshKeyPath,
 		"sshPort":       sshPortStr,
 		"appType":       body.AppType,
+		"port":          containerPort,
 	}
 
 	var data models.Application
@@ -122,27 +110,13 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 		db.Where("token = ?", params.Token).First(data)
 	}
 
-	//create sshp config
-	sshConfig := &ssh.ClientConfig{
-		Timeout:         time.Second,
-		User:            data.SshUser,
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
-
-	if sshType == "password" {
-		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(data.SshPassword)}
-	} else {
-		sshConfig.Auth = []ssh.AuthMethod{publicKeyAuthFunc(data.SshPassword)}
-	}
-
 	port, err := strconv.Atoi(data.SshPort)
 	if err != nil {
 		log.Println("strconv error", err)
 	}
-	session := getSession(data.SshHost, port, sshConfig)
 	cmd := fmt.Sprintf("docker kill %s", data.ContainerID[:12])
 	log.Println("cmd ", cmd)
-	combo, err := session.CombinedOutput(cmd)
+	combo, err := execCmd(data.SshHost, port, data, cmd)
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -167,7 +141,6 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 	db := config.GetDB()
 	var data []models.Application
 	db.Where("uid = ?", fmt.Sprintf("%d", uid)).Find(&data)
-	log.Println("data", data)
 
 	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(data), len(data))
 	for i := range data {
@@ -176,10 +149,122 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 			Token:        data[i].Token,
 			InstanceName: data[i].InstanceName,
 			AppType:      data[i].AppType,
+			SSHHost:      data[i].SshHost,
+			SSHPassword:  data[i].SshPassword,
+			SSHPort:      data[i].SshPort,
+			SSHUser:      data[i].SshUser,
+			Port:         data[i].Port,
 		}
 		payload[i] = tmp
 	}
 	return application.NewListApplicationInstanceOK().WithPayload(payload)
+}
+
+func UpdateApplicationInstance(params application.UpdateApplicationInstanceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return application.NewCreateApplicationInstanceUnauthorized()
+	}
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	body := params.ReqBody
+	indexStock, has := tokenIndex.Load(body.Token)
+	db := config.GetDB()
+	var index uint
+	data := new(models.Application)
+	if has {
+		index = indexStock.(uint)
+		db.First(&data, index)
+	} else {
+		db.Where("token = ?", body.Token).First(data)
+	}
+
+	cmd := fmt.Sprintf("docker kill %s", data.ContainerID[:12])
+	log.Println("cmd ", cmd)
+	port, err := strconv.Atoi(data.SshPort)
+	combo, err := execCmd(data.SshHost, port, data, cmd)
+
+	if err != nil {
+		log.Println("remote run cmd failed", cmd, err)
+		return application.NewUpdateApplicationInstanceForbidden()
+	}
+	log.Println("cmd output:", string(combo))
+	log.Println("index :", index)
+
+	tokenIndex.Delete(body.Token)
+	db.Delete(data)
+
+	myuuid, err := uuid.NewV4()
+	if err != nil {
+		log.Println("Generating UUIDs error", err)
+	}
+	token := fmt.Sprintf("%x", sha256.Sum256(myuuid.Bytes()))
+	log.Println("token", token)
+	containerName := "jupyterlab-" + token
+	containerPort := body.Port
+	containerToken := token
+	cmd = fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
+
+	//run remote shell
+	combo, err = execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
+		SshPassword: body.SSHPassword,
+		SshUser:     body.SSHUser,
+	}, cmd)
+
+	if err != nil {
+		log.Println("remote run cmd failed", cmd, err)
+		return application.NewUpdateApplicationInstanceForbidden()
+	}
+	log.Println("cmd output:", string(combo))
+	sshPortStr := strconv.Itoa(int(body.SSHPort))
+	row := map[string]string{
+		"link":          fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
+		"containerID":   string(combo),
+		"containerName": containerName,
+		"instanceName":  body.InstanceName,
+		"token":         token,
+		"uid":           strconv.Itoa(int(uid)),
+		"sshHost":       body.SSHHost,
+		"sshUser":       body.SSHUser,
+		"sshPassword":   body.SSHPassword,
+		"sshType":       sshType,
+		"sshKeyPath":    sshKeyPath,
+		"sshPort":       sshPortStr,
+		"appType":       body.AppType,
+		"port":          containerPort,
+	}
+	data = new(models.Application)
+	if err := mapstructure.Decode(row, &data); err != nil {
+		log.Println("map to struct error ", err)
+	}
+	if err := db.Create(&data).Error; err != nil {
+		log.Println("db install error", err)
+	}
+	log.Println("row Id ", data.ID)
+	tokenIndex.Store(token, data.ID)
+
+	result := &application.UpdateApplicationInstanceOKBody{
+		Link:  fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
+		Token: token,
+	}
+	return application.NewUpdateApplicationInstanceOK().WithPayload(result)
+
+}
+
+func execCmd(sshHost string, sshPort int, data *models.Application, cmd string) ([]byte, error) {
+	sshConfig := &ssh.ClientConfig{
+		Timeout:         time.Second,
+		User:            data.SshUser,
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+
+	if sshType == "password" {
+		sshConfig.Auth = []ssh.AuthMethod{ssh.Password(data.SshPassword)}
+	} else {
+		sshConfig.Auth = []ssh.AuthMethod{publicKeyAuthFunc(data.SshPassword)}
+	}
+
+	session := getSession(sshHost, sshPort, sshConfig)
+	log.Println("cmd ", cmd)
+	return session.CombinedOutput(cmd)
 }
 
 func publicKeyAuthFunc(kPath string) ssh.AuthMethod {

@@ -72,6 +72,21 @@ type ListApplicationInstanceOKBodyItems0 struct {
 	// link
 	Link string `json:"link,omitempty"`
 
+	// port
+	Port string `json:"port,omitempty"`
+
+	// ssh host
+	SSHHost string `json:"sshHost,omitempty"`
+
+	// ssh password
+	SSHPassword string `json:"sshPassword,omitempty"`
+
+	// ssh port
+	SSHPort string `json:"sshPort,omitempty"`
+
+	// ssh user
+	SSHUser string `json:"sshUser,omitempty"`
+
 	// token
 	Token string `json:"token,omitempty"`
 }
