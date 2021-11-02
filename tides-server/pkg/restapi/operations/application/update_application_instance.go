@@ -63,32 +63,29 @@ func (o *UpdateApplicationInstance) ServeHTTP(rw http.ResponseWriter, r *http.Re
 // swagger:model UpdateApplicationInstanceBody
 type UpdateApplicationInstanceBody struct {
 
-	// g p utype
-	GPUtype string `json:"GPUtype,omitempty"`
-
-	// machine type
-	MachineType string `json:"MachineType,omitempty"`
-
-	// boot disk
-	BootDisk string `json:"bootDisk,omitempty"`
-
-	// env
-	Env string `json:"env,omitempty"`
-
-	// id
-	ID int64 `json:"id,omitempty"`
+	// app type
+	AppType string `json:"appType,omitempty"`
 
 	// instance name
 	InstanceName string `json:"instanceName,omitempty"`
 
-	// licences
-	Licences string `json:"licences,omitempty"`
+	// port
+	Port string `json:"port,omitempty"`
 
-	// proxy
-	Proxy string `json:"proxy,omitempty"`
+	// ssh host
+	SSHHost string `json:"sshHost,omitempty"`
 
-	// type
-	Type string `json:"type,omitempty"`
+	// ssh password
+	SSHPassword string `json:"sshPassword,omitempty"`
+
+	// ssh port
+	SSHPort int64 `json:"sshPort,omitempty"`
+
+	// ssh user
+	SSHUser string `json:"sshUser,omitempty"`
+
+	// token
+	Token string `json:"token,omitempty"`
 }
 
 // Validate validates this update application instance body
@@ -119,13 +116,53 @@ func (o *UpdateApplicationInstanceBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+// UpdateApplicationInstanceForbiddenBody update application instance forbidden body
+//
+// swagger:model UpdateApplicationInstanceForbiddenBody
+type UpdateApplicationInstanceForbiddenBody struct {
+
+	// msg
+	Msg string `json:"msg,omitempty"`
+}
+
+// Validate validates this update application instance forbidden body
+func (o *UpdateApplicationInstanceForbiddenBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update application instance forbidden body based on context it is used
+func (o *UpdateApplicationInstanceForbiddenBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateApplicationInstanceForbiddenBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateApplicationInstanceForbiddenBody) UnmarshalBinary(b []byte) error {
+	var res UpdateApplicationInstanceForbiddenBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 // UpdateApplicationInstanceOKBody update application instance o k body
 //
 // swagger:model UpdateApplicationInstanceOKBody
 type UpdateApplicationInstanceOKBody struct {
 
-	// id
-	ID int64 `json:"id,omitempty"`
+	// link
+	Link string `json:"link,omitempty"`
+
+	// token
+	Token string `json:"token,omitempty"`
 }
 
 // Validate validates this update application instance o k body
