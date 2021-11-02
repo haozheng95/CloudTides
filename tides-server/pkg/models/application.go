@@ -17,4 +17,5 @@ type Application struct {
 	SshKeyPath    string `json:"sshKeyPath,omitempty"`
 	SshPort       string `json:"sshPort,omitempty"`
 	AppType       string `json:"appType,omitempty"`
+	Port          string `json:"port,omitempty"`
 }
