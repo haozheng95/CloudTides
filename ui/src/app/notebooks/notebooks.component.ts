@@ -61,7 +61,7 @@ export class NotebooksComponent implements OnInit {
     const str = 'HOME.APPLICATION.Create'
     data.sshPort = +data.sshPort
     if (this.nb.createInstanceTitle === str) {
-      this.nb.createNewApp(data).subscribe(data => {
+      this.nb.createNewApp(data).subscribe((data:CreateData) => {
         this.flag = false
         this.noteBook.createInstanceFlag = false
         this.instanceForm.setValue({
@@ -73,6 +73,7 @@ export class NotebooksComponent implements OnInit {
           sshPort: '',
           sshUser: ''
         })
+        window.open('http://' + data.link, "_blank")
       },
       err => {
         console.log('err', err);
@@ -91,4 +92,8 @@ export class NotebooksComponent implements OnInit {
       })
     }
   }
+}
+interface CreateData {
+  link: string
+  token: string
 }

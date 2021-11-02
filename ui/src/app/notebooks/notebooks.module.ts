@@ -8,12 +8,14 @@ import { ListComponent } from './list/list.component'
 import { RouteReuseStrategyService } from '@tide-shared/service/route-reuse-stratety.service'
 import { RouteReuseStrategy } from '@angular/router';
 import { CreateInsranceComponent } from './create-insrance/create-insrance.component';
+import { LogComponent } from './log/log.component';
 @NgModule({
   declarations: [
     // ...declarations
     NotebooksComponent,
     ListComponent,
-    CreateInsranceComponent
+    CreateInsranceComponent,
+    LogComponent
   ],
   providers: [
     NotebooksService,

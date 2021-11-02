@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NotebooksComponent } from './notebooks.component';
 import { ListComponent } from './list/list.component'
 import { CreateInsranceComponent } from './create-insrance/create-insrance.component'
+import { LogComponent } from './log/log.component'
 const routes: Routes = [
   {
     path: '',
@@ -22,6 +23,10 @@ const routes: Routes = [
         data: {
           keep: true
         }
+      },
+      {
+        path: 'log',
+        component: LogComponent
       },
       {
         path: 'newInstance',
