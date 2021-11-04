@@ -19,7 +19,7 @@
   <clr-dg-column [clrDgField]="'name'">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</clr-dg-column>
   <clr-dg-column>LOGO</clr-dg-column>
   <clr-dg-column>{{'HOME.APPLICATION.LIST.OPERATE' | translate}}</clr-dg-column>
-  <clr-dg-row class="clr-align-items-center" *clrDgItems="let item of appList" [clrDgItem]="item">
+  <clr-dg-row class="clr-align-items-center" *clrDgItems="let item of nd.appList" [clrDgItem]="item">
     <clr-dg-cell>{{item.instanceName}}</clr-dg-cell>
     <clr-dg-cell>
       <img width="100px" height="50px" [src]="item.logo" alt="">
@@ -28,7 +28,7 @@
       <clr-icon class="icon" (click)="toJupyter(item)" shape="play" solid></clr-icon>
       <clr-icon class="icon" (click)="modifyApp(item)" shape="form"></clr-icon>
       <clr-icon class="icon" shape="trash"(click)="deleteApp(item)" ></clr-icon>
-      <clr-icon shape="justify-text"></clr-icon>
+      <clr-icon shape="justify-text" (click)="getCurrentAppLogs(item)"></clr-icon>
     </clr-dg-cell>
   </clr-dg-row>
 </clr-datagrid>

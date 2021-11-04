@@ -258,6 +258,16 @@
       }
 
     },
+    "LOG": {
+      "NO": "No",
+      "USER": "User",
+      "EXECUTIONTIME": "Execution time",
+      "METHOD": "Method",
+      "IP": "Ip",
+      "RESULT": "Result",
+      "SUCCESS": "Success",
+      "FAIL": "Fail"
+    },
     "VALIDATION": {
       "REQUIRED": "This is required"
     },

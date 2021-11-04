@@ -34,11 +34,12 @@ export class NotebooksComponent implements OnInit {
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
-    appType: [''],
+    appType: ['jupyter'],
     sshHost: [''],
     sshPassword: [''],
     sshPort: [''],
-    sshUser: ['']
+    sshUser: [''],
+    token: ['']
   })
   cancel () {    
     this.noteBook.createInstanceFlag = false
@@ -49,18 +50,21 @@ export class NotebooksComponent implements OnInit {
       sshHost: '',
       sshPassword: '',
       sshPort: '',
-      sshUser: ''
+      sshUser: '',
+      token: ''
     })
     this.errorMsg = ''
     this.flag = false
 
   }
-  create (data) {
+  create (form) {
     this.errorMsg = ''
     this.flag = true
     const str = 'HOME.APPLICATION.Create'
+    const data = form.getRawValue()
     data.sshPort = +data.sshPort
     if (this.nb.createInstanceTitle === str) {
+      delete data.token
       this.nb.createNewApp(data).subscribe((data:CreateData) => {
         this.flag = false
         this.noteBook.createInstanceFlag = false
@@ -85,6 +89,7 @@ export class NotebooksComponent implements OnInit {
       this.nb.modifyApp(data).subscribe(data => {
         this.flag = false
         this.noteBook.createInstanceFlag = false
+        this.nb.getApplictionList()
       },
       err => {
         this.errorMsg = err.msg

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { NotebooksService } from '../notebooks.service'
 @Component({
   selector: 'tide-log',
   templateUrl: './log.component.html',
@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LogComponent implements OnInit {
 
-  constructor() { }
+  constructor(public nd: NotebooksService) {
+    this.users = this.nd.appLogs
+  }
 
   ngOnInit(): void {
   }

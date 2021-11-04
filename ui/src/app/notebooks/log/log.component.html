@@ -1,14 +1,15 @@
 <div class="log-wrap">
-  <button class="btn btn-primary">
+  <button class="btn btn-primary" routerLink="/cloudtides/notebooks/list">
     <clr-icon shape="undo"></clr-icon>
     返回
   </button>
   <clr-datagrid>
-    <clr-dg-column>行号</clr-dg-column>
-    <clr-dg-column>User ID</clr-dg-column>
-    <clr-dg-column>Name</clr-dg-column>
-    <clr-dg-column>Creation date</clr-dg-column>
-    <clr-dg-column>Favorite color</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.NO'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.USER'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.METHOD'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.EXECUTIONTIME'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.IP'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'HOME.LOG.RESULT'|translate}}</clr-dg-column>
   
     <clr-dg-row *ngFor="let user of users, index as i">
       <clr-dg-cell>{{i+1}}</clr-dg-cell>
@@ -16,6 +17,10 @@
       <clr-dg-cell>{{user.name}}</clr-dg-cell>
       <clr-dg-cell>{{user.creation | date}}</clr-dg-cell>
       <clr-dg-cell>{{user.color}}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="label label-success">{{'HOME.LOG.SUCCESS'|translate}}</span>
+        <span class="label label-danger">{{'HOME.LOG.FAIL'|translate}}</span>
+      </clr-dg-cell>
     </clr-dg-row>
   
     <clr-dg-footer>{{users.length}} users</clr-dg-footer>

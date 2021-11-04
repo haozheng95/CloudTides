@@ -13,6 +13,8 @@ export class NotebooksService {
   constructor(private readonly http: HttpClient,private readonly router: Router, private fb: FormBuilder) { }
   createInstanceFlag:boolean = false
   modifiable = true
+  appList:AppModel[] = []
+  appLogs: any[] = []
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -20,7 +22,8 @@ export class NotebooksService {
     sshHost: [''],
     sshPassword: [''],
     sshPort: [''],
-    sshUser: ['']
+    sshUser: [''],
+    token: ['']
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
   getAppList () {
@@ -60,4 +63,40 @@ export class NotebooksService {
       tap(data => {})
     )
   }
+  getApplictionList () {
+    this.appList = [] 
+    this.getAppList().subscribe((data:AppModel[]) => {
+      data.forEach(el => {
+        const port = el.link.split(':')[1]
+        el.port = port.split('/')[0]
+        el.logo = 'assets/img/jupyter.svg',
+        // el.link = 'http://' + el.link.split('?')[0]
+        console.log('link', el);
+        
+        this.appList.push(el)
+      })
+    })
+  }
+  getAppLogs (token: string) {
+    return this.http.get('',).pipe(
+      tap(data => {})
+    ).subscribe(
+      (data: any[]) => {
+        this.appLogs = data
+      }
+    )
+  }
+}
+interface AppModel {
+  instanceName: string
+  link: string
+  token: string
+  logo: string
+  port: string,
+  appType: string,
+  sshHost: string,
+  sshPassword: string
+  sshPort: string
+  sshUser: string
+
 }

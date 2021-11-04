@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NotebooksService } from '../notebooks.service'
 @Component({
@@ -7,32 +8,12 @@ import { NotebooksService } from '../notebooks.service'
 })
 export class ListComponent implements OnInit {
 
-  constructor(private nd: NotebooksService) {
+  constructor(public nd: NotebooksService, private router:Router) {
   }
 
   ngOnInit(): void {
-    this.getApplictionList()
+    this.nd.getApplictionList()
   }
-  getApplictionList () {
-    this.appList = [] 
-    this.nd.getAppList().subscribe((data:AppModel[]) => {
-      data.forEach(el => {
-        el.logo = 'assets/img/jupyter.svg',
-        el.link = 'http://' + el.link.split('?')[0]
-        console.log('link', el);
-        
-        this.appList.push(el)
-      })
-    })
-  }
-  appList:AppModel[] = [
-    // {
-    //   instanceName: 'Jupyter',
-    //   logo: 'assets/img/jupyter.svg',
-    //   token: '1dc53b34f46aff0f91f8c65ec96f55eb3057d3770e2253b8',
-    //   link: "http://120.133.15.12:8888/lab"
-    // }
-  ]
   selected= 'selected'
   sureDeleteFalg = false
   filterSearchValue: string = ''
@@ -67,18 +48,24 @@ export class ListComponent implements OnInit {
       sshHost: app.sshHost,
       sshPassword: app.sshPassword,
       sshPort: app.sshPort,
-      sshUser: app.sshUser
+      sshUser: app.sshUser,
+      token: app.token
     })
+    this.nd.instanceForm.get('appType').disable({onlySelf: false, emitEvent: false})
   }
   deleteApp (app: AppModel) {
     this.sureDeleteFalg = true
     this.token = app.token
   }
+  getCurrentAppLogs (app: AppModel) {
+    this.nd.getAppLogs(app.token)
+    this.router.navigate(['/cloudtides/notebooks/log'])
+  }
   sure () {
     this.nd.deleteApp(this.token).subscribe(data => {
       console.log(data);
       this.sureDeleteFalg = false
-      this.getApplictionList()
+      this.nd.getApplictionList()
     })
   }
   cancel () {
