@@ -38,8 +38,8 @@ export class LoginService {
         this.storePwReset(this.session.pwReset);
         this.storeUsername(this.session.username);
         // this.storePwReset(this.session.pwReset);
-        console.log(localStorage.getItem("role"));
-        console.log(this.session.pwReset);
+        // console.log(localStorage.getItem("role"));
+        // console.log(this.session.pwReset);
         
         // if (this.session.pwReset == true) {
         //   console.log("inside");

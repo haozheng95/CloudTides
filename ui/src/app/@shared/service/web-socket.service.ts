@@ -56,8 +56,6 @@ export class WebSocketService {
     this.webSocket.onmessage = (e) => this.onMessage(e);
     // 连接关闭
     this.webSocket.onclose = (e) => {
-      console.log('e', e);
-      
       this.onClose(e)
     };
     // 异常
