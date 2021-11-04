@@ -319,6 +319,18 @@ func (ws WsHandler) WriteResponse(w http.ResponseWriter, r runtime.Producer) {
 	if err != nil {
 		log.Println("websocket error ", err)
 	}
+
+	go func() {
+		for {
+			code, text, err := conn.ReadMessage()
+			log.Printf("code %d, text %s, err %s", code, string(text), err)
+			if err != nil {
+				return
+			}
+		}
+
+	}()
+
 	for {
 		data := `
  {
@@ -336,6 +348,7 @@ func (ws WsHandler) WriteResponse(w http.ResponseWriter, r runtime.Producer) {
 		err = conn.WriteMessage(websocket.TextMessage, []byte(data))
 		if err != nil {
 			log.Println("websocket write error ", err)
+			return
 		}
 	}
 }
