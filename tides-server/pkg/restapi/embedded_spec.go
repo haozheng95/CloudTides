@@ -231,6 +231,58 @@ func init() {
       }
     },
     "/application/instance/{token}": {
+      "get": {
+        "description": "watch application instance logs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "watchApplicationInstanceLogs",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "leve": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
       "delete": {
         "description": "delete application instance",
         "produces": [
@@ -3873,6 +3925,37 @@ func init() {
           }
         }
       }
+    },
+    "/ws/application/instance/{token}": {
+      "get": {
+        "description": "Websocket Watch application instance logs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "WsWatchApplicationInstanceLogs",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -4205,6 +4288,41 @@ func init() {
       }
     },
     "/application/instance/{token}": {
+      "get": {
+        "description": "watch application instance logs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "watchApplicationInstanceLogs",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WatchApplicationInstanceLogsOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
       "delete": {
         "description": "delete application instance",
         "produces": [
@@ -7492,6 +7610,37 @@ func init() {
           }
         }
       }
+    },
+    "/ws/application/instance/{token}": {
+      "get": {
+        "description": "Websocket Watch application instance logs",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "WsWatchApplicationInstanceLogs",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -8185,6 +8334,26 @@ func init() {
         },
         "totalRAM": {
           "type": "number"
+        }
+      }
+    },
+    "WatchApplicationInstanceLogsOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "leve": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string"
         }
       }
     }

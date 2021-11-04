@@ -49,10 +49,17 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.ApplicationWsWatchApplicationInstanceLogsHandler = application.WsWatchApplicationInstanceLogsHandlerFunc(handler.WsWatchApplicationInstanceLogs)
+
 	api.ApplicationCreateApplicationInstanceHandler = application.CreateApplicationInstanceHandlerFunc(handler.CreateApplicationInstance)
+
 	api.ApplicationDeleteApplicationInstanceHandler = application.DeleteApplicationInstanceHandlerFunc(handler.DeleteApplicationInstance)
+
 	api.ApplicationListApplicationInstanceHandler = application.ListApplicationInstanceHandlerFunc(handler.ListApplicationInstance)
+
 	api.ApplicationUpdateApplicationInstanceHandler = application.UpdateApplicationInstanceHandlerFunc(handler.UpdateApplicationInstance)
+
+	api.ApplicationWatchApplicationInstanceLogsHandler = application.WatchApplicationInstanceLogsHandlerFunc(handler.WatchApplicationInstanceLogs)
 
 	api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(handler.AddResourceUsageHandler)
 

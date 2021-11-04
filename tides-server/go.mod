@@ -11,9 +11,7 @@ require (
 	github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-martini/martini v0.0.0-20170121215854-22fa46961aab // indirect
-	github.com/go-openapi/analysis v0.20.1 // indirect
 	github.com/go-openapi/errors v0.20.1
-	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/loads v0.20.3
 	github.com/go-openapi/runtime v0.20.0
 	github.com/go-openapi/spec v0.20.4
@@ -23,15 +21,15 @@ require (
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/goods/httpbuf v0.0.0-20120503183857-5709e9bb814c // indirect
+	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20211004101933-6b77bd30416d // indirect
+	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-version v1.3.0 // indirect
 	github.com/interpose/middleware v0.0.0-20150216143757-05ed56ed52fa // indirect
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/justinas/nosurf v1.1.1 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lib/pq v1.10.3
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -44,8 +42,6 @@ require (
 	github.com/sethvargo/go-password v0.2.0
 	github.com/shopspring/decimal v1.3.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/smartystreets/assertions v1.2.1 // indirect
-	github.com/smartystreets/goconvey v1.6.6 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/vmware/go-vcloud-director/v2 v2.13.0
 	github.com/vmware/govmomi v0.26.1
@@ -53,7 +49,6 @@ require (
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/net v0.0.0-20211013171255-e13a2654a71e
 	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
