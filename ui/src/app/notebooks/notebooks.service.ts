@@ -2,19 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@tide-environments/environment';
 import { Router } from '@angular/router'
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms'
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
+import { WebSocketService } from '@tide-shared/service/web-socket.service'
 @Injectable({
   providedIn: 'root'
 })
 export class NotebooksService {
 
-  constructor(private readonly http: HttpClient,private readonly router: Router, private fb: FormBuilder) { }
+  constructor(private readonly http: HttpClient,private readonly router: Router, private fb: FormBuilder,public ws:WebSocketService) { }
   createInstanceFlag:boolean = false
   modifiable = true
   appList:AppModel[] = []
-  appLogs: any[] = []
+  appLogs: LogModel[] = []
+  currentToken = ''
+  loading = true
+  wsUrl='ws://localhost:8033/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -78,13 +82,34 @@ export class NotebooksService {
     })
   }
   getAppLogs (token: string) {
-    return this.http.get('',).pipe(
+    this.currentToken = token
+    return this.http.get(environment.apiPrefix + '/application/instance/'+ token,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      }
+    }).pipe(
       tap(data => {})
     ).subscribe(
-      (data: any[]) => {
+      (data: any[]) => {        
         this.appLogs = data
+        this.loading = false
+        this.buildWS(token)
       }
     )
+  }
+  unsub: any
+  buildWS (token) {
+    this.ws.connect(this.wsUrl+token)
+    this.unsub = this.ws.messageSubject.subscribe(
+      data => {
+        // 剔除第一条，加入最新一条
+        this.appLogs.shift()
+        this.appLogs.push(data)
+      }
+    )
+  }
+  closeWs () {
+    this.ws.onClose(false)
   }
 }
 interface AppModel {
@@ -99,4 +124,10 @@ interface AppModel {
   sshPort: string
   sshUser: string
 
+}
+interface LogModel {
+  content: string
+  date: string
+  leve: string
+  source: string
 }

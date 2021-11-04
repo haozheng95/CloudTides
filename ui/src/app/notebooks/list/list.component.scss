@@ -51,3 +51,10 @@
     }
   }
 }
+::ng-deep .log-wrap{
+  .datagrid-host {
+    .datagrid-outer-wrapper {
+      height: 80vh;
+    }
+  }
+}

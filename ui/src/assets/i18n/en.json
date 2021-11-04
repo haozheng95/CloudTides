@@ -259,14 +259,13 @@
 
     },
     "LOG": {
+      "BACK": "Back",
       "NO": "No",
-      "USER": "User",
-      "EXECUTIONTIME": "Execution time",
-      "METHOD": "Method",
-      "IP": "Ip",
-      "RESULT": "Result",
-      "SUCCESS": "Success",
-      "FAIL": "Fail"
+      "CONTENT": "Content",
+      "DATE": "Date",
+      "TIME": "Time",
+      "LEVE": "Level",
+      "SOURCE": "Source"
     },
     "VALIDATION": {
       "REQUIRED": "This is required"

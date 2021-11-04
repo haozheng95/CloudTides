@@ -1,20 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy } from '@angular/core';
 import { NotebooksService } from '../notebooks.service'
+import { Router } from '@angular/router'
 @Component({
   selector: 'tide-log',
   templateUrl: './log.component.html',
   styleUrls: ['./log.component.scss']
 })
-export class LogComponent implements OnInit {
+export class LogComponent implements OnInit,OnDestroy {
 
-  constructor(public nd: NotebooksService) {
-    this.users = this.nd.appLogs
+  constructor(public nd: NotebooksService,private router:Router) {    
   }
-
+  ngOnDestroy(): void {
+    this.nd.closeWs()
+  }
   ngOnInit(): void {
+    if (this.nd.currentToken) {
+      this.nd.getAppLogs(this.nd.currentToken)
+    } else {
+      this.router.navigate(['/cloudtides/notebooks/list'])
+    }
   }
-  users=[
-    {},
-    {}
-  ]
+  back () {
+    this.nd.closeWs()
+    this.router.navigate(['/cloudtides/notebooks/list'])
+  }
 }

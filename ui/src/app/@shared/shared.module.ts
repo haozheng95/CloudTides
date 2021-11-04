@@ -4,7 +4,7 @@ import { BaseModule } from './base.module';
 import { sharedComponents } from './component';
 import { sharedPipes } from './pipe';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { WebSocketService } from './service/web-socket.service'
 @NgModule({
   imports: [
     BaseModule,
@@ -25,7 +25,9 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [],
+      providers: [
+        WebSocketService
+      ],
     };
   }
 

@@ -270,14 +270,13 @@
       "REQUIRED": "当前项是必填项"
     },
     "LOG": {
+      "BACK": "返回",
       "NO": "行号",
-      "USER": "用户",
-      "EXECUTIONTIME": "执行时间",
-      "METHOD": "请求方法",
-      "IP": "IP地址",
-      "RESULT": "请求结果",
-      "SUCCESS": "成功",
-      "FAIL": "失败"
+      "CONTENT": "内容",
+      "DATE": "日期",
+      "TIME": "时间",
+      "LEVE": "级别",
+      "SOURCE": "来源"
     },
     "PRODUCT_NAME": "云汐",
     "PROFILE": "个人信息",
