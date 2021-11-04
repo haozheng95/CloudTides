@@ -3,13 +3,18 @@ package handler
 import (
 	"crypto/sha256"
 	"fmt"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gofrs/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"tides-server/pkg/config"
 	"tides-server/pkg/models"
@@ -247,6 +252,99 @@ func UpdateApplicationInstance(params application.UpdateApplicationInstanceParam
 	}
 	return application.NewUpdateApplicationInstanceOK().WithPayload(result)
 
+}
+
+func WatchApplicationInstanceLogs(params application.WatchApplicationInstanceLogsParams) middleware.Responder {
+
+	if !VerifyUser(params.HTTPRequest) {
+		return application.NewCreateApplicationInstanceUnauthorized()
+	}
+
+	indexStock, has := tokenIndex.Load(params.Token)
+	db := config.GetDB()
+	var index uint
+	data := new(models.Application)
+	if has {
+		index = indexStock.(uint)
+		db.First(&data, index)
+	} else {
+		db.Where("token = ?", params.Token).First(data)
+	}
+
+	cmd := fmt.Sprintf("docker logs -n 200 %s", data.ContainerID[:12])
+	port, _ := strconv.Atoi(data.SshPort)
+	//run remote shell
+	combo, err := execCmd(data.SshHost, port, data, cmd)
+	if err != nil {
+		log.Println("run remote shell error", err)
+	}
+	texts := strings.Split(string(combo), "\n")
+	if len(texts) > 0 {
+		texts = texts[:len(texts)-1]
+	}
+	payload := make([]*application.WatchApplicationInstanceLogsOKBodyItems0, len(texts), len(texts))
+	for i, line := range texts {
+		section := strings.Split(line, "] ")
+		payload[i] = new(application.WatchApplicationInstanceLogsOKBodyItems0)
+		if len(section) > 1 {
+			payload[i].Content = section[1]
+			row := strings.Split(section[0], " ")
+			payload[i].Leve = strings.Replace(row[0], "[", "", 1)
+			payload[i].Date = row[1]
+			payload[i].Time = row[2]
+			payload[i].Source = row[3]
+		} else {
+			payload[i].Content = section[0]
+			payload[i].Leve = "None"
+			payload[i].Date = "None"
+			payload[i].Time = "None"
+			payload[i].Source = "None"
+		}
+
+	}
+	return application.NewWatchApplicationInstanceLogsOK().WithPayload(payload)
+}
+
+type WsHandler struct {
+	Request *http.Request
+}
+
+func (ws WsHandler) WriteResponse(w http.ResponseWriter, r runtime.Producer) {
+
+	upgrader := websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {
+		return true
+	}}
+	conn, err := upgrader.Upgrade(w, ws.Request, nil)
+	defer conn.Close()
+	if err != nil {
+		log.Println("websocket error ", err)
+	}
+	for {
+		data := `
+ {
+        "content": "/usr/local/bin/start-notebook.sh: running hooks in /usr/local/bin/before-notebook.d",
+        "date": "None",
+        "leve": "None",
+        "source": "None",
+        "time": "None"
+    }
+`
+		t := rand.Int63n(3)
+		log.Println(t)
+		time.Sleep(time.Second * time.Duration(t))
+
+		err = conn.WriteMessage(websocket.TextMessage, []byte(data))
+		if err != nil {
+			log.Println("websocket write error ", err)
+		}
+	}
+}
+
+func WsWatchApplicationInstanceLogs(params application.WsWatchApplicationInstanceLogsParams) middleware.Responder {
+	wsStruct := &WsHandler{
+		Request: params.HTTPRequest,
+	}
+	return wsStruct
 }
 
 func execCmd(sshHost string, sshPort int, data *models.Application, cmd string) ([]byte, error) {
