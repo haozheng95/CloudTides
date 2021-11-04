@@ -2458,7 +2458,62 @@ paths:
               msg:
                 type: string
 
+  /ws/application/instance/{token}:
+    get:
+      operationId: 'WsWatchApplicationInstanceLogs'
+      description: 'Websocket Watch application instance logs'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+
   /application/instance/{token}:
+    get:
+      operationId: 'watchApplicationInstanceLogs'
+      description: 'watch application instance logs'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                leve:
+                  type: string
+                date:
+                  type: string
+                time:
+                  type: string
+                source:
+                  type: string
+                content:
+                  type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
     delete:
       operationId: 'deleteApplicationInstance'
       description: 'delete application instance'

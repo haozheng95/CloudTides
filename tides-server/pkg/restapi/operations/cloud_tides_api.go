@@ -60,6 +60,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		UserModifyUserHandler: user.ModifyUserHandlerFunc(func(params user.ModifyUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ModifyUser has not yet been implemented")
 		}),
+		ApplicationWsWatchApplicationInstanceLogsHandler: application.WsWatchApplicationInstanceLogsHandlerFunc(func(params application.WsWatchApplicationInstanceLogsParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.WsWatchApplicationInstanceLogs has not yet been implemented")
+		}),
 		ResourceActivateResourceHandler: resource.ActivateResourceHandlerFunc(func(params resource.ActivateResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ActivateResource has not yet been implemented")
 		}),
@@ -240,6 +243,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceValidateVsphereResourceHandler: resource.ValidateVsphereResourceHandlerFunc(func(params resource.ValidateVsphereResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ValidateVsphereResource has not yet been implemented")
 		}),
+		ApplicationWatchApplicationInstanceLogsHandler: application.WatchApplicationInstanceLogsHandlerFunc(func(params application.WatchApplicationInstanceLogsParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.WatchApplicationInstanceLogs has not yet been implemented")
+		}),
 	}
 }
 
@@ -281,6 +287,8 @@ type CloudTidesAPI struct {
 
 	// UserModifyUserHandler sets the operation handler for the modify user operation
 	UserModifyUserHandler user.ModifyUserHandler
+	// ApplicationWsWatchApplicationInstanceLogsHandler sets the operation handler for the ws watch application instance logs operation
+	ApplicationWsWatchApplicationInstanceLogsHandler application.WsWatchApplicationInstanceLogsHandler
 	// ResourceActivateResourceHandler sets the operation handler for the activate resource operation
 	ResourceActivateResourceHandler resource.ActivateResourceHandler
 	// OrgAddOrgHandler sets the operation handler for the add org operation
@@ -401,6 +409,8 @@ type CloudTidesAPI struct {
 	ResourceValidateVcdResourceHandler resource.ValidateVcdResourceHandler
 	// ResourceValidateVsphereResourceHandler sets the operation handler for the validate vsphere resource operation
 	ResourceValidateVsphereResourceHandler resource.ValidateVsphereResourceHandler
+	// ApplicationWatchApplicationInstanceLogsHandler sets the operation handler for the watch application instance logs operation
+	ApplicationWatchApplicationInstanceLogsHandler application.WatchApplicationInstanceLogsHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -483,6 +493,9 @@ func (o *CloudTidesAPI) Validate() error {
 
 	if o.UserModifyUserHandler == nil {
 		unregistered = append(unregistered, "user.ModifyUserHandler")
+	}
+	if o.ApplicationWsWatchApplicationInstanceLogsHandler == nil {
+		unregistered = append(unregistered, "application.WsWatchApplicationInstanceLogsHandler")
 	}
 	if o.ResourceActivateResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ActivateResourceHandler")
@@ -664,6 +677,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceValidateVsphereResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ValidateVsphereResourceHandler")
 	}
+	if o.ApplicationWatchApplicationInstanceLogsHandler == nil {
+		unregistered = append(unregistered, "application.WatchApplicationInstanceLogsHandler")
+	}
 
 	if len(unregistered) > 0 {
 		return fmt.Errorf("missing registration: %s", strings.Join(unregistered, ", "))
@@ -758,6 +774,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/user/{id}"] = user.NewModifyUser(o.context, o.UserModifyUserHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/ws/application/instance/{token}"] = application.NewWsWatchApplicationInstanceLogs(o.context, o.ApplicationWsWatchApplicationInstanceLogsHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
@@ -998,6 +1018,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/resource/vsphere/validate"] = resource.NewValidateVsphereResource(o.context, o.ResourceValidateVsphereResourceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/application/instance/{token}"] = application.NewWatchApplicationInstanceLogs(o.context, o.ApplicationWatchApplicationInstanceLogsHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP
