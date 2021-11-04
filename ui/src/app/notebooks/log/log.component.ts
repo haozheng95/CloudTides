@@ -14,9 +14,7 @@ export class LogComponent implements OnInit,OnDestroy {
     this.nd.closeWs()
   }
   ngOnInit(): void {
-    if (this.nd.currentToken) {
-      this.nd.getAppLogs(this.nd.currentToken)
-    } else {
+    if (!this.nd.currentToken) {
       this.router.navigate(['/cloudtides/notebooks/list'])
     }
   }

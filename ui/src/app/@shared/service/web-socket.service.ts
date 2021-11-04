@@ -15,7 +15,7 @@ export class WebSocketService {
   reconnectSubscription = null;                   // 重连订阅对象
   runTimeSubscription;                            // 记录运行连接subscription
   runTimePeriod = 60 * 10000;                     // 记录运行连接时间
-
+  flag = true
   constructor() {
     this.messageSubject = new Subject();
     console.log('开始心跳检测');
@@ -55,7 +55,11 @@ export class WebSocketService {
     // 接收到消息
     this.webSocket.onmessage = (e) => this.onMessage(e);
     // 连接关闭
-    this.webSocket.onclose = (e) => this.onClose(e);
+    this.webSocket.onclose = (e) => {
+      console.log('e', e);
+      
+      this.onClose(e)
+    };
     // 异常
     this.webSocket.onerror = (e) => this.onError(e);
   }
@@ -73,7 +77,7 @@ export class WebSocketService {
       // 1.停止重连
       this.stopReconnect();
       // 2.重新开启心跳
-      this.heartCheckStart();
+      // this.heartCheckStart();
       // 3.重新开始计算运行时间
       this.calcRunTime();
     }
@@ -97,12 +101,15 @@ export class WebSocketService {
   public onClose(e) {
     console.log('连接关闭', e);
     this.connectSuccess = false;
-    this.webSocket.close();
-    if (e) {
-      // 关闭时开始重连
-      this.stopRunTime();
-      this.reconnect();
+    if (this.webSocket) {
+      this.webSocket.close(1000, 'close');
     }
+    if (typeof e === 'boolean') {
+      this.flag = e
+    }
+    // 关闭时开始重连
+    this.stopRunTime();
+    this.reconnect();
     // throw new Error('webSocket connection closed:)');
   }
 
@@ -134,12 +141,16 @@ export class WebSocketService {
     // 开始重连
     this.reconnectFlag = true;
     // 如果没能成功连接,则定时重连
-    this.reconnectSubscription = interval(this.reconnectPeriod).subscribe(async (val) => {
-      console.log(`重连:${val}次`);
-      const url = this.url;
-      // 重新连接
-      this.connect(url);
-    });
+    console.log('flag',this.flag);
+    
+    if (this.flag) {
+      this.reconnectSubscription = interval(this.reconnectPeriod).subscribe(async (val) => {
+        console.log(`重连:${val}次`);
+        const url = this.url;
+        // 重新连接
+        this.connect(url);
+      });
+    }
   }
 
   /**

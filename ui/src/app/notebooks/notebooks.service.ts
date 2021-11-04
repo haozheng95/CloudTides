@@ -100,6 +100,7 @@ export class NotebooksService {
   unsub: any
   buildWS (token) {
     this.ws.connect(this.wsUrl+token)
+    this.ws.flag = true
     this.unsub = this.ws.messageSubject.subscribe(
       data => {
         // 剔除第一条，加入最新一条
