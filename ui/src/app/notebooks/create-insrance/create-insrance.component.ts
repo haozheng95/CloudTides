@@ -22,9 +22,13 @@ export class CreateInsranceComponent implements OnInit {
   }
   openInstanceModal (type: string) {
     this.noteBook.createInstanceFlag = true
+    this.noteBook.currentModel = type
     this.noteBook.createInstanceTitle = 'HOME.APPLICATION.Create'
     this.noteBook.modifiable= true
     this.noteBook.instanceForm.get('appType').setValue(type)
+    this.noteBook.instanceForm.get('appType').disable({
+      onlySelf: true
+    })
   }
   toggleCurrentButton () {
     this.currentButton = !this.currentButton

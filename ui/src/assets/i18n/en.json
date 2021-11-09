@@ -217,10 +217,12 @@
     },
     "APPLICATION": {
       "APPLICATION": "application",
+      "INSTANCE": "instance",
+      "HISTORY": "historical operation record",
       "NEW_INSTANCE": {
-        "NEW_INSTANCE": "new application",
-        "NEW_APPLICATION_INSTANCE": "New application",
-        "MODIFY_APPLICATION_INSTANCE": "modify application",
+        "NEW_INSTANCE": "new instance",
+        "NEW_APPLICATION_INSTANCE": "New instance",
+        "MODIFY_APPLICATION_INSTANCE": "modify instance",
         "REGION": "Region",
         "INSTANCE_PROPERTIES": "Instance Properties",
         "SSHPASSWORD": "SSH Password",
@@ -229,7 +231,9 @@
         "PORT": "Port",
         "ADVANCED_OPTIONS": "ADVANCED_OPTIONS",
         "GPU_TYPE": "GPU type",
-        "APPTYPE": "Appliction Type"
+        "APPTYPE": "Appliction Type",
+        "VERSION":"Version",
+        "NUM":"Number of cpu"
       },
       "REFRESH": "REFRESH",
       "CREATE": "CREATE",
@@ -245,7 +249,7 @@
         "SEARCH": "Enter property name or value"
       },
       "LIST": {
-        "INSTANCE_LIST": "Appliction list",
+        "INSTANCE_LIST": "Instance list",
         "INSTANCE_NAME": "Instance Name",
         "ZONE": "Zone",
         "AUTO_UPGRADE": "Auto-upgrade",
@@ -254,6 +258,8 @@
         "SSHUSER": "SSH User",
         "LAST_MODIFIED": "Last modified",
         "OPERATE": "operate",
+        "CREATETIME": "Create time",
+        "TOTALRUNTIME": "Total run time",
         "PLACE_CONFIRM": "Are you sure you want to delete this application?"
       }
 

@@ -12,6 +12,10 @@
         <clr-icon shape="list" solid></clr-icon>
         {{'HOME.APPLICATION.LIST.INSTANCE_LIST' | translate}}
       </a>
+      <a clrVerticalNavLink routerLink="/cloudtides/notebooks/history" routerLinkActive="active">
+        <clr-icon shape="list" solid></clr-icon>
+        {{'HOME.APPLICATION.HISTORY' | translate}}
+      </a>
     </clr-vertical-nav>
   </div>
   <div class="note-container">
@@ -20,7 +24,7 @@
   <div class="modal" *ngIf="noteBook.createInstanceFlag">
     <div class="modal-dialog fadeDown in" role="dialog" aria-hidden="true">
       <div class="modal-content">
-        <p class="create-title">{{noteBook.createInstanceTitle | translate}} {{'HOME.APPLICATION.APPLICATION' | translate}}</p>
+        <p class="create-title">{{noteBook.createInstanceTitle | translate}} {{'HOME.APPLICATION.INSTANCE' | translate}}</p>
         <div class="alert alert-danger" *ngIf="errorMsg!== ''">
           <div class="alert-items" >
             <div class="alert-item static">
@@ -33,7 +37,7 @@
             </div>
           </div>
         </div>
-        <form class="clr-form clr-form-horizontal" [formGroup]="instanceForm" (ngSubmit)='create(instanceForm)'>
+        <form class="clr-form clr-form-horizontal" *ngIf="noteBook.currentModel === 'jupyter'" [formGroup]="jupyterInstanceForm" (ngSubmit)='create(jupyterInstanceForm)'>
           <div class="clr-form-control first-form-control">
             <clr-input-container>
               <label for="instanceName" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
@@ -93,7 +97,59 @@
             </div>
           </div>
         </form>
-        <div class="loding-warp" *ngIf="flag">
+        <form class="clr-form clr-form-horizontal" *ngIf="noteBook.currentModel === 'gromacs'" [formGroup]="gromacsInstanceForm" (ngSubmit)='create(gromacsInstanceForm)'>
+          <div class="clr-form-control first-form-control">
+            <clr-input-container>
+              <label for="instanceName" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
+              <input name="instanceName" id="instanceName" clrInput type="text" formControlName="instanceName"/>
+              <clr-control-error>{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+            </clr-input-container>
+          </div>
+          <div class="clr-form-control">
+          </div>
+          <div class="option">
+            <p class="option-title">
+              {{'HOME.APPLICATION.NEW_INSTANCE.INSTANCE_PROPERTIES' | translate}}
+              <clr-icon shape="pencil" solid></clr-icon>
+
+            </p>
+            <ul class="option-list">
+              <li>
+                <clr-input-container>
+                  <label class="clr-control-label" for="cpu">CPU</label>
+                  <input clrInput type="text" name="cpu" id="cpu" formControlName='cpu' required>
+                  <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+                </clr-input-container>
+              </li>
+              <li>
+                <label class="clr-control-label" for="version">{{'HOME.APPLICATION.NEW_INSTANCE.VERSION' | translate}}</label>
+                <input clrInput type="text" name="version" id="version" formControlName="version" required>
+              </li>
+              <li>
+                <label class="clr-control-label" for="num">{{'HOME.APPLICATION.NEW_INSTANCE.NUM' | translate}}</label>
+                <input clrInput type="text" name="num" id="num" formControlName="num" required>
+              </li>
+              <li>
+                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.APPTYPE' | translate}}</label>
+                <div class="clr-control-container">
+                  <div class="clr-select-wrapper">
+                    <select placeholder="Select Option" id="input7" name="appType" formControlName="appType">
+                      <option value='jupyter'>jupyter</option>
+                      <option value='gromacs'>gromacs</option>
+                    </select>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div class="footer">
+              <div>
+                <button (click)="cancel()" class="btn btn-outline">{{'HOME.POLICY.DIALOG.CANCEL' | translate}}</button>
+                <button type="submit" class="btn btn-info-outline" [disabled]="disabled">{{noteBook.createInstanceTitle | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="loding-warp" *ngIf="loadingFlag">
           <clr-spinner class="loading">Loading ...</clr-spinner>
         </div>
       </div>

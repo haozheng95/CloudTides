@@ -5,6 +5,7 @@ import { NotebooksComponent } from './notebooks.component';
 import { ListComponent } from './list/list.component'
 import { CreateInsranceComponent } from './create-insrance/create-insrance.component'
 import { LogComponent } from './log/log.component'
+import { HistoryComponent } from './history/history.component'; './history/history.component'
 const routes: Routes = [
   {
     path: '',
@@ -27,6 +28,10 @@ const routes: Routes = [
       {
         path: 'log',
         component: LogComponent
+      },
+      {
+        path: 'history',
+        component: HistoryComponent
       },
       {
         path: 'newInstance',

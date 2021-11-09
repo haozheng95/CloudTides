@@ -12,26 +12,37 @@ export class NotebooksComponent implements OnInit {
 
   constructor(public router: Router, private nb: NotebooksService, private fb: FormBuilder) {
     this.noteBook = this.nb
-    this.instanceForm = this.nb.instanceForm
+    this.jupyterInstanceForm = this.nb.instanceForm
   }
   ngOnInit(): void {
+    this.gromacsInstanceForm.get('appType').disable({
+      onlySelf: true
+    })
   }
   noteBook: NotebooksService
   // error tip flag
-  flag:boolean = false
+  loadingFlag:boolean = false
   errorMsg = ''
   // create disable for get
   get disabled () {
     const arr = []
-    for (const key in this.instanceForm.controls) {
-      if (this.instanceForm.controls[key].value !== 'jupyter' && this.instanceForm.controls[key].value !== 'gromacs') {
-        arr.push(this.instanceForm.controls[key].value)
+    if (this.noteBook.currentModel === 'jupyter') {
+      for (const key in this.jupyterInstanceForm.value) {
+        if (key !== 'token') {
+          arr.push(this.jupyterInstanceForm.value[key])
+        }
+      }
+    } else if (this.noteBook.currentModel === 'gromacs') {
+      for (const key in this.gromacsInstanceForm.value) {
+        if (key !== 'token') {
+          arr.push(this.gromacsInstanceForm.value[key])
+        }
       }
     }
-    const rsg = arr.every(el => el !== '')
+    const rsg = arr.every(el => el !== '')    
     return !rsg
   }
-  instanceForm = this.fb.group({
+  jupyterInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: ['jupyter'],
@@ -41,9 +52,16 @@ export class NotebooksComponent implements OnInit {
     sshUser: [''],
     token: ['']
   })
+  gromacsInstanceForm = this.fb.group({
+    instanceName: ['', Validators.required],
+    cpu: ['', Validators.required],
+    version: ['', Validators.required],
+    appType: ['gromacs'],
+    num: [1]
+  })
   cancel () {    
     this.noteBook.createInstanceFlag = false
-    this.instanceForm.setValue({
+    this.jupyterInstanceForm.setValue({
       instanceName: '',
       port: '',
       appType: '',
@@ -53,48 +71,60 @@ export class NotebooksComponent implements OnInit {
       sshUser: '',
       token: ''
     })
+    this.gromacsInstanceForm.setValue({
+      instanceName: '',
+      cpu: ['', Validators.required],
+      version: ['', Validators.required],
+      appType: ['gromacs'],
+      num: [1]
+      })
     this.errorMsg = ''
-    this.flag = false
+    this.loadingFlag = false
 
   }
   create (form) {
     this.errorMsg = ''
-    this.flag = true
-    const str = 'HOME.APPLICATION.Create'
+    this.loadingFlag = true
     const data = form.getRawValue()
-    data.sshPort = +data.sshPort
-    if (this.nb.createInstanceTitle === str) {
-      delete data.token
-      this.nb.createNewApp(data).subscribe((data:CreateData) => {
-        this.flag = false
-        this.noteBook.createInstanceFlag = false
-        this.instanceForm.setValue({
-          instanceName: '',
-          port: '',
-          appType: '',
-          sshHost: '',
-          sshPassword: '',
-          sshPort: '',
-          sshUser: ''
+    if (data.appType === 'jupyter') {
+      const str = 'HOME.APPLICATION.Create'
+      data.sshPort = +data.sshPort
+      if (this.nb.createInstanceTitle === str) {
+        delete data.token
+        this.nb.createNewApp(data).subscribe((data:CreateData) => {
+          this.loadingFlag = false
+          this.noteBook.createInstanceFlag = false
+          this.jupyterInstanceForm.setValue({
+            instanceName: '',
+            port: '',
+            appType: '',
+            sshHost: '',
+            sshPassword: '',
+            sshPort: '',
+            sshUser: ''
+          })
+          window.open('http://' + data.link, "_blank")
+        },
+        err => {
+          console.log('err', err);
+          
+          this.errorMsg = err.statusText
+          this.loadingFlag = false
         })
-        window.open('http://' + data.link, "_blank")
-      },
-      err => {
-        console.log('err', err);
-        
-        this.errorMsg = err.statusText
-        this.flag = false
-      })
-    } else {
-      this.nb.modifyApp(data).subscribe(data => {
-        this.flag = false
-        this.noteBook.createInstanceFlag = false
-        this.nb.getApplictionList()
-      },
-      err => {
-        this.errorMsg = err.msg
-        this.flag = false
-      })
+      } else {
+        this.nb.modifyApp(data).subscribe(data => {
+          this.loadingFlag = false
+          this.noteBook.createInstanceFlag = false
+          this.nb.getApplictionList()
+        },
+        err => {
+          this.errorMsg = err.msg
+          this.loadingFlag = false
+        })
+      }
+    } else if (data.appType === 'gromacs') {
+      console.log('创建 gromace');
+      this.loadingFlag = false
     }
   }
 }

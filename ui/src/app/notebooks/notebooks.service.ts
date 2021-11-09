@@ -17,6 +17,7 @@ export class NotebooksService {
   appList:AppModel[] = []
   appLogs: LogModel[] = []
   currentToken = ''
+  currentModel = ''
   loading = true
   wsUrl='ws://localhost:8033/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
@@ -73,10 +74,7 @@ export class NotebooksService {
       data.forEach(el => {
         const port = el.link.split(':')[1]
         el.port = port.split('/')[0]
-        el.logo = 'assets/img/jupyter.svg',
-        // el.link = 'http://' + el.link.split('?')[0]
-        console.log('link', el);
-        
+        el.logo = 'assets/img/jupyter.svg',        
         this.appList.push(el)
       })
     })
