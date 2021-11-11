@@ -59,10 +59,10 @@ export class NotebooksComponent implements OnInit {
     sshPassword: '',
     sshPort: '',
     sshUser: '',
-    cpu: ['', Validators.required],
-    version: ['', Validators.required],
+    // cpu: ['', Validators.required],
+    // version: ['', Validators.required],
     appType: ['gromacs'],
-    num: [1]
+    // num: [1]
   })
   cancel () {    
     this.noteBook.createInstanceFlag = false
@@ -83,10 +83,10 @@ export class NotebooksComponent implements OnInit {
       sshPassword: '',
       sshPort: '',
       sshUser: '',
-      cpu: ['', Validators.required],
-      version: ['', Validators.required],
+      // cpu: ['', Validators.required],
+      // version: ['', Validators.required],
       appType: ['gromacs'],
-      num: [1]
+      // num: [1]
       })
     this.errorMsg = ''
     this.loadingFlag = false
@@ -134,7 +134,26 @@ export class NotebooksComponent implements OnInit {
       }
     } else if (data.appType === 'gromacs') {
       console.log('创建 gromace');
-      this.loadingFlag = false
+      data.sshPort = +data.sshPort
+      this.nb.createNewApp(data).subscribe((data:CreateData) => {
+        this.loadingFlag = false
+        this.noteBook.createInstanceFlag = false
+        this.gromacsInstanceForm.setValue({
+          instanceName: '',
+          port: '',
+          appType: '',
+          sshHost: '',
+          sshPassword: '',
+          sshPort: '',
+          sshUser: ''
+        })
+      },
+      err => {
+        console.log('err', err);
+        
+        this.errorMsg = err.statusText
+        this.loadingFlag = false
+      })
     }
   }
 }

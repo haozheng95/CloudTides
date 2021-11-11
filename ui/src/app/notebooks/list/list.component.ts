@@ -51,6 +51,7 @@ export class ListComponent implements OnInit {
       username: app.sshUser,
       password: app.sshPassword,
       privatekey: '',
+      cmd: app.extra.cmd,
       // passphrase: '',
       totp: ''
     }
@@ -117,5 +118,13 @@ interface AppModel {
   sshPassword: string
   sshPort: string
   sshUser: string
-
+  extra: null | ExtraModel
+}
+interface ExtraModel {
+  appType: string,
+  sshHost: string,
+  sshPassword: string
+  sshPort: string
+  sshUser: string
+  cmd: string
 }

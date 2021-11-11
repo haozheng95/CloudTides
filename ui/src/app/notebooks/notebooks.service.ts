@@ -73,9 +73,10 @@ export class NotebooksService {
     this.appList = [] 
     this.getAppList().subscribe((data:AppModel[]) => {
       data.forEach(el => {
-        const port = el.link.split(':')[1]
-        el.port = port.split('/')[0]
-        el.logo = 'assets/img/jupyter.svg',        
+        if (el.link) {
+          const port = el.link.split(':')[1]
+          el.port = port.split('/')[0]  
+        }
         this.appList.push(el)
       })
     })
@@ -123,7 +124,15 @@ interface AppModel {
   sshPassword: string
   sshPort: string
   sshUser: string
-
+  extra: null | ExtraModel
+}
+interface ExtraModel {
+  appType: string,
+  sshHost: string,
+  sshPassword: string
+  sshPort: string
+  sshUser: string
+  cmd: string
 }
 interface LogModel {
   content: string
