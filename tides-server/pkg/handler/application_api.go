@@ -2,6 +2,7 @@ package handler
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
@@ -44,10 +45,22 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	}
 	token := fmt.Sprintf("%x", sha256.Sum256(myuuid.Bytes()))
 	log.Println("token", token)
-	containerName := "jupyterlab-" + token
-	containerPort := body.Port
-	containerToken := token
-	cmd := fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
+
+	var containerName string
+	var containerPort string
+	var containerToken string
+	var cmd string
+
+	switch body.AppType {
+	case "jupyter":
+		containerName = "jupyterlab-" + token
+		containerPort = body.Port
+		containerToken = token
+		cmd = fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
+	case "gromacs":
+		containerName = "gromacs-" + token
+		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s gromacs/gromacs sleep 100000d", containerName)
+	}
 
 	//run remote shell
 	combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
@@ -63,8 +76,8 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	}
 	log.Println("cmd output:", string(combo))
 	sshPortStr := strconv.Itoa(int(body.SSHPort))
+
 	row := map[string]string{
-		"link":          fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
 		"containerID":   string(combo),
 		"containerName": containerName,
 		"instanceName":  body.InstanceName,
@@ -77,11 +90,31 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		"sshKeyPath":    sshKeyPath,
 		"sshPort":       sshPortStr,
 		"appType":       body.AppType,
-		"port":          containerPort,
 	}
+	var extra interface{}
+	switch body.AppType {
+	case "jupyter":
+		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token)
+		row["port"] = containerPort
+	case "gromacs":
+		row["link"] = config.GetConfig().WebSshServiceHost
+		jsonMap := map[string]string{
+			"sshuser":     row["sshUser"],
+			"sshHost":     row["sshHost"],
+			"sshPassword": row["sshPassword"],
+			"sshPort":     row["sshPort"],
+			"appType":     row["appType"],
+			"cmd":         fmt.Sprintf("docker exec -it %s /bin/bash", row["containerID"][:12]),
+		}
 
+		if jsonByte, err := json.Marshal(&jsonMap); err != nil {
+			log.Println(err)
+		} else {
+			row["extra"] = string(jsonByte)
+			extra = jsonMap
+		}
+	}
 	var data models.Application
-
 	if err := mapstructure.Decode(row, &data); err != nil {
 		log.Println("map to struct error ", err)
 	}
@@ -93,8 +126,10 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	tokenIndex.Store(token, data.ID)
 
 	result := &application.CreateApplicationInstanceOKBody{
-		Link:  fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
+		//Link:  fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
+		Link:  row["link"],
 		Token: token,
+		Extra: extra,
 	}
 	return application.NewCreateApplicationInstanceOK().WithPayload(result)
 }
@@ -148,7 +183,16 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 	db.Where("uid = ?", fmt.Sprintf("%d", uid)).Find(&data)
 
 	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(data), len(data))
+	var jsonTemp map[string]string
 	for i := range data {
+		if len(data[i].Extra) > 0 {
+			if json.Unmarshal([]byte(data[i].Extra), &jsonTemp) != nil {
+				jsonTemp = nil
+			}
+		} else {
+			jsonTemp = nil
+		}
+
 		tmp := &application.ListApplicationInstanceOKBodyItems0{
 			Link:         data[i].Link,
 			Token:        data[i].Token,
@@ -159,7 +203,9 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 			SSHPort:      data[i].SshPort,
 			SSHUser:      data[i].SshUser,
 			Port:         data[i].Port,
+			Extra:        jsonTemp,
 		}
+
 		payload[i] = tmp
 	}
 	return application.NewListApplicationInstanceOK().WithPayload(payload)
@@ -332,6 +378,7 @@ func (ws WsHandler) WriteResponse(w http.ResponseWriter, r runtime.Producer) {
 	}()
 
 	for {
+		// todo get real logdata
 		data := `
  {
         "content": "/usr/local/bin/start-notebook.sh: running hooks in /usr/local/bin/before-notebook.d",

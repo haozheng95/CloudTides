@@ -155,6 +155,9 @@ func (o *CreateApplicationInstanceForbiddenBody) UnmarshalBinary(b []byte) error
 // swagger:model CreateApplicationInstanceOKBody
 type CreateApplicationInstanceOKBody struct {
 
+	// extra
+	Extra interface{} `json:"extra,omitempty"`
+
 	// link
 	Link string `json:"link,omitempty"`
 
