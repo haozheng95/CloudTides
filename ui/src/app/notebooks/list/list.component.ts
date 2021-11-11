@@ -38,7 +38,7 @@ export class ListComponent implements OnInit {
     }, 1000)
   }
   toGromacs (app: AppModel) {
-    const link = environment.webssh   
+    const link = 'http://' + app.link  
     let form = document.createElement('form')
     form.action= link
     form.method='get'
