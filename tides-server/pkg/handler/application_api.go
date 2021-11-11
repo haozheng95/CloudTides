@@ -78,7 +78,6 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	sshPortStr := strconv.Itoa(int(body.SSHPort))
 
 	row := map[string]string{
-		//"link":          fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token),
 		"containerID":   string(combo),
 		"containerName": containerName,
 		"instanceName":  body.InstanceName,
@@ -91,7 +90,6 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		"sshKeyPath":    sshKeyPath,
 		"sshPort":       sshPortStr,
 		"appType":       body.AppType,
-		//"port":          containerPort,
 	}
 	var extra interface{}
 	switch body.AppType {
@@ -99,7 +97,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token)
 		row["port"] = containerPort
 	case "gromacs":
-		row["link"] = "webssh-url"
+		row["link"] = config.GetConfig().WebSshServiceHost
 		jsonMap := map[string]string{
 			"sshuser":     row["sshUser"],
 			"sshHost":     row["sshHost"],

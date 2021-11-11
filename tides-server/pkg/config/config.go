@@ -39,6 +39,7 @@ func initConfig() {
 	config.SecretKey = os.Getenv("SECRET_KEY")
 	config.AdminUser = os.Getenv("ADMIN_USER")
 	config.AdminPassword = os.Getenv("ADMIN_PASSWORD")
+	config.WebSshServiceHost = os.Getenv("WEB_SSH_SERVICE_HOST")
 	StartDB()
 }
 
