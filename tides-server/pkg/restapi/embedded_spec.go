@@ -46,6 +46,9 @@ func init() {
                   "appType": {
                     "type": "string"
                   },
+                  "extra": {
+                    "type": "object"
+                  },
                   "instanceName": {
                     "type": "string"
                   },
@@ -204,6 +207,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "extra": {
+                  "type": "object"
+                },
                 "link": {
                   "type": "string"
                 },
@@ -4261,6 +4267,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "extra": {
+                  "type": "object"
+                },
                 "link": {
                   "type": "string"
                 },
@@ -7730,6 +7739,9 @@ func init() {
       "properties": {
         "appType": {
           "type": "string"
+        },
+        "extra": {
+          "type": "object"
         },
         "instanceName": {
           "type": "string"

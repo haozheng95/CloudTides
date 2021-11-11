@@ -66,6 +66,9 @@ type ListApplicationInstanceOKBodyItems0 struct {
 	// app type
 	AppType string `json:"appType,omitempty"`
 
+	// extra
+	Extra interface{} `json:"extra,omitempty"`
+
 	// instance name
 	InstanceName string `json:"instanceName,omitempty"`
 

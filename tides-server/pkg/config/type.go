@@ -25,16 +25,17 @@ var (
 
 // Config consists fields to setup the CloudTides server
 type Config struct {
-	ServerIP         string `json:"serverIP"`
-	ServerPort       string `json:"serverPort"`
-	PostgresHost     string `json:"postgresHost"`
-	PostgresPort     string `json:"postgresPort"`
-	PostgresUser     string `json:"postgresUser"`
-	PostgresPassword string `json:"postgresPassword"`
-	PostgresDB       string `json:"postgresDB"`
-	SecretKey        string `json:"secretKey"`
-	AdminUser        string `json:"adminUser"`
-	AdminPassword    string `json:"adminPassword"`
+	ServerIP          string `json:"serverIP"`
+	ServerPort        string `json:"serverPort"`
+	PostgresHost      string `json:"postgresHost"`
+	PostgresPort      string `json:"postgresPort"`
+	PostgresUser      string `json:"postgresUser"`
+	PostgresPassword  string `json:"postgresPassword"`
+	PostgresDB        string `json:"postgresDB"`
+	SecretKey         string `json:"secretKey"`
+	AdminUser         string `json:"adminUser"`
+	AdminPassword     string `json:"adminPassword"`
+	WebSshServiceHost string `json:"webSshServiceHost"`
 }
 
 // VcdConfig is json configuration for vCD resource
