@@ -54,6 +54,11 @@ export class NotebooksComponent implements OnInit {
   })
   gromacsInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
+    port: '',
+    sshHost: '',
+    sshPassword: '',
+    sshPort: '',
+    sshUser: '',
     cpu: ['', Validators.required],
     version: ['', Validators.required],
     appType: ['gromacs'],
@@ -73,6 +78,11 @@ export class NotebooksComponent implements OnInit {
     })
     this.gromacsInstanceForm.setValue({
       instanceName: '',
+      port: '',
+      sshHost: '',
+      sshPassword: '',
+      sshPort: '',
+      sshUser: '',
       cpu: ['', Validators.required],
       version: ['', Validators.required],
       appType: ['gromacs'],

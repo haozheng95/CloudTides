@@ -85,9 +85,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    window.onload = () => {
-      this.getAllNodes(document.body.children[0])
-    }
+    // 前端埋点测试
+    // window.onload = () => {
+    //   this.getAllNodes(document.body.children[0])
+    // }
   }
   getAllNodes(doms){
     // if (doms.children.length > 0) {

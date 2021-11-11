@@ -18,10 +18,10 @@ export class WebSocketService {
   flag = true
   constructor() {
     this.messageSubject = new Subject();
-    console.log('开始心跳检测');
+    // console.log('开始心跳检测');
     // 进入程序就进行心跳检测,避免出现开始就连接中断,后续不重连
-    this.heartCheckStart();
-    this.calcRunTime();
+    // this.heartCheckStart();
+    // this.calcRunTime();
   }
 
   /**
@@ -140,12 +140,10 @@ export class WebSocketService {
     this.reconnectFlag = true;
     // 如果没能成功连接,则定时重连    
     if (this.flag) {
+      if (!this.url) return
       this.reconnectSubscription = interval(this.reconnectPeriod).subscribe(async (val) => {
         console.log(`重连:${val}次`);
-        const url = this.url;
-        // 重新连接
-        console.log('url', url);
-        
+        const url = this.url;        
         this.connect(url);
       });
     } else {

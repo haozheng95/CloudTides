@@ -269,6 +269,7 @@
         "OPERATE": "操作",
         "CREATETIME": "创建时间",
         "TOTALRUNTIME": "总运行时长",
+        "INSTANCE_TYPE": "实例类型",
         "PLACE_CONFIRM": "你确定要删除这个应用程序吗？"
       }
     },

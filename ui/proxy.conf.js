@@ -8,7 +8,8 @@ const {
 
 const endpoint = {
   local: 'http://0.0.0.0:3000',
-  e2e: 'http://0.0.0.0:8081'
+  e2e: 'http://0.0.0.0:8081',
+  webssh: 'http://127.0.0.1:8888'
 };
 
 const target = endpoint[MODE];
@@ -49,6 +50,16 @@ const PROXY_CONFIG = {
       }
     }
   },
+  '/api-webshh/': {
+    target: endpoint.webssh,
+    changeOrigin: true,
+    secure: false,
+    ws: true,
+    pathRewrite: {
+      '^/api-webshh/': '',
+    },
+
+  }
 
 }
 

@@ -111,9 +111,31 @@
             <p class="option-title">
               {{'HOME.APPLICATION.NEW_INSTANCE.INSTANCE_PROPERTIES' | translate}}
               <clr-icon shape="pencil" solid></clr-icon>
-
             </p>
             <ul class="option-list">
+              <li>
+                <clr-input-container>
+                  <label class="clr-control-label" for="port">{{'HOME.APPLICATION.NEW_INSTANCE.PORT' | translate}}</label>
+                  <input clrInput type="text" name="port" id="port" formControlName='port' required>
+                  <clr-control-error >{{"HOME.VALIDATION.REQUIRED" | translate }}</clr-control-error> 
+                </clr-input-container>
+              </li>
+              <li>
+                <label class="clr-control-label" for="input1">{{'HOME.APPLICATION.LIST.SSHHOST' | translate}}</label>
+                <input clrInput type="text" name="sshHost" id="input1" formControlName="sshHost" required>
+              </li>
+              <li>
+                <label class="clr-control-label" for="input3">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPASSWORD' | translate}}</label>
+                <input clrInput type="password" name="sshPassword" id="input3" formControlName="sshPassword" required>
+              </li>
+              <li>
+                <label class="clr-control-label" for="input4">{{'HOME.APPLICATION.NEW_INSTANCE.SSHPORT' | translate}}</label>
+                <input clrInput type="text" name="sshPort" id="input4" formControlName="sshPort" required>
+              </li>
+              <li>
+                <label class="clr-control-label" for="input5">{{'HOME.APPLICATION.LIST.SSHUSER' | translate}}</label>
+                <input clrInput type="text" name="sshUser" id="input5" formControlName="sshUser" required>
+              </li>
               <li>
                 <clr-input-container>
                   <label class="clr-control-label" for="cpu">CPU</label>

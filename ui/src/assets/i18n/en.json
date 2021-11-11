@@ -260,6 +260,7 @@
         "OPERATE": "operate",
         "CREATETIME": "Create time",
         "TOTALRUNTIME": "Total run time",
+        "INSTANCE_TYPE": "Instance type",
         "PLACE_CONFIRM": "Are you sure you want to delete this application?"
       }
 
