@@ -10,6 +10,6 @@ export class HistoryComponent implements OnInit {
   constructor() { }
   users = []
   ngOnInit(): void {
-  }
 
+  }
 }

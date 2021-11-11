@@ -19,8 +19,9 @@ export class ListComponent implements OnInit {
   filterSearchValue: string = ''
   token = ''
   toJupyter (app: AppModel) {
+    const link = app.link.split('?')[0]    
     let form = document.createElement('form')
-    form.action= app.link
+    form.action='http://'+ link
     form.method='get'
     form.target = '_blank'
     const body = document.documentElement

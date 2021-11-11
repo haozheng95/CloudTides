@@ -39,9 +39,9 @@ export class WebSocketService {
   connect(url) {
     if (!!url) {
       this.url = url;
+      // 创建websocket对象
+      this.createWebSocket();
     }
-    // 创建websocket对象
-    this.createWebSocket();
   }
 
   /**
@@ -75,7 +75,7 @@ export class WebSocketService {
       // 1.停止重连
       this.stopReconnect();
       // 2.重新开启心跳
-      // this.heartCheckStart();
+      this.heartCheckStart();
       // 3.重新开始计算运行时间
       this.calcRunTime();
     }
@@ -138,16 +138,18 @@ export class WebSocketService {
     }
     // 开始重连
     this.reconnectFlag = true;
-    // 如果没能成功连接,则定时重连
-    console.log('flag',this.flag);
-    
+    // 如果没能成功连接,则定时重连    
     if (this.flag) {
       this.reconnectSubscription = interval(this.reconnectPeriod).subscribe(async (val) => {
         console.log(`重连:${val}次`);
         const url = this.url;
         // 重新连接
+        console.log('url', url);
+        
         this.connect(url);
       });
+    } else {
+      this.url = ''
     }
   }
 

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { PRODUCT_NAME } from '@tide-config/const';
 
 import { LoginService, UserInfo } from './login/login.service';
 import { TranslateService } from '@ngx-translate/core';
 import { I18nService } from '@tide-shared/service/i18n';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, timer } from 'rxjs';
 import { RegisterService } from './register/register.service';
 import { ResetService } from './reset/reset.service';
 
@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
     });
 
   }
-  
   // useLanguage(language: string): void {
   //   this.translate.use(language);
   // }
@@ -85,7 +84,49 @@ export class AppComponent implements OnInit {
     
   }
 
-  ngOnInit() {
-
+  ngOnInit(): void {
+    window.onload = () => {
+      this.getAllNodes(document.body.children[0])
+    }
   }
+  getAllNodes(doms){
+    // if (doms.children.length > 0) {
+    //   for(let d=0; d < doms.children.length; d++) {        
+    //     if (doms.children[d].children.length > 0) {
+    //       this.getAllNodes(doms.children[d])
+    //     } else if (doms.children[d].innerText !== '') {
+    //       doms.children[d].timer = 0
+    //       doms.children[d].onmouseenter = function (e) {
+    //         doms.children[d].timer = Date.now()
+    //       }
+    //       doms.children[d].onmouseleave = function (e) {
+    //         const timeDiff = Date.now() - doms.children[d].timer
+    //         console.log(doms.children[d].innerText, '停留', timeDiff/1000 + '秒'); 
+    //         doms.children[d].timer = Date.now()
+    //       }
+    //       doms.children[d].onclick = function (e) {
+    //         console.log(e.target.innerText, '点击'); 
+    //       }
+    //     }
+    //   }
+    // }
+    const header = document.querySelector('.header')
+    const nav = document.querySelector('.subnav')
+    const container = document.querySelector('.main-container')
+    console.log(header.children, nav.children, container.children);
+    console.log(textNodesUnder(header).filter(el => el.data!=='\n            '));
+    
+    function textNodesUnder(node){
+      var all = [];
+      for (node=node.firstChild;node;node=node.nextSibling){
+        if (node.nodeType==3) all.push(node);
+        else all = all.concat(textNodesUnder(node));
+      }
+      return all;
+    }    
+    // header.addEventListener('mouseleave', (e) => {
+    //   header[timer] = Date.now()
+    //   header[obj] = e.target
+    // })
+  };
 }

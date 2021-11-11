@@ -6,6 +6,7 @@ import { tap, map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms'
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 import { WebSocketService } from '@tide-shared/service/web-socket.service'
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +20,7 @@ export class NotebooksService {
   currentToken = ''
   currentModel = ''
   loading = true
-  wsUrl='ws://localhost:8033/api/v1/ws/application/instance/'
+  wsUrl='ws://' + environment.apiIp +'/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -97,7 +98,7 @@ export class NotebooksService {
   }
   unsub: any
   buildWS (token) {
-    this.ws.connect(this.wsUrl+token)
+    this.ws.connect(this.wsUrl+token)    
     this.ws.flag = true
     this.unsub = this.ws.messageSubject.subscribe(
       data => {
