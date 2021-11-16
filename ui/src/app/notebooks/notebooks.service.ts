@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpRequest } from '@angular/common/http'
 import { environment } from '@tide-environments/environment';
 import { Router } from '@angular/router'
 import { tap, map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms'
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 import { WebSocketService } from '@tide-shared/service/web-socket.service'
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -111,6 +112,15 @@ export class NotebooksService {
   }
   closeWs () {
     this.ws.onClose(false)
+  }
+  uploadData(formData: any): Observable<any> {
+    // httpOptionsMultipart.headers = httpOptionsMultipart.headers.delete('Content-Type');
+    // return this.http.post('/data', 
+    //   formData, httpOptionsMultipart);
+    const req = new HttpRequest('POST', '/data', formData, {  
+      reportProgress: true 
+    })
+    return this.http.request(req)
   }
 }
 interface AppModel {

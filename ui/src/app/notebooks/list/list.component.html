@@ -31,14 +31,14 @@
     <clr-dg-cell>
       <clr-icon class="icon" *ngIf="item.appType === 'jupyter'" (click)="toJupyter(item)" shape="play" solid></clr-icon>
       <clr-icon class="icon" *ngIf="item.appType === 'gromacs'" (click)="toGromacs(item)" shape="play" solid></clr-icon>
-      <!-- <clr-icon class="icon" (click)="modifyApp(item)" shape="form"></clr-icon> -->
-      <clr-icon class="icon" shape="trash"(click)="deleteApp(item)" ></clr-icon>
+      <clr-icon class="icon" shape="form" (click)="checkApp(item)"></clr-icon>
+      <clr-icon class="icon" shape="trash" (click)="deleteApp(item)"></clr-icon>
       <clr-icon shape="justify-text" (click)="getCurrentAppLogs(item)"></clr-icon>
     </clr-dg-cell>
   </clr-dg-row>
 </clr-datagrid>
 <div class="modal" *ngIf="sureDeleteFalg">
-  <div class="modal-dialog modal-sm" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-ld" role="dialog" aria-hidden="true">
     <div class="modal-content">
       <p>{{'HOME.APPLICATION.LIST.PLACE_CONFIRM' | translate}}</p>
       <div class="btns">
@@ -48,4 +48,66 @@
     </div>
   </div>
 </div>
-<div *ngIf="sureDeleteFalg" class="modal-backdrop" aria-hidden="true"></div>
+<div class="modal" *ngIf="check">
+  <div class="modal-dialog modal-xs" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <p>{{'HOME.APPLICATION.LIST.INSTANCE_DETAILS' | translate}}</p>
+      <ul class="list">
+        <li>
+          <label class="label-text">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}:</label>
+          <input type="text" class="label-input" id="instanceName" name="instanceName" [value]="currentInstanc.instanceName" disabled>
+        </li>
+        <li>
+          <label class="label-text">{{'HOME.APPLICATION.LIST.CREATETIME' | translate}}:</label>
+          <input type="text" class="label-input" id="createTime" name="createTime" disabled>
+        </li>
+        <li>
+          <label class="label-text">{{'HOME.APPLICATION.LIST.INSTANCE_TYPE' | translate}}:</label>
+          <input type="text" class="label-input" id="type" name="type" [value]="currentInstanc.appType" disabled>
+        </li>
+        <li>
+          <p>{{'HOME.APPLICATION.LIST.FILE_UPLOAD' | translate}}</p>
+          <div class="upload" #uploadzone
+          dropzone 
+          [class.hovering]="uploadzone.isHovering"
+          (hovered)="uploadzone.isHovering = $event"
+          (dropped)="onDrop($event)">
+            <img src="assets/img/upload.png" alt="">
+            <p>
+              {{'HOME.APPLICATION.LIST.DRAGHERE' | translate}}<label for="file">&nbsp;{{'HOME.APPLICATION.LIST.UPLOAD' | translate}}</label>
+              <input (change)="changeFile($event)" type="file" name="file" id="file" multiple="multiple" style="display: none;">             
+            </p>
+          </div>
+          <div *ngIf="readyupload">{{file.name}}</div>
+          <div class="progress top" *ngIf="readyupload">
+            <progress [value]="progress" max="100"></progress>
+            <span>{{progress}}%</span>
+          </div>
+        </li>
+        <li>
+          <p>{{'HOME.APPLICATION.LIST.FILE_LIST' | translate}}</p>
+          <clr-datagrid>
+            <clr-dg-column>{{'HOME.APPLICATION.LIST.FILE_NAME' | translate}}</clr-dg-column>
+            <clr-dg-column>{{'HOME.APPLICATION.LIST.UPLOAD_TIME' | translate}}</clr-dg-column>
+            <clr-dg-column>{{'HOME.APPLICATION.LIST.FILE_SIZE' | translate}}</clr-dg-column>
+            <clr-dg-column>{{'HOME.APPLICATION.LIST.OPERATE' | translate}}</clr-dg-column>
+          
+            <clr-dg-row *ngFor="let user of fileList">
+              <clr-dg-cell>{{user.id}}</clr-dg-cell>
+              <clr-dg-cell>{{user.name}}</clr-dg-cell>
+              <clr-dg-cell>{{user.creation | date}}</clr-dg-cell>
+              <clr-dg-cell>
+                <clr-icon class="icon" shape="trash" style="color: #991700;"></clr-icon>
+              </clr-dg-cell>
+            </clr-dg-row>
+            <clr-dg-footer>{{fileList.length}}</clr-dg-footer>
+          </clr-datagrid>
+        </li>
+      </ul>
+      <div class="btns">
+        <button (click)="cancel()" class="btn btn-outline">{{'HOME.POLICY.DIALOG.CLOSE' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="background" class="modal-backdrop" aria-hidden="true"></div>

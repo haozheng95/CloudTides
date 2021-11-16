@@ -1,7 +1,6 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { NotebooksService } from '../notebooks.service'
-import { environment } from '@tide-environments/environment';
 @Component({
   selector: 'tide-list',
   templateUrl: './list.component.html',
@@ -15,10 +14,23 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.nd.getApplictionList()
   }
+  fileList = []
+  progress = 0
   selected= 'selected'
+  check = false
   sureDeleteFalg = false
+  background = false
+  file :FileModel
   filterSearchValue: string = ''
   token = ''
+  currentInstanc: AppModel
+  get readyupload () {
+    if (this.file && this.file.size > 0 && this.file.name !== '') {
+      return true
+    } else {
+      return false
+    }
+  }
   toJupyter (app: AppModel) {
     const link = app.link.split('?')[0]    
     let form = document.createElement('form')
@@ -89,6 +101,7 @@ export class ListComponent implements OnInit {
   }
   deleteApp (app: AppModel) {
     this.sureDeleteFalg = true
+    this.background = true
     this.token = app.token
   }
   getCurrentAppLogs (app: AppModel) {
@@ -99,12 +112,30 @@ export class ListComponent implements OnInit {
     this.nd.deleteApp(this.token).subscribe(data => {
       console.log(data);
       this.sureDeleteFalg = false
+      this.background = false
       this.nd.getApplictionList()
     })
   }
   cancel () {
     this.sureDeleteFalg = false
+    this.check = false
+    this.background = false
     this.token = ''
+  }
+  checkApp (item: AppModel) {
+    this.currentInstanc = item
+    this.check = true
+    this.background = true
+  }
+  onDrop (file: FileModel[]) {
+    console.log('fiel', file);
+    
+    this.file = file[0]
+    this.nd.uploadData(file[0])
+  }
+  changeFile(event:Event) {
+    this.file = (event.target as HTMLInputElement)?.files?.[0]
+    this.nd.uploadData((event.target as HTMLInputElement)?.files?.[0])
   }
 }
 interface AppModel {
@@ -127,4 +158,10 @@ interface ExtraModel {
   sshPort: string
   sshUser: string
   cmd: string
+}
+interface FileModel {
+  lastModified: number
+  name: string
+  size: number
+  type: string
 }
