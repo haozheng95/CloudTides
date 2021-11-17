@@ -40,6 +40,7 @@ func initConfig() {
 	config.AdminUser = os.Getenv("ADMIN_USER")
 	config.AdminPassword = os.Getenv("ADMIN_PASSWORD")
 	config.WebSshServiceHost = os.Getenv("WEB_SSH_SERVICE_HOST")
+	config.TempStoragePath = os.Getenv("TEMP_STORAGE_PATH")
 	StartDB()
 }
 
