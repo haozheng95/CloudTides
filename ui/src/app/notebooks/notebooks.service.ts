@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest } from '@angular/common/http'
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http'
 import { environment } from '@tide-environments/environment';
 import { Router } from '@angular/router'
 import { tap, map } from 'rxjs/operators';
@@ -113,14 +113,34 @@ export class NotebooksService {
   closeWs () {
     this.ws.onClose(false)
   }
-  uploadData(formData: any): Observable<any> {
+  uploadData(file: any, token:string): Observable<any> {
     // httpOptionsMultipart.headers = httpOptionsMultipart.headers.delete('Content-Type');
     // return this.http.post('/data', 
     //   formData, httpOptionsMultipart);
-    const req = new HttpRequest('POST', '/data', formData, {  
-      reportProgress: true 
+    const formData: any = new FormData();
+    formData.append('name', file.name);
+    formData.append('file', file);
+    const req = new HttpRequest('POST', environment.apiPrefix + '/application/instance/file/' + token, formData, {  
+      reportProgress: true ,
     })
-    return this.http.request(req)
+    req.headers.set('Authorization', `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`)
+    const newReq = req.clone({
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      })
+    })
+    console.log('newReq', newReq);
+    
+    return this.http.request(newReq)
+  }
+  getFileList(token:string) {
+    return this.http.get(environment.apiPrefix + `/application/instance/file/${token}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      }
+    }).pipe(
+      tap(data => {})
+    )
   }
 }
 interface AppModel {

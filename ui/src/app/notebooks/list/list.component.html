@@ -67,15 +67,20 @@
         </li>
         <li>
           <p>{{'HOME.APPLICATION.LIST.FILE_UPLOAD' | translate}}</p>
-          <div class="upload" #uploadzone
-          dropzone 
-          [class.hovering]="uploadzone.isHovering"
-          (hovered)="uploadzone.isHovering = $event"
-          (dropped)="onDrop($event)">
-            <img src="assets/img/upload.png" alt="">
-            <p>
-              {{'HOME.APPLICATION.LIST.DRAGHERE' | translate}}<label for="file">&nbsp;{{'HOME.APPLICATION.LIST.UPLOAD' | translate}}</label>
-              <input (change)="changeFile($event)" type="file" name="file" id="file" multiple="multiple" style="display: none;">             
+          <div class="upload-file">
+            <div class="upload" #uploadzone
+            dropzone 
+            [class.hovering]="uploadzone.isHovering"
+            (hovered)="uploadzone.isHovering = $event"
+            (dropped)="onDrop($event)">
+              <img src="assets/img/upload.png" alt="">
+              <p>
+                {{'HOME.APPLICATION.LIST.DRAGHERE' | translate}}<label for="file">&nbsp;{{'HOME.APPLICATION.LIST.UPLOAD' | translate}}</label>
+                <input (change)="changeFile($event)" type="file" name="file" id="file" multiple="multiple" style="display: none;">             
+              </p>
+            </div>
+            <p class="error-file" *ngIf="this.errorTip !== ''">
+              {{errorTip}}
             </p>
           </div>
           <div *ngIf="readyupload">{{file.name}}</div>
@@ -92,12 +97,13 @@
             <clr-dg-column>{{'HOME.APPLICATION.LIST.FILE_SIZE' | translate}}</clr-dg-column>
             <clr-dg-column>{{'HOME.APPLICATION.LIST.OPERATE' | translate}}</clr-dg-column>
           
-            <clr-dg-row *ngFor="let user of fileList">
-              <clr-dg-cell>{{user.id}}</clr-dg-cell>
-              <clr-dg-cell>{{user.name}}</clr-dg-cell>
-              <clr-dg-cell>{{user.creation | date}}</clr-dg-cell>
+            <clr-dg-row *ngFor="let file of fileList">
+              <clr-dg-cell>{{file.filename}}</clr-dg-cell>
+              <clr-dg-cell>{{file.createtime | date:'yyyy-MM-dd'}}</clr-dg-cell>
+              <clr-dg-cell>{{file.filesize}}</clr-dg-cell>
               <clr-dg-cell>
-                <clr-icon class="icon" shape="trash" style="color: #991700;"></clr-icon>
+                <clr-icon class="icon file-icon" shape="download" (click)="downFile(file)" style="color: #2779AD;"></clr-icon>
+                <clr-icon class="icon file-icon" shape="trash" style="color: #991700;"></clr-icon>
               </clr-dg-cell>
             </clr-dg-row>
             <clr-dg-footer>{{fileList.length}}</clr-dg-footer>
