@@ -236,6 +236,128 @@ func init() {
         }
       }
     },
+    "/application/instance/file/{token}": {
+      "get": {
+        "description": "list files to instances",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "listInstanceFiles",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "createtime": {
+                    "type": "string"
+                  },
+                  "downlink": {
+                    "type": "string"
+                  },
+                  "filename": {
+                    "type": "string"
+                  },
+                  "filesize": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "upload file to instance",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "uploadInstanceFile",
+        "parameters": [
+          {
+            "type": "file",
+            "name": "file",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "downlink": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/application/instance/file/{uid}/{token}/{name}": {
+      "get": {
+        "description": "down files to instances",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "downInstanceFile",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "uid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/application/instance/{token}": {
       "get": {
         "description": "watch application instance logs",
@@ -4296,6 +4418,114 @@ func init() {
         }
       }
     },
+    "/application/instance/file/{token}": {
+      "get": {
+        "description": "list files to instances",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "listInstanceFiles",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListInstanceFilesOKBodyItems0"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "upload file to instance",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "uploadInstanceFile",
+        "parameters": [
+          {
+            "type": "file",
+            "name": "file",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "downlink": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/application/instance/file/{uid}/{token}/{name}": {
+      "get": {
+        "description": "down files to instances",
+        "produces": [
+          "application/octet-stream"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "downInstanceFile",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "uid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/application/instance/{token}": {
       "get": {
         "description": "watch application instance logs",
@@ -7765,6 +7995,23 @@ func init() {
           "type": "string"
         },
         "token": {
+          "type": "string"
+        }
+      }
+    },
+    "ListInstanceFilesOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "createtime": {
+          "type": "string"
+        },
+        "downlink": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "filesize": {
           "type": "string"
         }
       }

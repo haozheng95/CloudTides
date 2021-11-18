@@ -2325,6 +2325,90 @@ paths:
               message:
                 type: string
 
+  /application/instance/file/{uid}/{token}/{name}:
+    get:
+      operationId: 'downInstanceFile'
+      description: 'down files to instances'
+      tags:
+        - 'application'
+      produces:
+        - 'application/octet-stream'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+        - type: string
+          in: path
+          name: name
+          required: true
+        - type: string
+          in: path
+          name: uid
+          required: true
+      responses:
+        200:
+          description: 'OK'
+
+  /application/instance/file/{token}:
+    get:
+      operationId: 'listInstanceFiles'
+      description: 'list files to instances'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                filename:
+                  type: string
+                filesize:
+                  type: string
+                createtime:
+                  type: string
+                downlink:
+                  type: string
+
+    post:
+      operationId: 'uploadInstanceFile'
+      description: 'upload file to instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'multipart/form-data'
+      parameters:
+        - name: file
+          in: formData
+          type: file
+          required: true
+        - in: path
+          name: token
+          type: string
+          required: true
+
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              downlink:
+                type: string
+
+
   /application/instance:
     get:
       operationId: 'listApplicationInstance'

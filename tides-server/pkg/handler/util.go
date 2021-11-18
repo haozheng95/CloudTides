@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -320,4 +321,25 @@ func PolicySetup(rid uint, uid uint, network string, catalog string) {
 		*res.PolicyID = pol.ID
 	}
 	db.Save(&res)
+}
+
+//Call os.MkdirAll to recursively create the folder
+func createFile(filePath string) error {
+	if !isExist(filePath) {
+		err := os.MkdirAll(filePath, os.ModePerm)
+		return err
+	}
+	return nil
+}
+
+// Check whether the given path file/folder exists (return true if it does)
+func isExist(path string) bool {
+	_, err := os.Stat(path) //os.Stat Obtaining File Information
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
 }
