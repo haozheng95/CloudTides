@@ -10,10 +10,12 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
 	"golang.org/x/crypto/ssh"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -486,4 +488,89 @@ func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session 
 	}
 
 	return session
+}
+
+func UploadInstanceFile(params application.UploadInstanceFileParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return application.NewCreateApplicationInstanceUnauthorized()
+	}
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	r := params.HTTPRequest
+	token := params.Token
+	log.Println("Instance token == ", token)
+	file, handler, err := r.FormFile("file")
+	if err != nil {
+		log.Println("Get file Error", err)
+	}
+	defer file.Close()
+	myconfig := config.GetConfig()
+	dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)
+	if err := createFile(dirPath); err != nil {
+		log.Println("Create dir Error ", err)
+	}
+	filePath := fmt.Sprintf("%s/%s", dirPath, handler.Filename)
+	log.Println(filePath)
+	f, err := os.Create(filePath)
+	if err != nil {
+		log.Println("Create file Error", err)
+	}
+	defer f.Close()
+	io.Copy(f, file)
+
+	downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", myconfig.ServerIP, myconfig.ServerPort, uid, token, handler.Filename)
+	log.Println(downLink)
+
+	return application.NewUploadInstanceFileOK().WithPayload(&application.UploadInstanceFileOKBody{
+		Downlink: downLink,
+	})
+}
+
+func ListInstanceFiles(params application.ListInstanceFilesParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return application.NewCreateApplicationInstanceUnauthorized()
+	}
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	token := params.Token
+	myconfig := config.GetConfig()
+	dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)
+	files, _ := ioutil.ReadDir(dirPath)
+	payload := make([]*application.ListInstanceFilesOKBodyItems0, len(files))
+	for i, f := range files {
+		downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", myconfig.ServerIP, myconfig.ServerPort, uid, token, f.Name())
+		payload[i] = &application.ListInstanceFilesOKBodyItems0{
+			Filename:   f.Name(),
+			Filesize:   fmt.Sprintf("%d", f.Size()),
+			Createtime: fmt.Sprintf("%d", f.ModTime().Unix()),
+			Downlink:   downLink,
+		}
+	}
+	return application.NewListInstanceFilesOK().WithPayload(payload)
+}
+
+type FileDown struct {
+	FileName string
+	FilePath string
+}
+
+func (down FileDown) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+	file, _ := os.Open(down.FilePath)
+	defer file.Close()
+	fileHeader := make([]byte, 512)
+	file.Read(fileHeader)
+	fileStat, _ := file.Stat()
+	rw.Header().Set("Content-Disposition", "attachment; filename="+down.FileName)
+	rw.Header().Set("Content-Type", http.DetectContentType(fileHeader))
+	rw.Header().Set("Content-Length", strconv.FormatInt(fileStat.Size(), 10))
+	file.Seek(0, 0)
+	io.Copy(rw, file)
+}
+
+func DownInstanceFile(params application.DownInstanceFileParams) middleware.Responder {
+	dirPath := fmt.Sprintf("%s/%s/%s", config.GetConfig().TempStoragePath, params.UID, params.Token)
+	filename := fmt.Sprintf("%s/%s", dirPath, params.Name)
+	log.Println(filename)
+	st := new(FileDown)
+	st.FilePath = filename
+	st.FileName = params.Name
+	return st
 }

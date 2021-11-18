@@ -55,6 +55,7 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		JSONConsumer:          runtime.JSONConsumer(),
 		MultipartformConsumer: runtime.DiscardConsumer,
 
+		BinProducer:  runtime.ByteStreamProducer(),
 		JSONProducer: runtime.JSONProducer(),
 
 		UserModifyUserHandler: user.ModifyUserHandlerFunc(func(params user.ModifyUserParams) middleware.Responder {
@@ -147,6 +148,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceDestroyVMHandler: resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
 		}),
+		ApplicationDownInstanceFileHandler: application.DownInstanceFileHandlerFunc(func(params application.DownInstanceFileParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.DownInstanceFile has not yet been implemented")
+		}),
 		UsageGetPastUsageHandler: usage.GetPastUsageHandlerFunc(func(params usage.GetPastUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.GetPastUsage has not yet been implemented")
 		}),
@@ -167,6 +171,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		ApplicationListApplicationInstanceHandler: application.ListApplicationInstanceHandlerFunc(func(params application.ListApplicationInstanceParams) middleware.Responder {
 			return middleware.NotImplemented("operation application.ListApplicationInstance has not yet been implemented")
+		}),
+		ApplicationListInstanceFilesHandler: application.ListInstanceFilesHandlerFunc(func(params application.ListInstanceFilesParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.ListInstanceFiles has not yet been implemented")
 		}),
 		OrgListOrgHandler: org.ListOrgHandlerFunc(func(params org.ListOrgParams) middleware.Responder {
 			return middleware.NotImplemented("operation org.ListOrg has not yet been implemented")
@@ -234,6 +241,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		VmtempUpdateVMTempHandler: vmtemp.UpdateVMTempHandlerFunc(func(params vmtemp.UpdateVMTempParams) middleware.Responder {
 			return middleware.NotImplemented("operation vmtemp.UpdateVMTemp has not yet been implemented")
 		}),
+		ApplicationUploadInstanceFileHandler: application.UploadInstanceFileHandlerFunc(func(params application.UploadInstanceFileParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.UploadInstanceFile has not yet been implemented")
+		}),
 		UserUserLoginHandler: user.UserLoginHandlerFunc(func(params user.UserLoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UserLogin has not yet been implemented")
 		}),
@@ -281,6 +291,9 @@ type CloudTidesAPI struct {
 	//   - multipart/form-data
 	MultipartformConsumer runtime.Consumer
 
+	// BinProducer registers a producer for the following mime types:
+	//   - application/octet-stream
+	BinProducer runtime.Producer
 	// JSONProducer registers a producer for the following mime types:
 	//   - application/json
 	JSONProducer runtime.Producer
@@ -345,6 +358,8 @@ type CloudTidesAPI struct {
 	VendorSwaggerDeleteVendorHandler vendor_swagger.DeleteVendorHandler
 	// ResourceDestroyVMHandler sets the operation handler for the destroy VM operation
 	ResourceDestroyVMHandler resource.DestroyVMHandler
+	// ApplicationDownInstanceFileHandler sets the operation handler for the down instance file operation
+	ApplicationDownInstanceFileHandler application.DownInstanceFileHandler
 	// UsageGetPastUsageHandler sets the operation handler for the get past usage operation
 	UsageGetPastUsageHandler usage.GetPastUsageHandler
 	// PolicyGetPolicyHandler sets the operation handler for the get policy operation
@@ -359,6 +374,8 @@ type CloudTidesAPI struct {
 	UserListUserOfOrgHandler user.ListUserOfOrgHandler
 	// ApplicationListApplicationInstanceHandler sets the operation handler for the list application instance operation
 	ApplicationListApplicationInstanceHandler application.ListApplicationInstanceHandler
+	// ApplicationListInstanceFilesHandler sets the operation handler for the list instance files operation
+	ApplicationListInstanceFilesHandler application.ListInstanceFilesHandler
 	// OrgListOrgHandler sets the operation handler for the list org operation
 	OrgListOrgHandler org.ListOrgHandler
 	// PolicyListPolicyHandler sets the operation handler for the list policy operation
@@ -403,6 +420,8 @@ type CloudTidesAPI struct {
 	UserUpdateUserProfileHandler user.UpdateUserProfileHandler
 	// VmtempUpdateVMTempHandler sets the operation handler for the update VM temp operation
 	VmtempUpdateVMTempHandler vmtemp.UpdateVMTempHandler
+	// ApplicationUploadInstanceFileHandler sets the operation handler for the upload instance file operation
+	ApplicationUploadInstanceFileHandler application.UploadInstanceFileHandler
 	// UserUserLoginHandler sets the operation handler for the user login operation
 	UserUserLoginHandler user.UserLoginHandler
 	// ResourceValidateVcdResourceHandler sets the operation handler for the validate vcd resource operation
@@ -487,6 +506,9 @@ func (o *CloudTidesAPI) Validate() error {
 		unregistered = append(unregistered, "MultipartformConsumer")
 	}
 
+	if o.BinProducer == nil {
+		unregistered = append(unregistered, "BinProducer")
+	}
 	if o.JSONProducer == nil {
 		unregistered = append(unregistered, "JSONProducer")
 	}
@@ -581,6 +603,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceDestroyVMHandler == nil {
 		unregistered = append(unregistered, "resource.DestroyVMHandler")
 	}
+	if o.ApplicationDownInstanceFileHandler == nil {
+		unregistered = append(unregistered, "application.DownInstanceFileHandler")
+	}
 	if o.UsageGetPastUsageHandler == nil {
 		unregistered = append(unregistered, "usage.GetPastUsageHandler")
 	}
@@ -601,6 +626,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ApplicationListApplicationInstanceHandler == nil {
 		unregistered = append(unregistered, "application.ListApplicationInstanceHandler")
+	}
+	if o.ApplicationListInstanceFilesHandler == nil {
+		unregistered = append(unregistered, "application.ListInstanceFilesHandler")
 	}
 	if o.OrgListOrgHandler == nil {
 		unregistered = append(unregistered, "org.ListOrgHandler")
@@ -668,6 +696,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.VmtempUpdateVMTempHandler == nil {
 		unregistered = append(unregistered, "vmtemp.UpdateVMTempHandler")
 	}
+	if o.ApplicationUploadInstanceFileHandler == nil {
+		unregistered = append(unregistered, "application.UploadInstanceFileHandler")
+	}
 	if o.UserUserLoginHandler == nil {
 		unregistered = append(unregistered, "user.UserLoginHandler")
 	}
@@ -728,6 +759,8 @@ func (o *CloudTidesAPI) ProducersFor(mediaTypes []string) map[string]runtime.Pro
 	result := make(map[string]runtime.Producer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
+		case "application/octet-stream":
+			result["application/octet-stream"] = o.BinProducer
 		case "application/json":
 			result["application/json"] = o.JSONProducer
 		}
@@ -893,6 +926,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/application/instance/file/{uid}/{token}/{name}"] = application.NewDownInstanceFile(o.context, o.ApplicationDownInstanceFileHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/usage/past/{id}"] = usage.NewGetPastUsage(o.context, o.UsageGetPastUsageHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -918,6 +955,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/application/instance"] = application.NewListApplicationInstance(o.context, o.ApplicationListApplicationInstanceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/application/instance/file/{token}"] = application.NewListInstanceFiles(o.context, o.ApplicationListInstanceFilesHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -1006,6 +1047,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/vmtemp"] = vmtemp.NewUpdateVMTemp(o.context, o.VmtempUpdateVMTempHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/application/instance/file/{token}"] = application.NewUploadInstanceFile(o.context, o.ApplicationUploadInstanceFileHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

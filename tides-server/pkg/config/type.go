@@ -36,6 +36,7 @@ type Config struct {
 	AdminUser         string `json:"adminUser"`
 	AdminPassword     string `json:"adminPassword"`
 	WebSshServiceHost string `json:"webSshServiceHost"`
+	TempStoragePath   string `json:"tempStoragePath"`
 }
 
 // VcdConfig is json configuration for vCD resource
