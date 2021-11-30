@@ -21,7 +21,8 @@ export class NotebooksService {
   currentToken = ''
   currentModel = ''
   loading = true
-  wsUrl='ws://' + environment.apiIp +'/api/v1/ws/application/instance/'
+  url = environment.apiIp ? environment.apiIp : ''
+  wsUrl='ws://' + this.url +'/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
