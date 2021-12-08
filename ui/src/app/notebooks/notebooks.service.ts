@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http'
 import { environment } from '@tide-environments/environment';
 import { Router } from '@angular/router'
 import { tap, map } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms'
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 import { WebSocketService } from '@tide-shared/service/web-socket.service'
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class NotebooksService {
   currentToken = ''
   currentModel = ''
   loading = true
-  wsUrl='ws://' + environment.apiIp +'/api/v1/ws/application/instance/'
+  url = environment.apiIp ? environment.apiIp : ''
+  wsUrl='ws://' + this.url +'/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -111,6 +113,35 @@ export class NotebooksService {
   }
   closeWs () {
     this.ws.onClose(false)
+  }
+  uploadData(file: any, token:string): Observable<any> {
+    // httpOptionsMultipart.headers = httpOptionsMultipart.headers.delete('Content-Type');
+    // return this.http.post('/data', 
+    //   formData, httpOptionsMultipart);
+    const formData: any = new FormData();
+    formData.append('name', file.name);
+    formData.append('file', file);
+    const req = new HttpRequest('POST', environment.apiPrefix + '/application/instance/file/' + token, formData, {  
+      reportProgress: true ,
+    })
+    req.headers.set('Authorization', `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`)
+    const newReq = req.clone({
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      })
+    })
+    console.log('newReq', newReq);
+    
+    return this.http.request(newReq)
+  }
+  getFileList(token:string) {
+    return this.http.get(environment.apiPrefix + `/application/instance/file/${token}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      }
+    }).pipe(
+      tap(data => {})
+    )
   }
 }
 interface AppModel {
