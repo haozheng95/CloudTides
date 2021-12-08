@@ -543,6 +543,7 @@ func ListInstanceFiles(params application.ListInstanceFilesParams) middleware.Re
 			Createtime: fmt.Sprintf("%d", f.ModTime().Unix()),
 			Downlink:   downLink,
 		}
+		log.Println(f.ModTime())
 	}
 	return application.NewListInstanceFilesOK().WithPayload(payload)
 }
