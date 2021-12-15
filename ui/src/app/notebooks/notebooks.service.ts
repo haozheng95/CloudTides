@@ -1,28 +1,30 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http'
-import { environment } from '@tide-environments/environment';
-import { Router } from '@angular/router'
-import { tap, map } from 'rxjs/operators';
-import { FormBuilder, Validators } from '@angular/forms'
-import { LOCAL_STORAGE_KEY } from '@tide-config/const';
-import { WebSocketService } from '@tide-shared/service/web-socket.service'
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http'
+import {environment} from '@tide-environments/environment';
+import {Router} from '@angular/router'
+import {tap} from 'rxjs/operators';
+import {FormBuilder, Validators} from '@angular/forms'
+import {LOCAL_STORAGE_KEY} from '@tide-config/const';
+import {WebSocketService} from '@tide-shared/service/web-socket.service'
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotebooksService {
 
-  constructor(private readonly http: HttpClient,private readonly router: Router, private fb: FormBuilder,public ws:WebSocketService) { }
-  createInstanceFlag:boolean = false
+  constructor(private readonly http: HttpClient, private readonly router: Router, private fb: FormBuilder, public ws: WebSocketService) {
+  }
+
+  createInstanceFlag: boolean = false
   modifiable = true
-  appList:AppModel[] = []
+  appList: AppModel[] = []
   appLogs: LogModel[] = []
   currentToken = ''
   currentModel = ''
   loading = true
   url = environment.apiIp ? environment.apiIp : ''
-  wsUrl='ws://' + this.url +'/api/v1/ws/application/instance/'
+  wsUrl = 'ws://' + this.url + '/api/v1/ws/application/instance/'
   instanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
@@ -34,95 +36,112 @@ export class NotebooksService {
     token: ['']
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
-  getAppList () {
+
+  getAppList() {
     return this.http.get(environment.apiPrefix + '/application/instance', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
-    }).
-    pipe(
-      tap(data => {})
+    }).pipe(
+      tap(data => {
+      })
     )
   }
-  createNewApp (form) {
+
+  createNewApp(form) {
     return this.http.post(environment.apiPrefix + '/application/instance', form, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
     }).pipe(
-      tap(data => {})
+      tap(data => {
+      })
     )
   }
-  modifyApp (form) {
+
+  modifyApp(form) {
     return this.http.put(environment.apiPrefix + '/application/instance', form, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
     }).pipe(
-      tap(data => {})
+      tap(data => {
+      })
     )
   }
-  deleteApp (token) {
+
+  deleteApp(token) {
     return this.http.delete(environment.apiPrefix + `/application/instance/${token}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
     }).pipe(
-      tap(data => {})
+      tap(data => {
+      })
     )
   }
-  getApplictionList () {
-    this.appList = [] 
-    this.getAppList().subscribe((data:AppModel[]) => {
+
+  getApplictionList() {
+    this.appList = []
+    this.getAppList().subscribe((data: AppModel[]) => {
       data.forEach(el => {
         if (el.link) {
           const port = el.link.split(':')[1]
-          el.port = port.split('/')[0]  
+          el.port = port.split('/')[0]
         }
         this.appList.push(el)
       })
     })
   }
-  getAppLogs (token: string) {
+
+  getAppLogs(token: string) {
     this.currentToken = token
-    return this.http.get(environment.apiPrefix + '/application/instance/'+ token,{
+    return this.http.get(environment.apiPrefix + '/application/instance/' + token, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
     }).pipe(
-      tap(data => {})
+      tap(data => {
+      })
     ).subscribe(
-      (data: any[]) => {        
+      (data: any[]) => {
         this.appLogs = data
         this.loading = false
         this.buildWS(token)
       }
     )
   }
+
   unsub: any
-  buildWS (token) {
-    this.ws.connect(this.wsUrl+token)    
+
+  buildWS(token) {
+    this.ws.connect(this.wsUrl + token)
     this.ws.flag = true
     this.unsub = this.ws.messageSubject.subscribe(
       data => {
         // 剔除第一条，加入最新一条
-        this.appLogs.shift()
+        if (this.appLogs.length > 200) {
+          this.appLogs.shift()
+        }
+
         this.appLogs.push(data)
       }
     )
   }
-  closeWs () {
+
+  closeWs() {
     this.ws.onClose(false)
   }
-  uploadData(file: any, token:string): Observable<any> {
+
+  uploadData(file: any, token: string): Observable<any> {
     // httpOptionsMultipart.headers = httpOptionsMultipart.headers.delete('Content-Type');
     // return this.http.post('/data', 
     //   formData, httpOptionsMultipart);
     const formData: any = new FormData();
     formData.append('name', file.name);
     formData.append('file', file);
-    const req = new HttpRequest('POST', environment.apiPrefix + '/application/instance/file/' + token, formData, {  
-      reportProgress: true ,
+    const req = new HttpRequest('POST', environment.apiPrefix + '/application/instance/file/' + token, formData, {
+      reportProgress: true,
     })
     req.headers.set('Authorization', `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`)
     const newReq = req.clone({
@@ -131,19 +150,22 @@ export class NotebooksService {
       })
     })
     console.log('newReq', newReq);
-    
+
     return this.http.request(newReq)
   }
-  getFileList(token:string) {
+
+  getFileList(token: string) {
     return this.http.get(environment.apiPrefix + `/application/instance/file/${token}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
     }).pipe(
-      tap(data => {})
+      tap(data => {
+      })
     )
   }
 }
+
 interface AppModel {
   instanceName: string
   link: string
@@ -157,6 +179,7 @@ interface AppModel {
   sshUser: string
   extra: null | ExtraModel
 }
+
 interface ExtraModel {
   appType: string,
   sshHost: string,
@@ -165,6 +188,7 @@ interface ExtraModel {
   sshUser: string
   cmd: string
 }
+
 interface LogModel {
   content: string
   date: string

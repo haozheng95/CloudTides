@@ -66,6 +66,9 @@ type ListApplicationInstanceOKBodyItems0 struct {
 	// app type
 	AppType string `json:"appType,omitempty"`
 
+	// create at
+	CreateAt string `json:"createAt,omitempty"`
+
 	// extra
 	Extra interface{} `json:"extra,omitempty"`
 
@@ -77,6 +80,9 @@ type ListApplicationInstanceOKBodyItems0 struct {
 
 	// port
 	Port string `json:"port,omitempty"`
+
+	// running time
+	RunningTime string `json:"runningTime,omitempty"`
 
 	// ssh host
 	SSHHost string `json:"sshHost,omitempty"`

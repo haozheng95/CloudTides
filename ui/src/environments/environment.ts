@@ -6,9 +6,9 @@ import { base } from './base';
 
 export const environment = {
   production: false,
-  apiPrefix: 'http://120.133.15.12:8033/api/v1',
-  webssh: 'http://120.133.15.12:8888',
-  apiIp: '120.133.15.12:8033'
+  apiPrefix: 'http://127.0.0.1:8033/api/v1',
+  webssh: 'http://127.0.0.1:8888',
+  apiIp: '127.0.0.1:8033'
   // apiPrefix: 'http://127.0.0.1:8033/api/v1',
   // webssh: 'http://127.0.0.1:8888',
   // apiIp: '127.0.0.1:8033'

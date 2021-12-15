@@ -46,6 +46,9 @@ func init() {
                   "appType": {
                     "type": "string"
                   },
+                  "createAt": {
+                    "type": "string"
+                  },
                   "extra": {
                     "type": "object"
                   },
@@ -56,6 +59,9 @@ func init() {
                     "type": "string"
                   },
                   "port": {
+                    "type": "string"
+                  },
+                  "runningTime": {
                     "type": "string"
                   },
                   "sshHost": {
@@ -7970,6 +7976,9 @@ func init() {
         "appType": {
           "type": "string"
         },
+        "createAt": {
+          "type": "string"
+        },
         "extra": {
           "type": "object"
         },
@@ -7980,6 +7989,9 @@ func init() {
           "type": "string"
         },
         "port": {
+          "type": "string"
+        },
+        "runningTime": {
           "type": "string"
         },
         "sshHost": {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/go-openapi/runtime"
@@ -112,8 +113,10 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		if jsonByte, err := json.Marshal(&jsonMap); err != nil {
 			log.Println(err)
 		} else {
+			jsonTemp := make(map[string]string)
+			jsonTemp["base64"] = base64.StdEncoding.EncodeToString(jsonByte)
 			row["extra"] = string(jsonByte)
-			extra = jsonMap
+			extra = jsonTemp
 		}
 	}
 	var data models.Application
@@ -185,12 +188,10 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 	db.Where("uid = ?", fmt.Sprintf("%d", uid)).Find(&data)
 
 	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(data), len(data))
-	var jsonTemp map[string]string
+	jsonTemp := make(map[string]string)
 	for i := range data {
 		if len(data[i].Extra) > 0 {
-			if json.Unmarshal([]byte(data[i].Extra), &jsonTemp) != nil {
-				jsonTemp = nil
-			}
+			jsonTemp["base64"] = base64.StdEncoding.EncodeToString([]byte(data[i].Extra))
 		} else {
 			jsonTemp = nil
 		}
@@ -206,6 +207,8 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 			SSHUser:      data[i].SshUser,
 			Port:         data[i].Port,
 			Extra:        jsonTemp,
+			CreateAt:     fmt.Sprintf("%d", data[i].CreatedAt.Unix()),
+			RunningTime:  fmt.Sprintf("%d", time.Now().Unix()-data[i].CreatedAt.Unix()),
 		}
 
 		payload[i] = tmp

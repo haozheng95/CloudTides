@@ -55,7 +55,7 @@ jQuery(function($){
       messages = {1: 'This client is connecting ...', 2: 'This client is already connnected.'},
       key_max_size = 16384,
       fields = ['hostname', 'port', 'username'],
-      form_keys = fields.concat(['password', 'totp']),
+      form_keys = fields.concat(['password', 'totp','cmd']),
       opts_keys = ['bgcolor', 'title', 'encoding', 'command', 'term', 'fontsize', 'fontcolor'],
       url_form_data = {},
       url_opts_data = {},
@@ -118,7 +118,7 @@ jQuery(function($){
 
   function decode_password(encoded) {
     try {
-      return window.atob(encoded);
+      return window.decodeURIComponent(encoded);
     } catch (e) {
        console.error(e);
     }
@@ -134,7 +134,9 @@ jQuery(function($){
       pair = arr[i].split('=');
       key = pair[0].trim().toLowerCase();
       val = pair.slice(1).join('=').trim();
-
+      if (key === 'cmd') {
+        cmd = unescape(val).replace(/\+/g, ' ')
+      }
       if (form_keys.indexOf(key) >= 0) {
         form_map[key] = val;
       } else if (opts_keys.indexOf(key) >=0) {
@@ -538,7 +540,7 @@ jQuery(function($){
       }
       setTimeout(function () {
         // term.write(cmd)
-        sock.send(JSON.stringify({'data': cmd+'\r'}))
+        sock.send(JSON.stringify({'data': cmd+' \r'}))
       }, 100)
       setTimeout(function () {
         // term.write(cmd)
