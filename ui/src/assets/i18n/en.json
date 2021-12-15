@@ -129,6 +129,7 @@
         "PASSWORD": "Password",
         "PASSWORD_HELP_TEXT": "Note: username and password here will only be used for adding resources. It will not be stored in this website.",
         "CANCEL": "Cancel",
+        "CLOSE": "Close",
         "SAVE": "Save",
         "RESOURCE_PLACEHOLDER": "Resource Name",
         "DATACENTER_PLACEHOLDER": "Datacenter Name",
@@ -160,6 +161,7 @@
         "MEMORY": "Memory",
         "DISK": "Disk",
         "CANCEL": "Cancel",
+        "CLOSE": "Close",
         "SURE": "Sure",
         "SAVE": "Save",
         "SELECT_START": "Select the percentage when to start",
@@ -261,7 +263,15 @@
         "CREATETIME": "Create time",
         "TOTALRUNTIME": "Total run time",
         "INSTANCE_TYPE": "Instance type",
-        "PLACE_CONFIRM": "Are you sure you want to delete this application?"
+        "PLACE_CONFIRM": "Are you sure you want to delete this application?",
+        "INSTANCE_DETAILS": "Instance details",
+        "FILE_UPLOAD": "File Upload",
+        "FILE_LIST": "File list",
+        "FILE_NAME": "File name",
+        "UPLOAD_TIME": "Upload time",
+        "FILE_SIZE": "File size",
+        "DRAGHERE": "Drag the file here, or click",
+        "UPLOAD": "upload"
       }
 
     },
