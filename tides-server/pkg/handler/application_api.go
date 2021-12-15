@@ -188,9 +188,10 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 	db.Where("uid = ?", fmt.Sprintf("%d", uid)).Find(&data)
 
 	payload := make([]*application.ListApplicationInstanceOKBodyItems0, len(data), len(data))
-	jsonTemp := make(map[string]string)
+	var jsonTemp map[string]string
 	for i := range data {
 		if len(data[i].Extra) > 0 {
+			jsonTemp = make(map[string]string)
 			jsonTemp["base64"] = base64.StdEncoding.EncodeToString([]byte(data[i].Extra))
 		} else {
 			jsonTemp = nil
