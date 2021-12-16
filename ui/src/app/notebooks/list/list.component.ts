@@ -59,24 +59,28 @@ export class ListComponent implements OnInit {
     form.target = '_blank'
     const body = document.documentElement
     body.appendChild(form)
-    const opts = {
-      hostname: app.sshHost,
-      port: app.sshPort,
-      username: app.sshUser,
-      password: app.sshPassword,
-      privatekey: '',
-      cmd: app.extra.cmd,
-      // passphrase: '',
-      totp: ''
-    }
-    for (const key in opts) {
+    // const opts = {
+    //   hostname: app.sshHost,
+    //   port: app.sshPort,
+    //   username: app.sshUser,
+    //   password: app.sshPassword,
+    //   privatekey: '',
+    //   cmd: app.extra.cmd,
+    //   // passphrase: '',
+    //   totp: ''
+    // }
+    // for (const key in opts) {
+    //   const input = document.createElement('input')
+    //   input.type = 'hidden'
+    //   input.name = key
+    //   input.value = opts[key]
+    //   form.appendChild(input)
+    // }
       const input = document.createElement('input')
       input.type = 'hidden'
-      input.name = key
-      input.value = opts[key]
+      input.name = 'base64'
+      input.value = app.extra.base64
       form.appendChild(input)
-    }
-
     setTimeout(() => {
       form.submit()
       form = null
@@ -219,7 +223,10 @@ interface AppModel {
   sshPassword: string
   sshPort: string
   sshUser: string
-  extra: null | ExtraModel
+  extra: null | Base64
+}
+interface Base64 {
+  base64: string 
 }
 interface ExtraModel {
   appType: string,

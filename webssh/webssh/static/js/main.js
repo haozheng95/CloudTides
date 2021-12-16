@@ -678,7 +678,6 @@ jQuery(function($){
 
 
   function connect_without_options() {
-    console.log(111)
     // use data from the form
     var form = document.querySelector(form_id),
         inputs = form.querySelectorAll('input[type="file"]'),
@@ -817,10 +816,22 @@ jQuery(function($){
       const arr = el.split('=')
       req[arr[0]] = arr[1] ? arr[1] : ''
     })
-    req.password = unescape(req.password)
-    console.log(unescape(req.cmd))
-    cmd = unescape(req.cmd).replace(/\+/g, ' ')
-    connect(req)
+    // req.password = unescape(req.password)
+    // console.log(unescape(req.cmd))
+    // cmd = unescape(req.cmd).replace(/\+/g, ' ')
+    $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
+      const obj = {
+        hostname: data.sshHost,
+        port: data.sshPort,
+        username: data.sshuser,
+        password: data.sshPassword,
+        cmd: data.cmd,
+        privatekey: '',
+        totp: ''
+      }
+      console.log('解码')
+      connect(obj)
+    })
   }
 
   function cross_origin_connect(event)
