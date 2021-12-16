@@ -855,6 +855,7 @@ jQuery(function($){
     }
     console.log('解码',obj)
     window.addEventListener('message', cross_origin_connect, false);
+    cmd = data.cmd
     connect(obj)
   })
 function cross_origin_connect(event)
