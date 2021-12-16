@@ -24,7 +24,7 @@
   <clr-dg-row class="clr-align-items-center" *clrDgItems="let item of nd.appList" [clrDgItem]="item">
     <clr-dg-cell>{{item.instanceName}}</clr-dg-cell>
     <clr-dg-cell>{{item.createAt*1000 | date:'yyyy-MM-dd'}}</clr-dg-cell>
-    <clr-dg-cell>{{item.runningtime*1000 | date:'yyyy-MM-dd'}}</clr-dg-cell>
+    <clr-dg-cell>{{item.runningTime | formatSecond}}</clr-dg-cell>
     <clr-dg-cell>
       {{item.appType}}
     </clr-dg-cell>
