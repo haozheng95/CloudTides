@@ -809,32 +809,55 @@ jQuery(function($){
   });
   var cmd;
   window.onload = function () {
-    const params = window.location.href.split('?')[1]
-    const query = params.split('&')
-    const req = {}
-    query.forEach(el => {
-      const arr = el.split('=')
-      req[arr[0]] = arr[1] ? arr[1] : ''
-    })
-    // req.password = unescape(req.password)
-    // console.log(unescape(req.cmd))
-    // cmd = unescape(req.cmd).replace(/\+/g, ' ')
-    $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
-      const obj = {
-        hostname: data.sshHost,
-        port: data.sshPort,
-        username: data.sshuser,
-        password: data.sshPassword,
-        cmd: data.cmd,
-        privatekey: '',
-        totp: ''
-      }
-      console.log('解码')
-      connect(obj)
-    })
+    // const params = window.location.href.split('?')[1]
+    // const query = params.split('&')
+    // const req = {}
+    // query.forEach(el => {
+    //   const arr = el.split('=')
+    //   req[arr[0]] = arr[1] ? arr[1] : ''
+    // })
+    // // req.password = unescape(req.password)
+    // // console.log(unescape(req.cmd))
+    // // cmd = unescape(req.cmd).replace(/\+/g, ' ')
+    // $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
+    //   const obj = {
+    //     hostname: data.sshHost,
+    //     port: data.sshPort,
+    //     username: data.sshuser,
+    //     password: data.sshPassword,
+    //     cmd: data.cmd,
+    //     privatekey: '',
+    //     totp: ''
+    //   }
+    //   console.log('解码',obj)
+    //   connect(obj)
+    // })
   }
-
-  function cross_origin_connect(event)
+  const params = window.location.href.split('?')[1]
+  const query = params.split('&')
+  const req = {}
+  query.forEach(el => {
+    const arr = el.split('=')
+    req[arr[0]] = arr[1] ? arr[1] : ''
+  })
+  // req.password = unescape(req.password)
+  // console.log(unescape(req.cmd))
+  // cmd = unescape(req.cmd).replace(/\+/g, ' ')
+  $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
+    const obj = {
+      hostname: data.sshHost,
+      port: data.sshPort,
+      username: data.sshuser,
+      password: data.sshPassword,
+      cmd: data.cmd,
+      privatekey: '',
+      totp: ''
+    }
+    console.log('解码',obj)
+    window.addEventListener('message', cross_origin_connect, false);
+    connect(obj)
+  })
+function cross_origin_connect(event)
   {
     console.log(event.origin);
     var prop = 'connect',
@@ -859,8 +882,6 @@ jQuery(function($){
       event_origin = undefined;
     }
   }
-
-  window.addEventListener('message', cross_origin_connect, false);
 
   if (document.fonts) {
     document.fonts.ready.then(
