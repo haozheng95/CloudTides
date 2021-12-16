@@ -22,12 +22,12 @@ services:
     depends_on:
       - database
     entrypoint: ["/build/backend"]
-  webssh:
-    build: ./webssh
-    ports:
-      - "8888:8888"
-    depends_on:
-      - backend
+#  webssh:
+#    build: ./webssh
+#    ports:
+#      - "8888:8888"
+#    depends_on:
+#      - backend
   frontend:
     build:
       context: ./ui
@@ -38,10 +38,9 @@ services:
       # One-way volume to use node_modules from inside image
       - /app/node_modules
     ports:
-      - "4200:4200"
+      - "80:80"
     depends_on:
       - backend
-      - webssh
 
 volumes:
   server_db:
