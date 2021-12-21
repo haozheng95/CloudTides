@@ -7,7 +7,6 @@ import {FormBuilder, Validators} from '@angular/forms'
 import {LOCAL_STORAGE_KEY} from '@tide-config/const';
 import {WebSocketService} from '@tide-shared/service/web-socket.service'
 import {Observable} from 'rxjs';
-import { Interface } from 'readline';
 
 @Injectable({
   providedIn: 'root'

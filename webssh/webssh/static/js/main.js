@@ -821,6 +821,11 @@ jQuery(function($){
   // console.log(unescape(req.cmd))
   // cmd = unescape(req.cmd).replace(/\+/g, ' ')
   const base64 =  localStorage.getItem(req.token)
+  $.ajaxSetup({
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+    }
+  })
   $.post(window.location.origin+'/api/decoder', JSON.stringify({base64}), data => {
     const obj = {
       hostname: data.sshHost,
