@@ -809,29 +809,6 @@ jQuery(function($){
   });
   var cmd;
   window.onload = function () {
-    // const params = window.location.href.split('?')[1]
-    // const query = params.split('&')
-    // const req = {}
-    // query.forEach(el => {
-    //   const arr = el.split('=')
-    //   req[arr[0]] = arr[1] ? arr[1] : ''
-    // })
-    // // req.password = unescape(req.password)
-    // // console.log(unescape(req.cmd))
-    // // cmd = unescape(req.cmd).replace(/\+/g, ' ')
-    // $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
-    //   const obj = {
-    //     hostname: data.sshHost,
-    //     port: data.sshPort,
-    //     username: data.sshuser,
-    //     password: data.sshPassword,
-    //     cmd: data.cmd,
-    //     privatekey: '',
-    //     totp: ''
-    //   }
-    //   console.log('解码',obj)
-    //   connect(obj)
-    // })
   }
   const params = window.location.href.split('?')[1]
   const query = params.split('&')
@@ -843,7 +820,8 @@ jQuery(function($){
   // req.password = unescape(req.password)
   // console.log(unescape(req.cmd))
   // cmd = unescape(req.cmd).replace(/\+/g, ' ')
-  $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.token}), data => {
+  const base64 =  localStorage.getItem(req.token)
+  $.post(window.location.origin+'/api/decoder', JSON.stringify({base64}), data => {
     const obj = {
       hostname: data.sshHost,
       port: data.sshPort,
