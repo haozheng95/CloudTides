@@ -33,6 +33,22 @@ var (
 	sshKeyPath = ""         //ssh id_rsa.id path"
 )
 
+func AchieveHost(params application.AchieveHostParams) middleware.Responder {
+
+	if !VerifyUser(params.HTTPRequest) {
+		return application.NewCreateApplicationInstanceUnauthorized()
+	}
+
+	result := make([]*application.AchieveHostOKBodyItems0, 1)
+	result[0] = &application.AchieveHostOKBodyItems0{
+		Address: "120.133.15.12",
+		SSHPass: "ca$hc0w",
+		SSHPort: "20023",
+		SSHUser: "root",
+	}
+	return application.NewAchieveHostOK().WithPayload(result)
+}
+
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
 
 	if !VerifyUser(params.HTTPRequest) {

@@ -364,6 +364,49 @@ func init() {
         }
       }
     },
+    "/application/instance/hosts": {
+      "get": {
+        "description": "achieve host",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "achieveHost",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string"
+                  },
+                  "sshPass": {
+                    "type": "string"
+                  },
+                  "sshPort": {
+                    "type": "string"
+                  },
+                  "sshUser": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
     "/application/instance/{token}": {
       "get": {
         "description": "watch application instance logs",
@@ -4532,6 +4575,35 @@ func init() {
         }
       }
     },
+    "/application/instance/hosts": {
+      "get": {
+        "description": "achieve host",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "achieveHost",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AchieveHostOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
     "/application/instance/{token}": {
       "get": {
         "description": "watch application instance logs",
@@ -7889,6 +7961,23 @@ func init() {
     }
   },
   "definitions": {
+    "AchieveHostOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "sshPass": {
+          "type": "string"
+        },
+        "sshPort": {
+          "type": "string"
+        },
+        "sshUser": {
+          "type": "string"
+        }
+      }
+    },
     "AddVcdResourceOKBodyResults": {
       "type": "object",
       "properties": {

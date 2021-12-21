@@ -49,6 +49,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.ApplicationAchieveHostHandler = application.AchieveHostHandlerFunc(handler.AchieveHost)
+
 	api.ApplicationDownInstanceFileHandler = application.DownInstanceFileHandlerFunc(handler.DownInstanceFile)
 
 	api.ApplicationListInstanceFilesHandler = application.ListInstanceFilesHandlerFunc(handler.ListInstanceFiles)

@@ -14,12 +14,12 @@ from webssh.settings import (
 def make_handlers(loop, options):
     host_keys_settings = get_host_keys_settings(options)
     policy = get_policy_setting(options, host_keys_settings)
-
+    prefix = r"/webssh"
     handlers = [
-        (r'/', IndexHandler, dict(loop=loop, policy=policy,
+        (prefix, IndexHandler, dict(loop=loop, policy=policy,
                                   host_keys_settings=host_keys_settings)),
-        (r'/ws', WsockHandler, dict(loop=loop)),
-        (r'/api/decoder', DecoderHandler, dict(loop=loop))
+        (prefix + r'/ws', WsockHandler, dict(loop=loop)),
+        (prefix  + r'/api/decoder', DecoderHandler, dict(loop=loop))
     ]
     return handlers
 
