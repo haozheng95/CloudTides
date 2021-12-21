@@ -7,6 +7,7 @@ import {FormBuilder, Validators} from '@angular/forms'
 import {LOCAL_STORAGE_KEY} from '@tide-config/const';
 import {WebSocketService} from '@tide-shared/service/web-socket.service'
 import {Observable} from 'rxjs';
+import { Interface } from 'readline';
 
 @Injectable({
   providedIn: 'root'
@@ -163,7 +164,7 @@ export class NotebooksService {
     )
   }
   getHostNameList () {
-    return this.http.get<Data>(environment.apiPrefix + `/application/instance/file`, {
+    return this.http.get<Data>(environment.apiPrefix + `/application/instance/hosts`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }

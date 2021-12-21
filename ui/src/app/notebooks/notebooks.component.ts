@@ -25,7 +25,7 @@ export class NotebooksComponent implements OnInit {
     )
   }
   noteBook: NotebooksService
-  hostNameList: any[] = []
+  hostNameList: HostType[] = []
   // error tip flag
   loadingFlag:boolean = false
   errorMsg = ''
@@ -52,7 +52,7 @@ export class NotebooksComponent implements OnInit {
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: ['jupyter'],
-    sshHost: [''],
+    sshHost: [{}],
     sshPassword: [''],
     sshPort: [''],
     sshUser: [''],
@@ -61,7 +61,7 @@ export class NotebooksComponent implements OnInit {
   gromacsInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
     port: '',
-    sshHost: '',
+    sshHost: {},
     sshPassword: '',
     sshPort: '',
     sshUser: '',
@@ -76,7 +76,7 @@ export class NotebooksComponent implements OnInit {
       instanceName: '',
       port: '',
       appType: '',
-      sshHost: '',
+      sshHost: {},
       sshPassword: '',
       sshPort: '',
       sshUser: '',
@@ -85,7 +85,7 @@ export class NotebooksComponent implements OnInit {
     this.gromacsInstanceForm.setValue({
       instanceName: '',
       port: '',
-      sshHost: '',
+      sshHost: {},
       sshPassword: '',
       sshPort: '',
       sshUser: '',
@@ -114,7 +114,7 @@ export class NotebooksComponent implements OnInit {
             instanceName: '',
             port: '',
             appType: '',
-            sshHost: '',
+            sshHost: {},
             sshPassword: '',
             sshPort: '',
             sshUser: ''
@@ -148,7 +148,7 @@ export class NotebooksComponent implements OnInit {
           instanceName: '',
           port: '',
           appType: '',
-          sshHost: '',
+          sshHost: {},
           sshPassword: '',
           sshPort: '',
           sshUser: ''
@@ -166,4 +166,10 @@ export class NotebooksComponent implements OnInit {
 interface CreateData {
   link: string
   token: string
+}
+interface HostType {
+  address:string
+  sshPass: string
+  sshPort: string
+  sshUser: string
 }
