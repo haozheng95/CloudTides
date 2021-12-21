@@ -85,10 +85,8 @@ export class NotebooksService {
     this.appList = []
     this.getAppList().subscribe((data: AppModel[]) => {
       data.forEach(el => {
-        if (el.link) {
-          const port = el.link.split(':')[1]
-          el.port = port.split('/')[0]
-        }
+        // Store hash
+        localStorage.setItem(el.token, el.token)
         this.appList.push(el)
       })
     })
@@ -164,6 +162,16 @@ export class NotebooksService {
       })
     )
   }
+  getHostNameList () {
+    return this.http.get<Data>(environment.apiPrefix + `/application/instance/file`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
+      }
+    }).pipe(
+      tap(data => {
+      })
+    )
+  }
 }
 
 interface AppModel {
@@ -194,4 +202,9 @@ interface LogModel {
   date: string
   leve: string
   source: string
+}
+interface Data {
+  data: any
+  status: number
+  messgae: string
 }

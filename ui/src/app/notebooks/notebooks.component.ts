@@ -18,8 +18,14 @@ export class NotebooksComponent implements OnInit {
     this.gromacsInstanceForm.get('appType').disable({
       onlySelf: true
     })
+    this.noteBook.getHostNameList().subscribe(
+      data => {
+        this.hostNameList = data.data
+      }
+    )
   }
   noteBook: NotebooksService
+  hostNameList: any[] = []
   // error tip flag
   loadingFlag:boolean = false
   errorMsg = ''

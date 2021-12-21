@@ -78,8 +78,8 @@ export class ListComponent implements OnInit {
     // }
       const input = document.createElement('input')
       input.type = 'hidden'
-      input.name = 'base64'
-      input.value = app.extra.base64
+      input.name = 'token'
+      input.value = app.token
       form.appendChild(input)
     setTimeout(() => {
       form.submit()

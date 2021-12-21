@@ -843,7 +843,7 @@ jQuery(function($){
   // req.password = unescape(req.password)
   // console.log(unescape(req.cmd))
   // cmd = unescape(req.cmd).replace(/\+/g, ' ')
-  $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.base64}), data => {
+  $.post('http://127.0.0.1:8888/api/decoder', JSON.stringify({base64: req.token}), data => {
     const obj = {
       hostname: data.sshHost,
       port: data.sshPort,
