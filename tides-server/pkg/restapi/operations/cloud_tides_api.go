@@ -64,6 +64,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ApplicationWsWatchApplicationInstanceLogsHandler: application.WsWatchApplicationInstanceLogsHandlerFunc(func(params application.WsWatchApplicationInstanceLogsParams) middleware.Responder {
 			return middleware.NotImplemented("operation application.WsWatchApplicationInstanceLogs has not yet been implemented")
 		}),
+		ApplicationAchieveHostHandler: application.AchieveHostHandlerFunc(func(params application.AchieveHostParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.AchieveHost has not yet been implemented")
+		}),
 		ResourceActivateResourceHandler: resource.ActivateResourceHandlerFunc(func(params resource.ActivateResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ActivateResource has not yet been implemented")
 		}),
@@ -302,6 +305,8 @@ type CloudTidesAPI struct {
 	UserModifyUserHandler user.ModifyUserHandler
 	// ApplicationWsWatchApplicationInstanceLogsHandler sets the operation handler for the ws watch application instance logs operation
 	ApplicationWsWatchApplicationInstanceLogsHandler application.WsWatchApplicationInstanceLogsHandler
+	// ApplicationAchieveHostHandler sets the operation handler for the achieve host operation
+	ApplicationAchieveHostHandler application.AchieveHostHandler
 	// ResourceActivateResourceHandler sets the operation handler for the activate resource operation
 	ResourceActivateResourceHandler resource.ActivateResourceHandler
 	// OrgAddOrgHandler sets the operation handler for the add org operation
@@ -518,6 +523,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ApplicationWsWatchApplicationInstanceLogsHandler == nil {
 		unregistered = append(unregistered, "application.WsWatchApplicationInstanceLogsHandler")
+	}
+	if o.ApplicationAchieveHostHandler == nil {
+		unregistered = append(unregistered, "application.AchieveHostHandler")
 	}
 	if o.ResourceActivateResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ActivateResourceHandler")
@@ -811,6 +819,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/ws/application/instance/{token}"] = application.NewWsWatchApplicationInstanceLogs(o.context, o.ApplicationWsWatchApplicationInstanceLogsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/application/instance/hosts"] = application.NewAchieveHost(o.context, o.ApplicationAchieveHostHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

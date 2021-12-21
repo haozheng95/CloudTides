@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - "4201:5432"
+      - "5432:5432"
     volumes:
       - server_db:/var/lib/postgresql/data
   backend:
@@ -16,14 +16,20 @@ services:
     env_file:
       - .env
     ports:
-      - "80:80"
+      - "8033:8033"
     stdin_open: true
     tty: true
     depends_on:
       - database
     entrypoint: ["/build/backend"]
+  webssh:
+    build: ./webssh
+    ports:
+      - "8888:8888"
+    depends_on:
+      - backend
   frontend:
-    build: 
+    build:
       context: ./ui
       args:
         - MOD=dev
@@ -32,9 +38,10 @@ services:
       # One-way volume to use node_modules from inside image
       - /app/node_modules
     ports:
-      - "4200:4200"
+      - "80:80"
     depends_on:
       - backend
+#      - webssh
 
-volumes: 
+volumes:
   server_db:
