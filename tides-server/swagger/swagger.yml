@@ -2631,6 +2631,35 @@ paths:
         403:
           description: 'Forbidden'
 
+  /application/instance/hosts:
+    get:
+      operationId: 'achieveHost'
+      description: 'achieve host'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                address:
+                  type: string
+                sshUser:
+                  type: string
+                sshPort:
+                  type: string
+                sshPass:
+                  type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+
 definitions:
   ResourceAddItem:
     type: object

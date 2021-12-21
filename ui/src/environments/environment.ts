@@ -7,9 +7,9 @@ const hostName = window.location.hostname
 const http = window.location.protocol
 export const environment = {
   production: false,
-  apiPrefix: http+ '//' +hostName+':8033/api/v1',
-  webssh: http+ '//' +hostName+':8888',
-  apiIp: hostName+':8033'
+  apiPrefix: http+"//"+hostName+':80/api/v1',
+  // webssh: http+"//"+hostName+':8888',
+  apiIp: hostName+':80'
   // apiPrefix: 'http://127.0.0.1:8033/api/v1',
   // webssh: 'http://127.0.0.1:8888',
   // apiIp: '127.0.0.1:8033'
