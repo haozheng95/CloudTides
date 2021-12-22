@@ -116,7 +116,7 @@ export class ListComponent implements OnInit {
   }
   sure () {
     this.nd.deleteApp(this.token).subscribe(data => {
-      console.log(data);
+      localStorage.removeItem(this.token)
       this.sureDeleteFalg = false
       this.background = false
       this.nd.getApplictionList()
