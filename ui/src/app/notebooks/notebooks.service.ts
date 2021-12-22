@@ -30,10 +30,10 @@ export class NotebooksService {
     port: ['', Validators.required],
     appType: [''],
     sshHost: [''],
-    sshPassword: [''],
-    sshPort: [''],
-    sshUser: [''],
-    token: ['']
+    // sshPassword: [''],
+    // sshPort: [''],
+    // sshUser: [''],
+    // token: ['']
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
 
@@ -85,8 +85,10 @@ export class NotebooksService {
     this.appList = []
     this.getAppList().subscribe((data: AppModel[]) => {
       data.forEach(el => {
-        // Store hash
-        localStorage.setItem(el.token, el.token)
+        if (el.extra) {
+          // Store hash
+          localStorage.setItem(el.token, el.extra.base64)
+        }
         this.appList.push(el)
       })
     })
@@ -163,7 +165,7 @@ export class NotebooksService {
     )
   }
   getHostNameList () {
-    return this.http.get<Data>(environment.apiPrefix + `/application/instance/hosts`, {
+    return this.http.get<HostType[]>(environment.apiPrefix + `/application/instance/hosts`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN)}`
       }
@@ -189,12 +191,7 @@ interface AppModel {
 }
 
 interface ExtraModel {
-  appType: string,
-  sshHost: string,
-  sshPassword: string
-  sshPort: string
-  sshUser: string
-  cmd: string
+  base64: string
 }
 
 interface LogModel {
@@ -203,8 +200,9 @@ interface LogModel {
   leve: string
   source: string
 }
-interface Data {
-  data: any
-  status: number
-  messgae: string
+export interface HostType {
+  address:string
+  sshPass: string
+  sshPort: string
+  sshUser: string
 }

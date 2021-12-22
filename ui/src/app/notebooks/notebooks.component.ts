@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router'
-import { NotebooksService } from './notebooks.service'
+import { NotebooksService, HostType } from './notebooks.service'
 import { FormBuilder, Validators } from '@angular/forms'
 
 @Component({
@@ -20,7 +20,7 @@ export class NotebooksComponent implements OnInit {
     })
     this.noteBook.getHostNameList().subscribe(
       data => {
-        this.hostNameList = data.data
+        this.hostNameList = data
       }
     )
   }
@@ -52,23 +52,13 @@ export class NotebooksComponent implements OnInit {
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: ['jupyter'],
-    sshHost: [{}],
-    sshPassword: [''],
-    sshPort: [''],
-    sshUser: [''],
-    token: ['']
+    sshHost: [{}]
+    // token: ['']
   })
   gromacsInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
-    port: '',
-    sshHost: {},
-    sshPassword: '',
-    sshPort: '',
-    sshUser: '',
-    // cpu: ['', Validators.required],
-    // version: ['', Validators.required],
+    sshHost: [''],
     appType: ['gromacs'],
-    // num: [1]
   })
   cancel () {    
     this.noteBook.createInstanceFlag = false
@@ -76,23 +66,13 @@ export class NotebooksComponent implements OnInit {
       instanceName: '',
       port: '',
       appType: '',
-      sshHost: {},
-      sshPassword: '',
-      sshPort: '',
-      sshUser: '',
-      token: ''
+      sshHost: ''
+      // token: ''
     })
     this.gromacsInstanceForm.setValue({
       instanceName: '',
-      port: '',
-      sshHost: {},
-      sshPassword: '',
-      sshPort: '',
-      sshUser: '',
-      // cpu: ['', Validators.required],
-      // version: ['', Validators.required],
+      sshHost: '',
       appType: ['gromacs'],
-      // num: [1]
       })
     this.errorMsg = ''
     this.loadingFlag = false
@@ -102,11 +82,15 @@ export class NotebooksComponent implements OnInit {
     this.errorMsg = ''
     this.loadingFlag = true
     const data = form.getRawValue()
+    const host = this.hostNameList.find(el => el.address === data.sshHost)
+    data.sshPassword = host.sshPass
+    data.sshPort = host.sshPort
+    data.sshUser = host.sshUser
     if (data.appType === 'jupyter') {
       const str = 'HOME.APPLICATION.Create'
       data.sshPort = +data.sshPort
       if (this.nb.createInstanceTitle === str) {
-        delete data.token
+        // delete data.token
         this.nb.createNewApp(data).subscribe((data:CreateData) => {
           this.loadingFlag = false
           this.noteBook.createInstanceFlag = false
@@ -114,10 +98,7 @@ export class NotebooksComponent implements OnInit {
             instanceName: '',
             port: '',
             appType: '',
-            sshHost: {},
-            sshPassword: '',
-            sshPort: '',
-            sshUser: ''
+            sshHost: ''
           })
           window.open('http://' + data.link, "_blank")
         },
@@ -139,19 +120,14 @@ export class NotebooksComponent implements OnInit {
         })
       }
     } else if (data.appType === 'gromacs') {
-      console.log('创建 gromace');
       data.sshPort = +data.sshPort
       this.nb.createNewApp(data).subscribe((data:CreateData) => {
         this.loadingFlag = false
         this.noteBook.createInstanceFlag = false
         this.gromacsInstanceForm.setValue({
           instanceName: '',
-          port: '',
           appType: '',
-          sshHost: {},
-          sshPassword: '',
-          sshPort: '',
-          sshUser: ''
+          sshHost: ''
         })
       },
       err => {
@@ -166,10 +142,4 @@ export class NotebooksComponent implements OnInit {
 interface CreateData {
   link: string
   token: string
-}
-interface HostType {
-  address:string
-  sshPass: string
-  sshPort: string
-  sshUser: string
 }
