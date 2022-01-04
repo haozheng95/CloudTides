@@ -15,6 +15,7 @@ export class RegisterService {
 
   }
 
+  authority = ''
   register(
     username = '',
     password = '',
@@ -32,6 +33,7 @@ export class RegisterService {
   }
 
   inRegisterPage() {
+    this.authority = localStorage.getItem('authority')
     return this.document.location.pathname === '/cloudtides' + REGISTER_PATH;
   }
 }

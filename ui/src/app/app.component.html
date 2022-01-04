@@ -8,10 +8,10 @@
           </a>
         </div>
         <div class="header-nav">
-          <a class="nav-link nav-text" routerLink="/home" routerLinkActive='active' [routerLinkActiveOptions]="{exact:
+          <!-- <a class="nav-link nav-text" routerLink="/home" routerLinkActive='active' [routerLinkActiveOptions]="{exact:
             true}">{{ 'nav.first' | translate}}</a>
           <a class="nav-link nav-text" routerLink="/vcpp" routerLinkActive='active' [routerLinkActiveOptions]="{exact:
-            true}">{{ 'nav.second' | translate}}</a>
+            true}">{{ 'nav.second' | translate}}</a> -->
           <!-- <a class="nav-link nav-text" routerLink="/vin" routerLinkActive='active' [routerLinkActiveOptions]="{exact:
             true}">{{ 'nav.third' | translate}}</a> -->
           <a class="nav-link nav-text" title="Login to CloudTides" routerLink="/login" routerLinkActive='active' [routerLinkActiveOptions]="{exact:
@@ -121,7 +121,7 @@
       </header>
 
       <nav class="subnav" *ngIf="!this.registerService.inRegisterPage()">
-        <ul class="nav">
+        <ul class="nav" *ngIf="this.registerService.authority !== '' && this.registerService.authority !== undefined">
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/cloudtides/resource"
@@ -164,6 +164,15 @@
               {{ "HOME.USER.USER" | translate:{} }}
             </a>
           </li> 
+          <li *ngIf=this.loginService.inSiteAdminView()||this.loginService.inOrgAdminView() class="nav-item">
+            <a class="nav-link"
+              routerLink="/cloudtides/notebooks"
+              routerLinkActive="active">
+              {{ "HOME.APPLICATION.APPLICATION" | translate:{} }}
+            </a>
+          </li> 
+        </ul>
+        <ul class="nav" *ngIf="this.registerService.authority === '' || this.registerService.authority === undefined">
           <li *ngIf=this.loginService.inSiteAdminView()||this.loginService.inOrgAdminView() class="nav-item">
             <a class="nav-link"
               routerLink="/cloudtides/notebooks"

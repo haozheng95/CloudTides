@@ -33,12 +33,12 @@ const routes: Routes = [
   { 
     path: '', 
     pathMatch: 'full',
-    redirectTo: 'home'
+    redirectTo: LOGIN_PATH_NAME
   },
-  {
-    path: 'home',
-    component: LandingComponent
-  },
+  // {
+  //   path: 'home',
+  //   component: LandingComponent
+  // },
   {
     path: 'vin',
     component: VinComponent
@@ -85,10 +85,10 @@ const routes: Routes = [
           anonymous: true,
         } as RouterData,
       },
-      {
-        path: HOME_PATH_NAME,
-        loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
-      },
+      // {
+      //   path: HOME_PATH_NAME,
+      //   loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
+      // },
       {
         path: VENDOR_PATH_NAME,
         loadChildren: () => import('./vendor/vendor.module').then(m => m.VendorModule)

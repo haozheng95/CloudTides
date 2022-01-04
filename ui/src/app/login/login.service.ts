@@ -37,6 +37,7 @@ export class LoginService {
         this.storeOrgName(this.session.orgName);
         this.storePwReset(this.session.pwReset);
         this.storeUsername(this.session.username);
+        this.storeAuthority(this.session.authority)
         // this.storePwReset(this.session.pwReset);
         // console.log(localStorage.getItem("role"));
         // console.log(this.session.pwReset);
@@ -131,11 +132,16 @@ export class LoginService {
     localStorage.setItem('pwReset', pwReset);
   }
 
+  storeAuthority(authority: string){
+    localStorage.setItem('authority', authority);
+  }
+
   removeInfo() {
     localStorage.removeItem('role');
     localStorage.removeItem('orgName');
     localStorage.removeItem('pwReset');
     localStorage.removeItem('username');
+    localStorage.removeItem('authority');
   }
 
   removeToken() {
@@ -191,6 +197,7 @@ export interface UserInfo {
   role: string,
   pwReset: string,
   orgName: string,
+  authority: string
 }
 
 export interface ServerUserInfo {
