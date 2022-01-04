@@ -826,7 +826,7 @@ jQuery(function($){
       'Authorization': `Bearer ${localStorage.getItem('CloudTidesUserToken')}`
     }
   })
-  $.post(window.location.origin+'/api/decoder', JSON.stringify({base64}), data => {
+  $.post(window.location.origin+'/webssh/api/decoder', JSON.stringify({base64}), data => {
     const obj = {
       hostname: data.sshHost,
       port: data.sshPort,

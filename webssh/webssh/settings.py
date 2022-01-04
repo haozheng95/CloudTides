@@ -20,13 +20,13 @@ def print_version(flag):
 
 
 define('address', default='', help='Listen address')
-define('port', type=int, default=8888,  help='Listen port')
+define('port', type=int, default=8888, help='Listen port')
 define('ssladdress', default='', help='SSL listen address')
-define('sslport', type=int, default=4433,  help='SSL listen port')
+define('sslport', type=int, default=4433, help='SSL listen port')
 define('certfile', default='', help='SSL certificate file')
 define('keyfile', default='', help='SSL private key file')
-define('debug', type=bool, default=False, help='Debug mode')
-define('policy', default='warning',
+define('debug', type=bool, default=True, help='Debug mode')
+define('policy', default='autoadd',
        help='Missing host key policy, reject|autoadd|warning')
 define('hostfile', default='', help='User defined host keys file')
 define('syshostfile', default='', help='System wide host keys file')
@@ -54,9 +54,8 @@ Example: --encoding='utf-8' to solve the problem with some switches&routers''')
 define('version', type=bool, help='Show version information',
        callback=print_version)
 
-
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-font_dirs = ['webssh', 'static', 'css', 'fonts']
+font_dirs = ['webssh', 'webssh', 'static', 'css', 'fonts']
 max_body_size = 1 * 1024 * 1024
 
 
@@ -76,7 +75,8 @@ class Font(object):
 def get_app_settings(options):
     settings = dict(
         template_path=os.path.join(base_dir, 'webssh', 'templates'),
-        static_path=os.path.join(base_dir, 'webssh', 'static'),
+        static_path=os.path.join(base_dir, 'webssh', 'webssh', 'static'),
+        static_url_prefix="/webssh/static/",
         websocket_ping_interval=options.wpintvl,
         debug=options.debug,
         xsrf_cookies=options.xsrf,

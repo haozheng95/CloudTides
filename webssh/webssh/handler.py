@@ -479,13 +479,13 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         event_origin = self.get_argument('_origin', u'')
         header_origin = self.request.headers.get('Origin')
         origin = event_origin or header_origin
-
+        self.set_header('Access-Control-Allow-Origin', "*")
         # if origin:
         #     if not super(IndexHandler, self).check_origin(origin):
         #         raise tornado.web.HTTPError(
         #             403, 'Cross origin operation is not allowed.'
         #         )
-
+        #
         #     if not event_origin and self.origin_policy != 'same':
         #         self.set_header('Access-Control-Allow-Origin', origin)
 
