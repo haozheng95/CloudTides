@@ -103,7 +103,7 @@ export class LoginService {
     console.log('cloudtides logout')
     this.removeToken();
     // await this.router.navigate(['home']);
-    await this.router.navigate(['home'])
+    await this.router.navigate(['login'])
     .then(() => {
       console.log('home navigate is called')
       window.location.reload();
@@ -141,7 +141,6 @@ export class LoginService {
     localStorage.removeItem('orgName');
     localStorage.removeItem('pwReset');
     localStorage.removeItem('username');
-    localStorage.removeItem('authority');
   }
 
   removeToken() {

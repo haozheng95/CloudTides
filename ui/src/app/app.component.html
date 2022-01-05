@@ -121,7 +121,7 @@
       </header>
 
       <nav class="subnav" *ngIf="!this.registerService.inRegisterPage()">
-        <ul class="nav" *ngIf="this.registerService.authority !== '' && this.registerService.authority !== undefined">
+        <ul class="nav" *ngIf="this.registerService.authority === 'Admin'">
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/cloudtides/resource"
@@ -172,7 +172,7 @@
             </a>
           </li> 
         </ul>
-        <ul class="nav" *ngIf="this.registerService.authority === '' || this.registerService.authority === undefined">
+        <ul class="nav" *ngIf="this.registerService.authority !== 'Admin'">
           <li *ngIf=this.loginService.inSiteAdminView()||this.loginService.inOrgAdminView() class="nav-item">
             <a class="nav-link"
               routerLink="/cloudtides/notebooks"
