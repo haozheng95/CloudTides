@@ -33,7 +33,7 @@ export class RegisterService {
   }
 
   inRegisterPage() {
-    this.authority = localStorage.getItem('authority')
+    this.authority = localStorage.getItem('username');
     return this.document.location.pathname === '/cloudtides' + REGISTER_PATH;
   }
 }
