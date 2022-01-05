@@ -7,8 +7,8 @@ RUN npm install
 COPY . .
 RUN npm run-script build.${MOD}
 
-FROM nginx:stable
-RUN rm -rf /usr/share/nginx/html/index.html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=0 /app/dist/tides-ui/ /usr/share/nginx/html/
-EXPOSE 80
+#FROM nginx:stable
+#RUN rm -rf /usr/share/nginx/html/index.html
+#COPY nginx.conf /etc/nginx/conf.d/default.conf
+#COPY --from=0 /app/dist/tides-ui/ /usr/share/nginx/html/
+#EXPOSE 80
