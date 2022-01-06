@@ -91,7 +91,7 @@ export class LoginService {
     this.removeInfo();
 
     // await this.router.navigate(['home']);
-    await this.router.navigate(['home'])
+    await this.router.navigate(['login'])
     .then(() => {
       console.log('home navigate is called')
       // window.location.reload();
