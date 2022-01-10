@@ -11,15 +11,6 @@ app.engine('html',ejs.__express)
 // 配置模版引擎
 app.set("view engine", "html")
 app.get('/', (req, res) => {
-  let resp = {}
-  // const data = fs.readFileSync(path.resolve(__dirname,'\dist\index.html'));
-  // fs.readFile(path.resolve(__dirname,'\views','\index.html'), function (err, data) {
-  //   if (err) {
-  //       return console.error(err);
-  //   }
-  //   resp = data
-  //   console.log("异步读取: " + data.toString());
-  // });
   res.render('index', {})
 })
 
