@@ -80,18 +80,23 @@
           clrInput />
           <clr-control-error *clrIfError="'email'">{{ 'REGISTER.EMAIL_WRONG_FORMAT' | translate:{} }}</clr-control-error>
       </clr-input-container>
-
-      <clr-input-container>
-        <label for="phone">{{ "HOME.USER.DIALOG.PHONE" | translate:{} }}</label>
-        <input id="phone"
-          class="clr-col-12 clr-col-md-8"
-          type="text"
-          [placeholder]="'HOME.USER.DIALOG.PHONE' | translate:{} "
-          formControlName="phone"
-          clrInput />
-          <clr-control-error *clrIfError="'pattern'">Phone Number is not in the correct format</clr-control-error>
-      </clr-input-container>
-
+      <!-- <clr-input-container> -->
+          <!-- <clr-control-error *clrIfError="'pattern'">Phone Number is not in the correct format</clr-control-error> -->
+      <!-- </clr-input-container> -->
+        <div class="country-flag-phine">
+          <label class="phone" for="phone">{{ "HOME.USER.DIALOG.PHONE" | translate:{} }}</label>
+          <country-phone [currentCode]='currentCode' [currentAreaCode]='currentAreaCode'></country-phone>
+          <div class="input-contarner">
+            <input id="phone"
+            type="text"
+            formControlName="phone"
+            />
+            <clr-icon *ngIf="userForm.get('phone').touched && !userForm.get('phone').valid" shape="exclamation-circle" style="height: 24px; width: 24px; color: #C21C00;"></clr-icon>
+            <p *ngIf="userForm.get('phone').touched && !userForm.get('phone').valid">
+              {{'REGISTER.PHONE_MISSING' | translate}}
+            </p>
+          </div>
+        </div>
     </form>
   </div>
   <div class="modal-footer">

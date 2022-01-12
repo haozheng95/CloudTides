@@ -1,11 +1,11 @@
 .intl-tel-input {
-  margin-top: 300px;
   height: 40px;
   color: #666;
   font-size: 14px;
   .country-list {
     width: 335px;
-    height: 400px;
+    height: 100px;
+    top: -100px;
     margin-top: 2px;
   }
 }

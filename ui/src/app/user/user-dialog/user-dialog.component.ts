@@ -28,7 +28,7 @@ export class UserDialogComponent implements OnInit {
       // role: ['', [Validators.required]],
       role: ["", [Validators.required]],
       email: ["", [Validators.required, Validators.email]],
-      phone: ["", [Validators.required, Validators.pattern("[0-9 ]{11}")]],
+      phone: ["", [Validators.required, Validators.pattern("[0-9 ]*")]],
     });
     if (loginService.inSiteAdminView()) {
       this.userForm.controls['orgName'].valueChanges.subscribe((newForm) => {
@@ -53,7 +53,8 @@ export class UserDialogComponent implements OnInit {
   @Input() opened = false;
   @Output() save = new EventEmitter();
   @Output() cancel = new EventEmitter();
-
+  currentCode = 'cn'
+  currentAreaCode = '+86'
   userForm: FormGroup;
   orgmap: any;
   orgNames: string[];
@@ -67,7 +68,8 @@ export class UserDialogComponent implements OnInit {
     spinning: false,
   };
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   onCancel() {
     this.close();
@@ -79,6 +81,7 @@ export class UserDialogComponent implements OnInit {
 
   async onSave() {
     const { value } = this.userForm;
+    value.phone = this.currentAreaCode + value.phone
     this.resetModal();
     this.vo.spinning = true;
     await this.userService.addUser(value).then(

@@ -9,7 +9,7 @@
       <div [class]="'iti-flag ' + currentData.code">
       </div>
       <div class="country-content">
-        {{currentData[lang]}}
+        <!-- {{currentData[lang]}} -->
         (+{{currentData.dialCode}})  
       </div>
     </div>
@@ -20,7 +20,7 @@
       <li
       *ngFor="let item of frontCountriesArray"
         (ngClass)="'country ' + (item.code == currentCode ? 'highlight' : '')"
-        (click)="currentCode = item.code; hideSubMenu = true; setCountry(item);"
+        (click)="currentCode = item.code; hideSubMenu = true; setCountry(item); currentAreaCode=item.dialCode;"
       >
         <div class="flag-box">
           <div [class]="'iti-flag ' + item.code"></div>

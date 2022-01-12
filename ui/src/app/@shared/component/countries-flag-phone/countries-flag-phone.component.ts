@@ -342,6 +342,7 @@ export class CountriesFlagPhone implements OnInit {
   }
   hideSubMenu = true
   @Input() currentCode = ''
+  @Input() currentAreaCode = ''
   // currentCode = ''
   countriesCodes:string[] = []
   constructor() {
