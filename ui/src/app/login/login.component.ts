@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.log(res)
       console.log("here")
       console.log("222:"+localStorage.getItem("pwReset"))
-      if (res.userInfo.authority) {
+      if (res.userInfo.username !== 'Admin') {
         this.router.navigate(['/cloudtides/notebooks']);
       } else {
         this.router.navigate(['/cloudtides']);
