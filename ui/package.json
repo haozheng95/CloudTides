@@ -10,6 +10,7 @@
     "start.e2e.prod": "start_mode=e2e npm run start.prod",
     "build.dev": "ng build",
     "build.prod": "ng build --prod",
+    "build.optimizer": "ng build --prod --build--optimizer",
     "test": "ng test",
     "lint": "ng lint",
     "lint.fix": "npm run -s lint -- --fix",
