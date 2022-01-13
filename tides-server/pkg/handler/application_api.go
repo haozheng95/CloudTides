@@ -40,10 +40,16 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 	}
 
 	result := make([]*application.AchieveHostOKBodyItems0, 1)
+	//result[0] = &application.AchieveHostOKBodyItems0{
+	//	Address: "120.133.15.12",
+	//	SSHPass: "ca$hc0w",
+	//	SSHPort: "20023",
+	//	SSHUser: "root",
+	//}
 	result[0] = &application.AchieveHostOKBodyItems0{
-		Address: "120.133.15.12",
-		SSHPass: "ca$hc0w",
-		SSHPort: "20023",
+		Address: "172.16.0.10",
+		SSHPass: "admin123",
+		SSHPort: "22",
 		SSHUser: "root",
 	}
 	return application.NewAchieveHostOK().WithPayload(result)
@@ -524,7 +530,8 @@ func UploadInstanceFile(params application.UploadInstanceFileParams) middleware.
 	}
 	defer file.Close()
 	myconfig := config.GetConfig()
-	dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)
+	//dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)\
+	dirPath := myconfig.TempStoragePath
 	if err := createFile(dirPath); err != nil {
 		log.Println("Create dir Error ", err)
 	}
@@ -552,7 +559,8 @@ func ListInstanceFiles(params application.ListInstanceFilesParams) middleware.Re
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	token := params.Token
 	myconfig := config.GetConfig()
-	dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)
+	//dirPath := fmt.Sprintf("%s/%d/%s", myconfig.TempStoragePath, uid, token)
+	dirPath := myconfig.TempStoragePath
 	files, _ := ioutil.ReadDir(dirPath)
 	payload := make([]*application.ListInstanceFilesOKBodyItems0, len(files))
 	for i, f := range files {
@@ -587,7 +595,8 @@ func (down FileDown) WriteResponse(rw http.ResponseWriter, producer runtime.Prod
 }
 
 func DownInstanceFile(params application.DownInstanceFileParams) middleware.Responder {
-	dirPath := fmt.Sprintf("%s/%s/%s", config.GetConfig().TempStoragePath, params.UID, params.Token)
+	//dirPath := fmt.Sprintf("%s/%s/%s", config.GetConfig().TempStoragePath, params.UID, params.Token)
+	dirPath := config.GetConfig().TempStoragePath
 	filename := fmt.Sprintf("%s/%s", dirPath, params.Name)
 	log.Println(filename)
 	st := new(FileDown)
