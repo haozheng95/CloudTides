@@ -259,7 +259,7 @@
         "MACHINE_TYPE": "Machine type",
         "SSHUSER": "SSH User",
         "LAST_MODIFIED": "Last modified",
-        "OPERATE": "operate",
+        "OPERATE": "Operate",
         "CREATETIME": "Create time",
         "TOTALRUNTIME": "Total run time",
         "INSTANCE_TYPE": "Instance type",

@@ -65,7 +65,7 @@ h6 {
 
   .branding{
     position: absolute;
-    left: 2%;
+    left: 1%;
   }
 /* 
   .branding .title{
@@ -389,4 +389,7 @@ h6 {
     display: block;
     transition: 0.5s all ease;
   }
+}
+.logo {
+  width: 40px;
 }
