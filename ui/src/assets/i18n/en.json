@@ -74,6 +74,7 @@
     "EMAIL_WRONG_FORMAT": "Email is not in the correct format",
     "PHONE": "Phone Number",
     "PHONE_MISSING": "Phone number is required",
+    "PHONE_VALIDATOR": "Please fill in the correct mobile phone number",
     "COMPANY": "Company Name",
     "COMPANY_MISSING": "Company Name is required",
     "SUBMITTING": "Register"
@@ -218,7 +219,7 @@
       }
     },
     "APPLICATION": {
-      "APPLICATION": "application",
+      "APPLICATION": "Application",
       "INSTANCE": "instance",
       "HISTORY": "historical operation record",
       "NEW_INSTANCE": {

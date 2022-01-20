@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ViewChild } from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { UserService } from "../user.service";
 import { TranslateService } from "@ngx-translate/core";
 import { defaultRoleType4Site, defaultRoleType4Org, roleTypes, roleTypes4Org } from "@tide-config/cloudPlatform";
 import { UserListComponent } from "../user-list/user-list.component";
 import { LoginService } from "src/app/login/login.service";
-
+import { CountriesFlagPhone } from 'src/app/@shared/component/countries-flag-phone/countries-flag-phone.component'
 @Component({
   selector: "tide-user-dialog",
   templateUrl: "./user-dialog.component.html",
@@ -62,7 +62,21 @@ export class UserDialogComponent implements OnInit {
   roleType: any;
   defaultRole: string;
   defaultOrg: string;
-
+  validatorFlag = false
+  setCurrentCode (value:string) {
+    this.currentCode =value
+  }
+  setCurrentAreaCode (value:string) {
+    this.currentAreaCode =value
+  }
+  validator(e:any) {
+    const num = String(e.target.value)
+    if (this.currentCode === 'cn' && num.length !== 11) {
+      this.validatorFlag =true
+    } else {
+      this.validatorFlag =false
+    }
+  }
   readonly vo = {
     serverError: "",
     spinning: false,

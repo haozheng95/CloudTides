@@ -20,7 +20,7 @@
       <li
       *ngFor="let item of frontCountriesArray"
         (ngClass)="'country ' + (item.code == currentCode ? 'highlight' : '')"
-        (click)="currentCode = item.code; hideSubMenu = true; setCountry(item); currentAreaCode=item.dialCode;"
+        (click)="cutFlag(item)"
       >
         <div class="flag-box">
           <div [class]="'iti-flag ' + item.code"></div>

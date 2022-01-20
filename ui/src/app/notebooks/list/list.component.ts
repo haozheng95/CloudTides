@@ -203,7 +203,7 @@ export class ListComponent implements OnInit {
     )
   }
   downFile (item:FileType) {
-    window.location.href ='http://' + item.downlink
+    window.location.href =window.location.origin+ '/' + item.downlink
   }
 }
 interface FileType {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'country-phone',
@@ -343,6 +343,9 @@ export class CountriesFlagPhone implements OnInit {
   hideSubMenu = true
   @Input() currentCode = ''
   @Input() currentAreaCode = ''
+  @Output() setCurrentCode = new EventEmitter<any>();
+  @Output() setCurrentAreaCode = new EventEmitter<any>();
+  
   // currentCode = ''
   countriesCodes:string[] = []
   constructor() {
@@ -366,6 +369,15 @@ export class CountriesFlagPhone implements OnInit {
     } else {
       return 'en'
     }
+  }
+  cutFlag (item) {
+    // this.currentCode = item.code;
+    this.setCurrentCode.emit(item.code);
+    this.setCurrentAreaCode.emit(item.dialCode);
+ 
+    this.hideSubMenu = true; 
+    this.setCountry(item); 
+    // this.currentAreaCode=item.dialCode;
   }
   setCountry (item) {}
   ngOnInit() { }

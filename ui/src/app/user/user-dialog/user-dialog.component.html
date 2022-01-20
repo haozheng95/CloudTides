@@ -85,15 +85,20 @@
       <!-- </clr-input-container> -->
         <div class="country-flag-phine">
           <label class="phone" for="phone">{{ "HOME.USER.DIALOG.PHONE" | translate:{} }}</label>
-          <country-phone [currentCode]='currentCode' [currentAreaCode]='currentAreaCode'></country-phone>
+          <country-phone #countryPhone [currentCode]='currentCode' [currentAreaCode]='currentAreaCode' (setCurrentCode)='setCurrentCode($event)' (setCurrentAreaCode)='setCurrentAreaCode($event)'></country-phone>
           <div class="input-contarner">
             <input id="phone"
+            name="phone"
             type="text"
+            (blur)="validator($event)"
             formControlName="phone"
             />
-            <clr-icon *ngIf="userForm.get('phone').touched && !userForm.get('phone').valid" shape="exclamation-circle" style="height: 24px; width: 24px; color: #C21C00;"></clr-icon>
-            <p *ngIf="userForm.get('phone').touched && !userForm.get('phone').valid">
+            <clr-icon *ngIf="(userForm.get('phone').touched && !userForm.get('phone').valid) || validatorFlag" shape="exclamation-circle" style="height: 24px; width: 24px; color: #C21C00;"></clr-icon>
+            <p *ngIf="(userForm.get('phone').touched && !userForm.get('phone').valid) && !validatorFlag">
               {{'REGISTER.PHONE_MISSING' | translate}}
+            </p>
+            <p *ngIf="validatorFlag">
+              {{'REGISTER.PHONE_VALIDATOR' | translate}}
             </p>
           </div>
         </div>

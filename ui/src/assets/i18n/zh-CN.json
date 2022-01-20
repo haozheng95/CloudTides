@@ -83,6 +83,7 @@
     "EMAIL_WRONG_FORMAT": "邮箱格式不正确",
     "PHONE": "联系电话",
     "PHONE_MISSING": "请填写联系电话",
+    "PHONE_VALIDATOR": "请填写正确的联系电话",
     "COMPANY": "公司名称",
     "COMPANY_MISSING": "请填写公司名称",
     "SUBMITTING": "注册"
