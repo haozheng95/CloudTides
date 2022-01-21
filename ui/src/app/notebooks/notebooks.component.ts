@@ -52,12 +52,12 @@ export class NotebooksComponent implements OnInit {
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: ['jupyter'],
-    sshHost: [{}]
+    // sshHost: [{}]
     // token: ['']
   })
   gromacsInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
-    sshHost: [''],
+    // sshHost: [''],
     appType: ['gromacs'],
   })
   cancel () {    
@@ -66,12 +66,12 @@ export class NotebooksComponent implements OnInit {
       instanceName: '',
       port: '',
       appType: '',
-      sshHost: ''
+      // sshHost: ''
       // token: ''
     })
     this.gromacsInstanceForm.setValue({
       instanceName: '',
-      sshHost: '',
+      // sshHost: '',
       appType: ['gromacs'],
       })
     this.errorMsg = ''
@@ -82,10 +82,12 @@ export class NotebooksComponent implements OnInit {
     this.errorMsg = ''
     this.loadingFlag = true
     const data = form.getRawValue()
-    const host = this.hostNameList.find(el => el.address === data.sshHost)
+    // const host = this.hostNameList.find(el => el.address === data.sshHost)
+    const host = this.hostNameList[0]
     data.sshPassword = host.sshPass
     data.sshPort = host.sshPort
     data.sshUser = host.sshUser
+    data.sshHost = host.address
     if (data.appType === 'jupyter') {
       const str = 'HOME.APPLICATION.Create'
       data.sshPort = +data.sshPort
@@ -98,7 +100,7 @@ export class NotebooksComponent implements OnInit {
             instanceName: '',
             port: '',
             appType: '',
-            sshHost: ''
+            // sshHost: ''
           })
           window.open('http://' + data.link, "_blank")
         },
@@ -127,7 +129,7 @@ export class NotebooksComponent implements OnInit {
         this.gromacsInstanceForm.setValue({
           instanceName: '',
           appType: '',
-          sshHost: ''
+          // sshHost: ''
         })
       },
       err => {

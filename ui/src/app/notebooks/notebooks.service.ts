@@ -29,7 +29,7 @@ export class NotebooksService {
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: [''],
-    sshHost: [''],
+    // sshHost: [''],
     // sshPassword: [''],
     // sshPort: [''],
     // sshUser: [''],
@@ -183,7 +183,7 @@ interface AppModel {
   logo: string
   port: string,
   appType: string,
-  sshHost: string,
+  // sshHost: string,
   sshPassword: string
   sshPort: string
   sshUser: string
