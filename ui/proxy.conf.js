@@ -7,9 +7,9 @@ const {
 } = process.env;
 
 const endpoint = {
-  local: 'http://0.0.0.0:3000',
-  e2e: 'http://0.0.0.0:8081',
-  webssh: 'http://127.0.0.1:8888'
+  local: 'http://0.0.0.0:80',
+  e2e: 'http://0.0.0.0:80',
+  webssh: 'http://127.0.0.1:80'
 };
 
 const target = endpoint[MODE];

@@ -10,6 +10,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { CreateInsranceComponent } from './create-insrance/create-insrance.component';
 import { LogComponent } from './log/log.component';
 import { HistoryComponent } from './history/history.component';
+import { GromacComponent } from './gromac/gromac.component';
 @NgModule({
   declarations: [
     // ...declarations
@@ -17,7 +18,8 @@ import { HistoryComponent } from './history/history.component';
     ListComponent,
     CreateInsranceComponent,
     LogComponent,
-    HistoryComponent
+    HistoryComponent,
+    GromacComponent
   ],
   providers: [
     NotebooksService,
