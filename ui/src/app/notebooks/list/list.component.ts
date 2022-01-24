@@ -53,39 +53,22 @@ export class ListComponent implements OnInit {
   }
   toGromacs (app: AppModel) {
     const link = 'http://' + app.link  
-    let form = document.createElement('form')
-    form.action= link
-    form.method='get'
-    form.target = '_blank'
-    const body = document.documentElement
-    body.appendChild(form)
-    // const opts = {
-    //   hostname: app.sshHost,
-    //   port: app.sshPort,
-    //   username: app.sshUser,
-    //   password: app.sshPassword,
-    //   privatekey: '',
-    //   cmd: app.extra.cmd,
-    //   // passphrase: '',
-    //   totp: ''
-    // }
-    // for (const key in opts) {
+    // let form = document.createElement('form')
+    // form.action= link
+    // form.method='get'
+    // form.target = '_blank'
+    // const body = document.documentElement
+    // body.appendChild(form)
     //   const input = document.createElement('input')
     //   input.type = 'hidden'
-    //   input.name = key
-    //   input.value = opts[key]
+    //   input.name = 'token'
+    //   input.value = app.token
     //   form.appendChild(input)
-    // }
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'token'
-      input.value = app.token
-      form.appendChild(input)
-    setTimeout(() => {
-      form.submit()
-      form = null
-    }, 1000)
-
+    // setTimeout(() => {
+    //   form.submit()
+    //   form = null
+    // }, 1000)
+    window.open(`${link}?name=${app.token}`,'_blank','width=600,height=400,menubar=no,toolbar=no,status=no,scrollbars=yes')
   }
   modifyApp (app: AppModel) {
     this.nd.createInstanceFlag = true
