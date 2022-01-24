@@ -10,6 +10,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
@@ -27,6 +28,7 @@ import (
 )
 
 var sshPool sync.Map
+var mqPool sync.Map
 var tokenIndex sync.Map
 var (
 	sshType    = "password" //password or key
@@ -53,6 +55,18 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 		SSHUser: "root",
 	}
 	return application.NewAchieveHostOK().WithPayload(result)
+}
+
+type Operate struct {
+	Op      string
+	Host    string
+	User    string
+	Pass    string
+	Token   string
+	Data    string
+	Port    string
+	CMD     string
+	SshType string
 }
 
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
@@ -435,6 +449,50 @@ func WsWatchApplicationInstanceLogs(params application.WsWatchApplicationInstanc
 	return wsStruct
 }
 
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Panicf("%s: %s", msg, err)
+	}
+}
+
+func pushMsg2MQ(msg, name, dial string) {
+	var ch *amqp.Channel
+	tmp, has := mqPool.Load(dial)
+	if !has {
+		conn, err := amqp.Dial(dial)
+		failOnError(err, "Failed to connect to RabbitMQ")
+
+		ch, err = conn.Channel()
+		failOnError(err, "Failed to open a channel")
+		mqPool.Store(dial, ch)
+	} else {
+		ch = tmp.(*amqp.Channel)
+	}
+
+	q, err := ch.QueueDeclare(
+		name,  // name
+		false, // durable
+		false, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil,   // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	body := msg
+	err = ch.Publish(
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	failOnError(err, "Failed to publish a message")
+	log.Printf(" [x] Sent %s\n", body)
+}
+
 func execCmd(sshHost string, sshPort int, data *models.Application, cmd string) ([]byte, error) {
 	sshConfig := &ssh.ClientConfig{
 		Timeout:         time.Second,
@@ -564,7 +622,7 @@ func ListInstanceFiles(params application.ListInstanceFilesParams) middleware.Re
 	files, _ := ioutil.ReadDir(dirPath)
 	payload := make([]*application.ListInstanceFilesOKBodyItems0, len(files))
 	for i, f := range files {
-		downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", myconfig.ServerIP, myconfig.ServerPort, uid, token, f.Name())
+		downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", "120.133.15.12", "8000", uid, token, f.Name())
 		payload[i] = &application.ListInstanceFilesOKBodyItems0{
 			Filename:   f.Name(),
 			Filesize:   fmt.Sprintf("%d", f.Size()),
