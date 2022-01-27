@@ -28,6 +28,7 @@ import (
 )
 
 var sshPool sync.Map
+var chPool sync.Map
 var mqPool sync.Map
 var tokenIndex sync.Map
 var (
@@ -42,19 +43,29 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 	}
 
 	result := make([]*application.AchieveHostOKBodyItems0, 1)
-	//result[0] = &application.AchieveHostOKBodyItems0{
-	//	Address: "120.133.15.12",
-	//	SSHPass: "ca$hc0w",
-	//	SSHPort: "20023",
-	//	SSHUser: "root",
-	//}
 	result[0] = &application.AchieveHostOKBodyItems0{
+		Address: "120.133.15.12",
+		SSHPass: "ca$hc0w",
+		SSHPort: "20023",
+		SSHUser: "root",
+	}
+	result[1] = &application.AchieveHostOKBodyItems0{
 		Address: "172.16.0.10",
 		SSHPass: "admin123",
 		SSHPort: "22",
 		SSHUser: "root",
 	}
 	return application.NewAchieveHostOK().WithPayload(result)
+}
+
+func AchieveMQResult(params application.InstanceActionStatueParams) middleware.Responder {
+	ch, has := chPool.Load(params.ReqBody.Token)
+	if has {
+		ch.(chan *OperateChan) <- &OperateChan{
+			Combo: params.ReqBody.Combo,
+		}
+	}
+	return application.NewInstanceActionStatueOK()
 }
 
 type Operate struct {
@@ -67,6 +78,11 @@ type Operate struct {
 	Port    string
 	CMD     string
 	SshType string
+}
+
+type OperateChan struct {
+	Combo string
+	Err   error
 }
 
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
@@ -102,10 +118,27 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	}
 
 	//run remote shell
-	combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
-		SshPassword: body.SSHPassword,
-		SshUser:     body.SSHUser,
-	}, cmd)
+	cp := Operate{
+		Op:      "Create",
+		Host:    body.SSHHost,
+		User:    body.SSHUser,
+		Pass:    body.SSHPassword,
+		Token:   token,
+		Port:    fmt.Sprintf("%d", body.SSHPort),
+		SshType: sshType,
+		CMD:     cmd,
+	}
+	//combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
+	//	SshPassword: body.SSHPassword,
+	//	SshUser:     body.SSHUser,
+	//}, cmd)
+	msg, err := json.Marshal(cp)
+	failOnError(err, "Failed to marshal json")
+
+	ch := make(chan *OperateChan, 1)
+	chPool.Store(token, ch)
+	pushMsg2MQ(string(msg), "hello", "amqp://guest:guest@localhost:5672/")
+	combo, err := readCh(ch, token)
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -523,6 +556,15 @@ func publicKeyAuthFunc(kPath string) ssh.AuthMethod {
 		log.Println("ssh key signer failed", err)
 	}
 	return ssh.PublicKeys(signer)
+}
+
+func readCh(ch chan *OperateChan, token string) (string, error) {
+	lastMsg := <-ch
+	combo := lastMsg.Combo
+	err := lastMsg.Err
+	close(ch)
+	chPool.Delete(token)
+	return combo, err
 }
 
 func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session *ssh.Session) {

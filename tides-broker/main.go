@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 
@@ -31,6 +33,8 @@ type Operate struct {
 	CMD     string
 	SshType string
 }
+
+var url = "127.0.0.1/application/instance/action/statue"
 
 func main() {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
@@ -73,6 +77,13 @@ func main() {
 			combo, err := execCmd(op.Host, op.User, op.Pass, op.SshType, op.Port, op.CMD)
 			failOnError(err, "Failed to connect host by ssh")
 			log.Printf("Received a combo: %s", combo)
+
+			values := map[string]string{"combo": string(combo), "error": err.Error(), "token": op.Token}
+			jsonData, err := json.Marshal(values)
+			failOnError(err, "Failed to convent json")
+			resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+			failOnError(err, "Failed to connect host")
+			log.Printf("Received a resp: %s", resp.Status)
 		}
 	}()
 
