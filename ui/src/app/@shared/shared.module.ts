@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { WebSocketService } from './service/web-socket.service'
 @NgModule({
   imports: [
-    BaseModule,
+    BaseModule
   ],
   exports: [
     BaseModule,

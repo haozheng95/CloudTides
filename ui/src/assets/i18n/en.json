@@ -13,6 +13,23 @@
     "fifth" : "News",
     "sixth" : "About Us"
   },
+  "serverMessage": {
+    "default200": "Successful operation",
+    "default401": "Invaild authentication. Please log in.",
+    "default404": "Error 404: request failed.",
+    "delete200": "Delete successfully",
+    "create200": "Create successfully",
+    "upload200": "Upload successfully",
+    "download200": "Download successfully",
+    "update200": "Update successfully",
+    "check": "Check successfully",
+    "connect": "Connect successfully",
+    "scan": "Scan successfully",
+    "login": "Login successfully",
+    "logout": "Logout successfully",
+    "update_password_success": "Password is successfully updated！",
+    "login_again_alert":"The page will redirect to login page in 3s."
+  },
   "home-main": {
     "main-1":"Improve the Cloud Resources on VCPP",
     "main-2":"Accelerate the VIN Partner Career",

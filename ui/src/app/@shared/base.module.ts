@@ -5,18 +5,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 import { DropzoneDirective } from './directive/dropzone.directive';
+import { MessageModule } from './component/message/message.module'
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,
+    MessageModule,
     ReactiveFormsModule,
     HttpClientModule,
     ClarityModule,
   ],
   exports: [
     CommonModule,
+    MessageModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,

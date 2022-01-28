@@ -13,6 +13,22 @@
     "fifth" : "新闻",
     "sixth" : "关于我们"
   },
+  "serverMessage": {
+    "default200": "操作成功",
+    "default401": "当前登录信息已失效,请重新登录!",
+    "default404": "错误404: 请求失败",
+    "login200": "登录成功",
+    "delete200": "删除成功",
+    "create200": "创建成功",
+    "upload200": "上传成功",
+    "download200": "下载成功",
+    "modify200": "修改成功",
+    "check": "Check successfully",
+    "connect": "Connect successfully",
+    "scan": "scan successfully",
+    "update_password_success": "密码修改成功！",
+    "login_again_alert":"页面将于3秒后跳转到登录界面。"
+  },
   "home-main": {
     "main-1":"提升VCPP云端资源",
     "main-2":"加速VIN伙伴事业",
