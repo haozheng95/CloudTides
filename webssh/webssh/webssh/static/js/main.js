@@ -615,7 +615,7 @@ jQuery(function($){
         result = {
           valid: false,
           data: data,
-          title: ''
+          title: 'WebSSh'
         },
         errors = [], size;
 
@@ -648,7 +648,8 @@ jQuery(function($){
 
     if (!errors.length || debug) {
       result.valid = true;
-      result.title = username + '@' + hostname + ':'  + port;
+      // result.title = username + '@' + hostname + ':'  + port;
+      result.valid = 'WebSSh'
     }
     result.errors = errors;
 

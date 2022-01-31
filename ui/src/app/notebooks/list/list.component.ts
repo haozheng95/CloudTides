@@ -68,7 +68,7 @@ export class ListComponent implements OnInit {
     //   form.submit()
     //   form = null
     // }, 1000)
-    window.open(`${link}?token=${app.token}`,'_blank','width=600,height=400,menubar=no,toolbar=no,status=no,scrollbars=yes')
+    window.open(`${link}?token=${app.token}`,'_blank','width=990,height=504,menubar=no,toolbar=no,status=no,scrollbars=yes')
   }
   modifyApp (app: AppModel) {
     this.nd.createInstanceFlag = true
