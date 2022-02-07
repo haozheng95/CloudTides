@@ -91,7 +91,7 @@
             </div>
           </div>
         </form>
-        <form class="clr-form clr-form-horizontal" *ngIf="noteBook.currentModel === 'gromacs'" [formGroup]="gromacsInstanceForm" (ngSubmit)='create(gromacsInstanceForm)'>
+        <form class="clr-form clr-form-horizontal" *ngIf="noteBook.currentModel !== 'jupyter'" [formGroup]="nb.gromacsInstanceForm" (ngSubmit)='create(nb.gromacsInstanceForm)'>
           <div class="clr-form-control first-form-control">
             <clr-input-container>
               <label for="instanceName" class="clr-control-label">{{'HOME.APPLICATION.LIST.INSTANCE_NAME' | translate}}</label>
@@ -124,6 +124,7 @@
                     <select placeholder="Select Option" id="input7" name="appType" formControlName="appType">
                       <option value='jupyter'>jupyter</option>
                       <option value='gromacs'>gromacs</option>
+                      <option value='openfoam'>openfoam</option>
                     </select>
                   </div>
                 </div>

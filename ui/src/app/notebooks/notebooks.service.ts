@@ -29,11 +29,10 @@ export class NotebooksService {
     instanceName: ['', Validators.required],
     port: ['', Validators.required],
     appType: [''],
-    // sshHost: [''],
-    // sshPassword: [''],
-    // sshPort: [''],
-    // sshUser: [''],
-    // token: ['']
+  })
+  gromacsInstanceForm = this.fb.group({
+    instanceName: ['', Validators.required],
+    appType: [this.currentModel],
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
 

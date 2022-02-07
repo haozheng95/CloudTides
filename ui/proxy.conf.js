@@ -10,9 +10,9 @@ const endpoint = {
   // local: 'http://0.0.0.0:80',
   // e2e: 'http://0.0.0.0:80',
   // webssh: 'http://127.0.0.1:80'
-  local: 'http://120.133.15.12:8000/',
-  e2e: 'http://120.133.15.12:8000/',
-  webssh: 'http://120.133.15.12:8000/0'
+  local: 'http://www.cloudtides.org.cn:8000/',
+  e2e: 'http://www.cloudtides.org.cn:8000/',
+  webssh: 'http://www.cloudtides.org.cn:8000/'
 };
 
 const target = endpoint[MODE];

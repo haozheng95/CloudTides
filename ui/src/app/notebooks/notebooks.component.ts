@@ -10,12 +10,12 @@ import { MessageService } from 'src/app/@shared/component/message/message.servic
 })
 export class NotebooksComponent implements OnInit {
 
-  constructor(public router: Router, private nb: NotebooksService, private fb: FormBuilder, private $msg: MessageService) {
+  constructor(public router: Router, public nb: NotebooksService, private fb: FormBuilder, private $msg: MessageService) {
     this.noteBook = this.nb
     this.jupyterInstanceForm = this.nb.instanceForm
   }
   ngOnInit(): void {
-    this.gromacsInstanceForm.get('appType').disable({
+    this.nb.gromacsInstanceForm.get('appType').disable({
       onlySelf: true
     })
     this.noteBook.getHostNameList().subscribe(
@@ -38,10 +38,10 @@ export class NotebooksComponent implements OnInit {
           arr.push(this.jupyterInstanceForm.value[key])
         }
       }
-    } else if (this.noteBook.currentModel === 'gromacs') {
-      for (const key in this.gromacsInstanceForm.value) {
+    } else if (this.noteBook.currentModel !== 'jupyter') {
+      for (const key in this.nb.gromacsInstanceForm.value) {
         if (key !== 'token') {
-          arr.push(this.gromacsInstanceForm.value[key])
+          arr.push(this.nb.gromacsInstanceForm.value[key])
         }
       }
     }
@@ -55,11 +55,6 @@ export class NotebooksComponent implements OnInit {
     // sshHost: [{}]
     // token: ['']
   })
-  gromacsInstanceForm = this.fb.group({
-    instanceName: ['', Validators.required],
-    // sshHost: [''],
-    appType: ['gromacs'],
-  })
   cancel () {    
     this.noteBook.createInstanceFlag = false
     this.jupyterInstanceForm.setValue({
@@ -69,10 +64,10 @@ export class NotebooksComponent implements OnInit {
       // sshHost: ''
       // token: ''
     })
-    this.gromacsInstanceForm.setValue({
+    this.nb.gromacsInstanceForm.setValue({
       instanceName: '',
       // sshHost: '',
-      appType: ['gromacs'],
+      appType: [''],
       })
     this.errorMsg = ''
     this.loadingFlag = false
@@ -122,12 +117,12 @@ export class NotebooksComponent implements OnInit {
           this.loadingFlag = false
         })
       }
-    } else if (data.appType === 'gromacs') {
+    } else if (data.appType !== 'jupyter') {
       data.sshPort = +data.sshPort
       this.nb.createNewApp(data).subscribe((data:CreateData) => {
         this.loadingFlag = false
         this.noteBook.createInstanceFlag = false
-        this.gromacsInstanceForm.setValue({
+        this.nb.gromacsInstanceForm.setValue({
           instanceName: '',
           appType: '',
           // sshHost: ''

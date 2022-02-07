@@ -30,7 +30,7 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <clr-icon class="icon" *ngIf="item.appType === 'jupyter'" (click)="toJupyter(item)" shape="play" solid></clr-icon>
-      <clr-icon class="icon" *ngIf="item.appType === 'gromacs'" (click)="toGromacs(item)" shape="play" solid></clr-icon>
+      <clr-icon class="icon" *ngIf="item.appType !== 'jupyter'" (click)="toGromacs(item)" shape="play" solid></clr-icon>
       <clr-icon class="icon" shape="form" (click)="checkApp(item)"></clr-icon>
       <clr-icon class="icon" shape="trash" (click)="deleteApp(item)"></clr-icon>
       <clr-icon shape="justify-text" (click)="getCurrentAppLogs(item)"></clr-icon>
