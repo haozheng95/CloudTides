@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router'
 import { NotebooksService, HostType } from './notebooks.service'
 import { FormBuilder, Validators } from '@angular/forms'
-import { MessageService } from 'src/app/@shared/component/message/message.service'
+// import { MessageService } from 'src/app/@shared/component/message/message.service'
 @Component({
   selector: 'tide-notebooks',
   templateUrl: './notebooks.component.html',
@@ -10,7 +10,7 @@ import { MessageService } from 'src/app/@shared/component/message/message.servic
 })
 export class NotebooksComponent implements OnInit {
 
-  constructor(public router: Router, public nb: NotebooksService, private fb: FormBuilder, private $msg: MessageService) {
+  constructor(public router: Router, public nb: NotebooksService, private fb: FormBuilder) {
     this.noteBook = this.nb
     this.jupyterInstanceForm = this.nb.instanceForm
   }
@@ -97,7 +97,7 @@ export class NotebooksComponent implements OnInit {
             appType: '',
             // sshHost: ''
           })
-          this.$msg.success('serverMessage.create200', 2000)
+          // this.$msg.success('serverMessage.create200', 2000)
           window.open('http://' + data.link, "_blank")
         },
         err => {
@@ -127,7 +127,8 @@ export class NotebooksComponent implements OnInit {
           appType: '',
           // sshHost: ''
         })
-        this.$msg.success('serverMessage.create200', 2000)
+        // this.$msg.success('serverMessage.create200', 2000)
+        this.router.navigateByUrl('/cloudtides/notebooks/list')
       },
       err => {
         console.log('err', err);
