@@ -34,7 +34,7 @@ type Operate struct {
 	SshType string
 }
 
-var url = "127.0.0.1/application/instance/action/statue"
+var url = "http://127.0.0.1:8033/api/v1/application/instance/action/statue"
 
 func main() {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
@@ -46,12 +46,12 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"hello", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		"hollow", // name
+		false,    // durable
+		false,    // delete when unused
+		false,    // exclusive
+		false,    // no-wait
+		nil,      // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
@@ -78,7 +78,20 @@ func main() {
 			failOnError(err, "Failed to connect host by ssh")
 			log.Printf("Received a combo: %s", combo)
 
-			values := map[string]string{"combo": string(combo), "error": err.Error(), "token": op.Token}
+			values := make(map[string]string)
+			log.Printf("Received a values: %v", values)
+			values["combo"] = string(combo)
+			log.Printf("Received a values: %v", values)
+			if err != nil {
+				values["error"] = err.Error()
+			} else {
+				values["error"] = ""
+			}
+			log.Printf("Received a values: %v", values)
+			values["token"] = op.Token
+			//values := map[string]string{"combo": string(combo), "error": err.Error(), "token": op.Token}
+			log.Printf("Received a values: %v", values)
+
 			jsonData, err := json.Marshal(values)
 			failOnError(err, "Failed to convent json")
 			resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))

@@ -115,6 +115,9 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	case "gromacs":
 		containerName = "gromacs-" + token
 		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s gromacs/gromacs sleep 100000d", containerName)
+	case "openfoam":
+		containerName = "openfoam7-" + token
+		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s openfoam/openfoam7-paraview56 sleep 100000d", containerName)
 	}
 
 	//run remote shell
@@ -128,17 +131,22 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		SshType: sshType,
 		CMD:     cmd,
 	}
-	//combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
-	//	SshPassword: body.SSHPassword,
-	//	SshUser:     body.SSHUser,
-	//}, cmd)
-	msg, err := json.Marshal(cp)
-	failOnError(err, "Failed to marshal json")
 
-	ch := make(chan *OperateChan, 1)
-	chPool.Store(token, ch)
-	pushMsg2MQ(string(msg), "hello", "amqp://guest:guest@localhost:5672/")
-	combo, err := readCh(ch, token)
+	var combo []byte
+	if false {
+		combo, err = execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
+			SshPassword: body.SSHPassword,
+			SshUser:     body.SSHUser,
+		}, cmd)
+	} else {
+		msg, err := json.Marshal(cp)
+		failOnError(err, "Failed to marshal json")
+
+		ch := make(chan *OperateChan, 1)
+		chPool.Store(token, ch)
+		pushMsg2MQ(string(msg), "hollow", "amqp://guest:guest@localhost:5672/")
+		combo, err = readCh(ch, token)
+	}
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -168,7 +176,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	case "jupyter":
 		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token)
 		row["port"] = containerPort
-	case "gromacs":
+	default:
 		row["link"] = config.GetConfig().WebSshServiceHost
 		jsonMap := map[string]string{
 			"sshuser":     row["sshUser"],
@@ -558,13 +566,13 @@ func publicKeyAuthFunc(kPath string) ssh.AuthMethod {
 	return ssh.PublicKeys(signer)
 }
 
-func readCh(ch chan *OperateChan, token string) (string, error) {
+func readCh(ch chan *OperateChan, token string) ([]byte, error) {
 	lastMsg := <-ch
 	combo := lastMsg.Combo
 	err := lastMsg.Err
 	close(ch)
 	chPool.Delete(token)
-	return combo, err
+	return []byte(combo), err
 }
 
 func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session *ssh.Session) {
