@@ -41,6 +41,8 @@ func initConfig() {
 	config.AdminPassword = os.Getenv("ADMIN_PASSWORD")
 	config.WebSshServiceHost = os.Getenv("WEB_SSH_SERVICE_HOST")
 	config.TempStoragePath = os.Getenv("TEMP_STORAGE_PATH")
+	config.MqHost = os.Getenv("MQ_HOST")
+	config.MqTopic = os.Getenv("MQ_TOPIC")
 	StartDB()
 }
 

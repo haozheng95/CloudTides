@@ -169,6 +169,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceGetVcdResourceHandler: resource.GetVcdResourceHandlerFunc(func(params resource.GetVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.GetVcdResource has not yet been implemented")
 		}),
+		ApplicationInstanceActionStatueHandler: application.InstanceActionStatueHandlerFunc(func(params application.InstanceActionStatueParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.InstanceActionStatue has not yet been implemented")
+		}),
 		UserListUserOfOrgHandler: user.ListUserOfOrgHandlerFunc(func(params user.ListUserOfOrgParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ListUserOfOrg has not yet been implemented")
 		}),
@@ -375,6 +378,8 @@ type CloudTidesAPI struct {
 	UserGetUserProfileHandler user.GetUserProfileHandler
 	// ResourceGetVcdResourceHandler sets the operation handler for the get vcd resource operation
 	ResourceGetVcdResourceHandler resource.GetVcdResourceHandler
+	// ApplicationInstanceActionStatueHandler sets the operation handler for the instance action statue operation
+	ApplicationInstanceActionStatueHandler application.InstanceActionStatueHandler
 	// UserListUserOfOrgHandler sets the operation handler for the list user of org operation
 	UserListUserOfOrgHandler user.ListUserOfOrgHandler
 	// ApplicationListApplicationInstanceHandler sets the operation handler for the list application instance operation
@@ -628,6 +633,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ResourceGetVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.GetVcdResourceHandler")
+	}
+	if o.ApplicationInstanceActionStatueHandler == nil {
+		unregistered = append(unregistered, "application.InstanceActionStatueHandler")
 	}
 	if o.UserListUserOfOrgHandler == nil {
 		unregistered = append(unregistered, "user.ListUserOfOrgHandler")
@@ -959,6 +967,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/resource/vcd/{id}"] = resource.NewGetVcdResource(o.context, o.ResourceGetVcdResourceHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/application/instance/action/statue"] = application.NewInstanceActionStatue(o.context, o.ApplicationInstanceActionStatueHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

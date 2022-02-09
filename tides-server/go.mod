@@ -36,6 +36,7 @@ require (
 	github.com/meatballhat/negroni-logrus v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.2
 	github.com/phyber/negroni-gzip v1.0.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.3.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/rs/cors v1.8.0

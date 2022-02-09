@@ -2408,6 +2408,39 @@ paths:
               downlink:
                 type: string
 
+  /application/instance/action/statue:
+    post:
+      operationId: 'instance action statue'
+      description: 'instance action statue'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              combo:
+                type: string
+              token:
+                type: string
+              error:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
 
   /application/instance:
     get:

@@ -10,6 +10,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
@@ -27,6 +28,8 @@ import (
 )
 
 var sshPool sync.Map
+var chPool sync.Map
+var mqPool sync.Map
 var tokenIndex sync.Map
 var (
 	sshType    = "password" //password or key
@@ -40,19 +43,46 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 	}
 
 	result := make([]*application.AchieveHostOKBodyItems0, 1)
-	//result[0] = &application.AchieveHostOKBodyItems0{
-	//	Address: "120.133.15.12",
-	//	SSHPass: "ca$hc0w",
-	//	SSHPort: "20023",
-	//	SSHUser: "root",
-	//}
 	result[0] = &application.AchieveHostOKBodyItems0{
-		Address: "172.16.0.10",
-		SSHPass: "admin123",
-		SSHPort: "22",
+		Address: "120.133.15.12",
+		SSHPass: "ca$hc0w",
+		SSHPort: "20023",
 		SSHUser: "root",
 	}
+	//result[1] = &application.AchieveHostOKBodyItems0{
+	//	Address: "172.16.0.10",
+	//	SSHPass: "admin123",
+	//	SSHPort: "22",
+	//	SSHUser: "root",
+	//}
 	return application.NewAchieveHostOK().WithPayload(result)
+}
+
+func AchieveMQResult(params application.InstanceActionStatueParams) middleware.Responder {
+	ch, has := chPool.Load(params.ReqBody.Token)
+	if has {
+		ch.(chan *OperateChan) <- &OperateChan{
+			Combo: params.ReqBody.Combo,
+		}
+	}
+	return application.NewInstanceActionStatueOK()
+}
+
+type Operate struct {
+	Op      string
+	Host    string
+	User    string
+	Pass    string
+	Token   string
+	Data    string
+	Port    string
+	CMD     string
+	SshType string
+}
+
+type OperateChan struct {
+	Combo string
+	Err   error
 }
 
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
@@ -82,16 +112,41 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		containerPort = body.Port
 		containerToken = token
 		cmd = fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
-	case "gromacs":
-		containerName = "gromacs-" + token
-		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s gromacs/gromacs sleep 100000d", containerName)
+	default:
+		containerName = body.AppType + "-" + token
+		cmd = fmt.Sprintf("docker run --hostname %s -it -v $HOME/data/%s:/data -w /data -d --name %s yinhaozheng/%s:latest", body.AppType, body.AppType, containerName, body.AppType)
 	}
 
 	//run remote shell
-	combo, err := execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
-		SshPassword: body.SSHPassword,
-		SshUser:     body.SSHUser,
-	}, cmd)
+	cp := Operate{
+		Op:      "Create",
+		Host:    body.SSHHost,
+		User:    body.SSHUser,
+		Pass:    body.SSHPassword,
+		Token:   token,
+		Port:    fmt.Sprintf("%d", body.SSHPort),
+		SshType: sshType,
+		CMD:     cmd,
+	}
+
+	var combo []byte
+	if len(config.GetConfig().MqTopic) == 0 && len(config.GetConfig().MqHost) == 0 {
+		combo, err = execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
+			SshPassword: body.SSHPassword,
+			SshUser:     body.SSHUser,
+		}, cmd)
+	} else {
+
+		log.Print("Using MQ")
+
+		msg, err := json.Marshal(cp)
+		failOnError(err, "Failed to marshal json")
+
+		ch := make(chan *OperateChan, 1)
+		chPool.Store(token, ch)
+		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
+		combo, err = readCh(ch, token)
+	}
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -121,7 +176,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	case "jupyter":
 		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token)
 		row["port"] = containerPort
-	case "gromacs":
+	default:
 		row["link"] = config.GetConfig().WebSshServiceHost
 		jsonMap := map[string]string{
 			"sshuser":     row["sshUser"],
@@ -183,7 +238,32 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 	}
 	cmd := fmt.Sprintf("docker kill %s", data.ContainerID[:12])
 	log.Println("cmd ", cmd)
-	combo, err := execCmd(data.SshHost, port, data, cmd)
+	//combo, err := execCmd(data.SshHost, port, data, cmd)
+
+	//run remote shell
+	cp := Operate{
+		Op:      "Delete",
+		Host:    data.SshHost,
+		User:    data.SshUser,
+		Pass:    data.SshPassword,
+		Token:   data.Token,
+		Port:    data.SshPort,
+		SshType: sshType,
+		CMD:     cmd,
+	}
+
+	var combo []byte
+	if len(config.GetConfig().MqTopic) == 0 && len(config.GetConfig().MqHost) == 0 {
+		combo, err = execCmd(data.SshHost, port, data, cmd)
+	} else {
+		msg, err := json.Marshal(cp)
+		failOnError(err, "Failed to marshal json")
+
+		ch := make(chan *OperateChan, 1)
+		chPool.Store(data.Token, ch)
+		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
+		combo, err = readCh(ch, data.Token)
+	}
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -435,6 +515,51 @@ func WsWatchApplicationInstanceLogs(params application.WsWatchApplicationInstanc
 	return wsStruct
 }
 
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Panicf("%s: %s", msg, err)
+	}
+}
+
+func pushMsg2MQ(msg, name, dial string) {
+	var ch *amqp.Channel
+	tmp, has := mqPool.Load(dial)
+	if !has {
+		conn, err := amqp.Dial(dial)
+		log.Print("MQ host ", dial)
+		failOnError(err, "Failed to connect to RabbitMQ")
+
+		ch, err = conn.Channel()
+		failOnError(err, "Failed to open a channel")
+		mqPool.Store(dial, ch)
+	} else {
+		ch = tmp.(*amqp.Channel)
+	}
+
+	q, err := ch.QueueDeclare(
+		name,  // name
+		false, // durable
+		false, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil,   // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	body := msg
+	err = ch.Publish(
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	failOnError(err, "Failed to publish a message")
+	log.Printf(" Sent %s\n", body)
+}
+
 func execCmd(sshHost string, sshPort int, data *models.Application, cmd string) ([]byte, error) {
 	sshConfig := &ssh.ClientConfig{
 		Timeout:         time.Second,
@@ -465,6 +590,15 @@ func publicKeyAuthFunc(kPath string) ssh.AuthMethod {
 		log.Println("ssh key signer failed", err)
 	}
 	return ssh.PublicKeys(signer)
+}
+
+func readCh(ch chan *OperateChan, token string) ([]byte, error) {
+	lastMsg := <-ch
+	combo := lastMsg.Combo
+	err := lastMsg.Err
+	close(ch)
+	chPool.Delete(token)
+	return []byte(combo), err
 }
 
 func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session *ssh.Session) {
@@ -564,7 +698,7 @@ func ListInstanceFiles(params application.ListInstanceFilesParams) middleware.Re
 	files, _ := ioutil.ReadDir(dirPath)
 	payload := make([]*application.ListInstanceFilesOKBodyItems0, len(files))
 	for i, f := range files {
-		downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", myconfig.ServerIP, myconfig.ServerPort, uid, token, f.Name())
+		downLink := fmt.Sprintf("%s:%s/api/v1/application/instance/file/%d/%s/%s", "120.133.15.12", "8000", uid, token, f.Name())
 		payload[i] = &application.ListInstanceFilesOKBodyItems0{
 			Filename:   f.Name(),
 			Filesize:   fmt.Sprintf("%d", f.Size()),

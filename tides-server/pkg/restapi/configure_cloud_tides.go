@@ -57,6 +57,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.ApplicationUploadInstanceFileHandler = application.UploadInstanceFileHandlerFunc(handler.UploadInstanceFile)
 
+	api.ApplicationInstanceActionStatueHandler = application.InstanceActionStatueHandlerFunc(handler.AchieveMQResult)
+
 	api.ApplicationWsWatchApplicationInstanceLogsHandler = application.WsWatchApplicationInstanceLogsHandlerFunc(handler.WsWatchApplicationInstanceLogs)
 
 	api.ApplicationCreateApplicationInstanceHandler = application.CreateApplicationInstanceHandlerFunc(handler.CreateApplicationInstance)
