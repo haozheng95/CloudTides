@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -34,10 +35,19 @@ type Operate struct {
 	SshType string
 }
 
-var url = "http://127.0.0.1:8033/api/v1/application/instance/action/statue"
+var url string
+var mqHost string
+var mqTopic string
+
+func init() {
+	mqHost = os.Getenv("MQ_HOST")
+	mqTopic = os.Getenv("MQ_TOPIC")
+	url = os.Getenv("SERVER_URL")
+}
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	log.Print("MQ host ", mqHost)
+	conn, err := amqp.Dial(mqHost)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -46,12 +56,12 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"hollow", // name
-		false,    // durable
-		false,    // delete when unused
-		false,    // exclusive
-		false,    // no-wait
-		nil,      // arguments
+		mqTopic, // name
+		false,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 

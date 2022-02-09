@@ -5,8 +5,7 @@ WORKDIR /build
 ENV GOPROXY https://goproxy.cn
 COPY . .
 RUN go mod download
-RUN cd cmd && \
-    GOARCH=amd64 GOOS=linux go build -o /output/broker .
+RUN GOARCH=amd64 GOOS=linux go build -o /output/broker .
 
 FROM ubuntu:latest
 WORKDIR /build

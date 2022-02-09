@@ -49,12 +49,12 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 		SSHPort: "20023",
 		SSHUser: "root",
 	}
-	result[1] = &application.AchieveHostOKBodyItems0{
-		Address: "172.16.0.10",
-		SSHPass: "admin123",
-		SSHPort: "22",
-		SSHUser: "root",
-	}
+	//result[1] = &application.AchieveHostOKBodyItems0{
+	//	Address: "172.16.0.10",
+	//	SSHPass: "admin123",
+	//	SSHPort: "22",
+	//	SSHUser: "root",
+	//}
 	return application.NewAchieveHostOK().WithPayload(result)
 }
 
@@ -112,12 +112,9 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		containerPort = body.Port
 		containerToken = token
 		cmd = fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
-	case "gromacs":
-		containerName = "gromacs-" + token
-		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s gromacs/gromacs sleep 100000d", containerName)
-	case "openfoam":
-		containerName = "openfoam7-" + token
-		cmd = fmt.Sprintf("docker run -v $HOME/data:/data -w /data -d --name %s openfoam/openfoam7-paraview56 sleep 100000d", containerName)
+	default:
+		containerName = body.AppType + "-" + token
+		cmd = fmt.Sprintf("docker run --hostname %s -it -v $HOME/data/%s:/data -w /data -d --name %s yinhaozheng/%s:latest", body.AppType, body.AppType, containerName, body.AppType)
 	}
 
 	//run remote shell
@@ -133,18 +130,21 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	}
 
 	var combo []byte
-	if false {
+	if len(config.GetConfig().MqTopic) == 0 && len(config.GetConfig().MqHost) == 0 {
 		combo, err = execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
 			SshPassword: body.SSHPassword,
 			SshUser:     body.SSHUser,
 		}, cmd)
 	} else {
+
+		log.Print("Using MQ")
+
 		msg, err := json.Marshal(cp)
 		failOnError(err, "Failed to marshal json")
 
 		ch := make(chan *OperateChan, 1)
 		chPool.Store(token, ch)
-		pushMsg2MQ(string(msg), "hollow", "amqp://guest:guest@localhost:5672/")
+		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
 		combo, err = readCh(ch, token)
 	}
 
@@ -238,7 +238,32 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 	}
 	cmd := fmt.Sprintf("docker kill %s", data.ContainerID[:12])
 	log.Println("cmd ", cmd)
-	combo, err := execCmd(data.SshHost, port, data, cmd)
+	//combo, err := execCmd(data.SshHost, port, data, cmd)
+
+	//run remote shell
+	cp := Operate{
+		Op:      "Delete",
+		Host:    data.SshHost,
+		User:    data.SshUser,
+		Pass:    data.SshPassword,
+		Token:   data.Token,
+		Port:    data.SshPort,
+		SshType: sshType,
+		CMD:     cmd,
+	}
+
+	var combo []byte
+	if len(config.GetConfig().MqTopic) == 0 && len(config.GetConfig().MqHost) == 0 {
+		combo, err = execCmd(data.SshHost, port, data, cmd)
+	} else {
+		msg, err := json.Marshal(cp)
+		failOnError(err, "Failed to marshal json")
+
+		ch := make(chan *OperateChan, 1)
+		chPool.Store(data.Token, ch)
+		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
+		combo, err = readCh(ch, data.Token)
+	}
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -501,6 +526,7 @@ func pushMsg2MQ(msg, name, dial string) {
 	tmp, has := mqPool.Load(dial)
 	if !has {
 		conn, err := amqp.Dial(dial)
+		log.Print("MQ host ", dial)
 		failOnError(err, "Failed to connect to RabbitMQ")
 
 		ch, err = conn.Channel()
@@ -531,7 +557,7 @@ func pushMsg2MQ(msg, name, dial string) {
 			Body:        []byte(body),
 		})
 	failOnError(err, "Failed to publish a message")
-	log.Printf(" [x] Sent %s\n", body)
+	log.Printf(" Sent %s\n", body)
 }
 
 func execCmd(sshHost string, sshPort int, data *models.Application, cmd string) ([]byte, error) {
