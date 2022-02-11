@@ -532,7 +532,8 @@ jQuery(function($){
       update_font_family(term);
       term.focus();
       state = CONNECTED;
-      title_element.text = url_opts_data.title || default_title;
+      // title_element.text = url_opts_data.title || default_title;
+      title_element.text = 'webssh';
       if (url_opts_data.command) {
         setTimeout(function () {
           sock.send(JSON.stringify({'data': url_opts_data.command+'\r'}));
@@ -565,7 +566,8 @@ jQuery(function($){
       log_status(e.reason, true);
       state = DISCONNECTED;
       default_title = 'WebSSH';
-      title_element.text = default_title;
+      // title_element.text = default_title;
+      title_element.text = 'webssh';
     };
 
     $(window).resize(function(){
