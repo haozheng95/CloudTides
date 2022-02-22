@@ -18,7 +18,7 @@ def make_handlers(loop, options):
     handlers = [
         (prefix, IndexHandler, dict(loop=loop, policy=policy,
                                     host_keys_settings=host_keys_settings)),
-        (prefix + r'/abc/(?P<token>\w+)', MyIndexHandler, dict(loop=loop, policy=policy,
+        (prefix + r'/token/(?P<token>\w+)', MyIndexHandler, dict(loop=loop, policy=policy,
                                             host_keys_settings=host_keys_settings)),
         (prefix + r'/ws', WsockHandler, dict(loop=loop)),
         (prefix + r'/api/decoder', DecoderHandler, dict(loop=loop))
