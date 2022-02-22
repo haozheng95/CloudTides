@@ -226,6 +226,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		UserResetPasswordHandler: user.ResetPasswordHandlerFunc(func(params user.ResetPasswordParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ResetPassword has not yet been implemented")
 		}),
+		ApplicationSearchInstanceHandler: application.SearchInstanceHandlerFunc(func(params application.SearchInstanceParams) middleware.Responder {
+			return middleware.NotImplemented("operation application.SearchInstance has not yet been implemented")
+		}),
 		UserSendVerificationHandler: user.SendVerificationHandlerFunc(func(params user.SendVerificationParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.SendVerification has not yet been implemented")
 		}),
@@ -416,6 +419,8 @@ type CloudTidesAPI struct {
 	PolicyRemovePolicyHandler policy.RemovePolicyHandler
 	// UserResetPasswordHandler sets the operation handler for the reset password operation
 	UserResetPasswordHandler user.ResetPasswordHandler
+	// ApplicationSearchInstanceHandler sets the operation handler for the search instance operation
+	ApplicationSearchInstanceHandler application.SearchInstanceHandler
 	// UserSendVerificationHandler sets the operation handler for the send verification operation
 	UserSendVerificationHandler user.SendVerificationHandler
 	// ApplicationUpdateApplicationInstanceHandler sets the operation handler for the update application instance operation
@@ -690,6 +695,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.UserResetPasswordHandler == nil {
 		unregistered = append(unregistered, "user.ResetPasswordHandler")
+	}
+	if o.ApplicationSearchInstanceHandler == nil {
+		unregistered = append(unregistered, "application.SearchInstanceHandler")
 	}
 	if o.UserSendVerificationHandler == nil {
 		unregistered = append(unregistered, "user.SendVerificationHandler")
@@ -1043,6 +1051,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/users/reset"] = user.NewResetPassword(o.context, o.UserResetPasswordHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/application/instance/details/{token}"] = application.NewSearchInstance(o.context, o.ApplicationSearchInstanceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
