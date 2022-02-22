@@ -2604,6 +2604,28 @@ paths:
         403:
           description: 'Forbidden'
 
+  /application/instance/details/{token}:
+    get:
+      operationId: 'searchInstance'
+      description: 'search instance'
+      tags:
+        - 'application'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: string
+          in: path
+          name: token
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+
   /application/instance/{token}:
     get:
       operationId: 'watchApplicationInstanceLogs'

@@ -293,6 +293,39 @@ func init() {
         }
       }
     },
+    "/application/instance/details/{token}": {
+      "get": {
+        "description": "search instance",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "searchInstance",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/application/instance/file/{token}": {
       "get": {
         "description": "list files to instances",
@@ -4561,6 +4594,39 @@ func init() {
               "type": "object",
               "properties": {
                 "msg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/application/instance/details/{token}": {
+      "get": {
+        "description": "search instance",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "application"
+        ],
+        "operationId": "searchInstance",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
                   "type": "string"
                 }
               }

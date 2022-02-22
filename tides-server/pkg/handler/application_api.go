@@ -216,6 +216,25 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	return application.NewCreateApplicationInstanceOK().WithPayload(result)
 }
 
+func SearchApplicationInstance(params application.SearchInstanceParams) middleware.Responder {
+	indexStock, has := tokenIndex.Load(params.Token)
+	db := config.GetDB()
+	var index uint
+	data := new(models.Application)
+	if has {
+		index = indexStock.(uint)
+		db.First(&data, index)
+	} else {
+		db.Where("token = ?", params.Token).First(data)
+	}
+
+	msg := base64.StdEncoding.EncodeToString([]byte(data.Extra))
+
+	return application.NewSearchInstanceOK().WithPayload(&application.SearchInstanceOKBody{
+		Data: msg,
+	})
+}
+
 func DeleteApplicationInstance(params application.DeleteApplicationInstanceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return application.NewCreateApplicationInstanceUnauthorized()

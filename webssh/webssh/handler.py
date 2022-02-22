@@ -10,6 +10,8 @@ import paramiko
 import tornado.web
 
 from concurrent.futures import ThreadPoolExecutor
+from tornado import websocket
+import requests
 from tornado.ioloop import IOLoop
 from tornado.options import options
 from tornado.process import cpu_count
@@ -531,7 +533,81 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         self.write(self.result)
 
 
-class WsockHandler(MixinHandler, tornado.websocket.WebSocketHandler):
+CMD_rf_WORKER = dict()
+
+
+class MyIndexHandler(IndexHandler):
+    executor = ThreadPoolExecutor(max_workers=cpu_count() * 5)
+
+    def get(self, token):
+        self.render('index.html', debug=self.debug, font=self.font)
+
+    def get_args(self, token):
+
+        url = "http://127.0.0.1:8033/api/v1/application/instance/details/" + token
+        body = requests.get(url)
+        row = body.json()["data"]
+        logging.info(row)
+        data = json.loads(base64.b64decode(row))
+        logging.info(data)
+
+        hostname = data["sshHost"]
+        port = data["sshPort"]
+        username = data["sshuser"]
+        password = data["sshPassword"]
+        privatekey, filename = self.get_privatekey()
+        passphrase = self.get_argument('passphrase', u'')
+        totp = self.get_argument('totp', u'')
+
+        if isinstance(self.policy, paramiko.RejectPolicy):
+            self.lookup_hostname(hostname, port)
+
+        if privatekey:
+            pkey = PrivateKey(privatekey, passphrase, filename).get_pkey_obj()
+        else:
+            pkey = None
+
+        self.ssh_client.totp = totp
+        args = (hostname, port, username, password, pkey, data["cmd"])
+        logging.debug(args)
+
+        return args
+
+    @tornado.gen.coroutine
+    def post(self, token):
+        ip, port = self.get_client_addr()
+        workers = clients.get(ip, {})
+        if workers and len(workers) >= options.maxconn:
+            raise tornado.web.HTTPError(403, 'Too many live connections.')
+
+        self.check_origin()
+
+        try:
+            args = self.get_args(token)
+            cmd = args[-1]
+        except InvalidValueError as exc:
+            raise tornado.web.HTTPError(400, str(exc))
+
+        future = self.executor.submit(self.ssh_connect, args[:5])
+
+        try:
+            worker = yield future
+        except (ValueError, paramiko.SSHException) as exc:
+            logging.error(traceback.format_exc())
+            self.result.update(status=str(exc))
+        else:
+            if not workers:
+                clients[ip] = workers
+            worker.src_addr = (ip, port)
+            workers[worker.id] = worker
+            self.loop.call_later(options.delay, recycle_worker, worker)
+            self.result.update(id=worker.id, encoding=worker.encoding)
+        CMD_rf_WORKER[worker.id] = cmd
+        logging.info(cmd)
+        self.write(self.result)
+
+
+class WsockHandler(MixinHandler, websocket.WebSocketHandler):
 
     def initialize(self, loop):
         super(WsockHandler, self).initialize(loop)
@@ -558,14 +634,20 @@ class WsockHandler(MixinHandler, tornado.websocket.WebSocketHandler):
                 worker.set_handler(self)
                 self.worker_ref = weakref.ref(worker)
                 self.loop.add_handler(worker.fd, worker, IOLoop.READ)
+
+                worker.data_to_dst.append(CMD_rf_WORKER[worker.id] + '\r')
+                worker.on_write()
+                del CMD_rf_WORKER[worker.id]
+
             else:
                 self.close(reason='Websocket authentication failed.')
 
     def on_message(self, message):
-        logging.debug('{!r} from {}:{}'.format(message, *self.src_addr))
+        logging.info('{!r} from {}:{}'.format(message, *self.src_addr))
         worker = self.worker_ref()
         try:
             msg = json.loads(message)
+            logging.info(msg)
         except JSONDecodeError:
             return
 
