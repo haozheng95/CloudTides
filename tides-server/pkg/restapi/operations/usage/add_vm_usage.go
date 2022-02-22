@@ -99,6 +99,11 @@ func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
 		}
 		if val, ok := o.VMs[k]; ok {
 			if err := val.Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("reqBody" + "." + "VMs" + "." + k)
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("reqBody" + "." + "VMs" + "." + k)
+				}
 				return err
 			}
 		}

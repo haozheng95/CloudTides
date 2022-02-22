@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"bytes"
+	"compress/zlib"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -342,4 +344,12 @@ func isExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func zipStr(origin string) (content string) {
+	var b bytes.Buffer
+	w := zlib.NewWriter(&b)
+	w.Write([]byte(origin))
+	w.Close()
+	return b.String()
 }

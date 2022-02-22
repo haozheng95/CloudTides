@@ -65,6 +65,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.ApplicationDeleteApplicationInstanceHandler = application.DeleteApplicationInstanceHandlerFunc(handler.DeleteApplicationInstance)
 
+	api.ApplicationSearchInstanceHandler = application.SearchInstanceHandlerFunc(handler.SearchApplicationInstance)
+
 	api.ApplicationListApplicationInstanceHandler = application.ListApplicationInstanceHandlerFunc(handler.ListApplicationInstance)
 
 	api.ApplicationUpdateApplicationInstanceHandler = application.UpdateApplicationInstanceHandlerFunc(handler.UpdateApplicationInstance)
