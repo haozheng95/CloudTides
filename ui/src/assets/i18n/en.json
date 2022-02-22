@@ -253,7 +253,8 @@
         "GPU_TYPE": "GPU type",
         "APPTYPE": "Appliction Type",
         "VERSION":"Version",
-        "NUM":"Number of cpu"
+        "NUM":"Number of cpu",
+        "CLOUDPLATFORM": "cloud platform"
       },
       "REFRESH": "REFRESH",
       "CREATE": "CREATE",
@@ -289,7 +290,8 @@
         "UPLOAD_TIME": "Upload time",
         "FILE_SIZE": "File size",
         "DRAGHERE": "Drag the file here, or click",
-        "UPLOAD": "upload"
+        "UPLOAD": "upload",
+        "LOCATION": "Location"
       }
 
     },

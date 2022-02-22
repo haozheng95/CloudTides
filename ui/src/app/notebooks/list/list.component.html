@@ -20,6 +20,7 @@
   <clr-dg-column>{{'HOME.APPLICATION.LIST.CREATETIME' | translate}}</clr-dg-column>
   <clr-dg-column>{{'HOME.APPLICATION.LIST.TOTALRUNTIME' | translate}}</clr-dg-column>
   <clr-dg-column>{{'HOME.APPLICATION.LIST.INSTANCE_TYPE' | translate}}</clr-dg-column>
+  <clr-dg-column>{{'HOME.APPLICATION.LIST.LOCATION' | translate}}</clr-dg-column>
   <clr-dg-column>{{'HOME.APPLICATION.LIST.OPERATE' | translate}}</clr-dg-column>
   <clr-dg-row class="clr-align-items-center" *clrDgItems="let item of nd.appList" [clrDgItem]="item">
     <clr-dg-cell>{{item.instanceName}}</clr-dg-cell>
@@ -27,6 +28,9 @@
     <clr-dg-cell>{{item.runningTime | formatSecond}}</clr-dg-cell>
     <clr-dg-cell>
       {{item.appType}}
+    </clr-dg-cell>
+    <clr-dg-cell>
+      {{item.location}}
     </clr-dg-cell>
     <clr-dg-cell>
       <clr-icon class="icon" *ngIf="item.appType === 'jupyter'" (click)="toJupyter(item)" shape="play" solid></clr-icon>
