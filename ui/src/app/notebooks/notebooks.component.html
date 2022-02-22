@@ -107,24 +107,13 @@
               <clr-icon shape="pencil" solid></clr-icon>
             </p>
             <ul class="option-list">
-              <!-- <li>
-                <label class="clr-control-label" for="sshHost">{{'HOME.APPLICATION.LIST.SSHHOST' | translate}}</label>
-                <div class="clr-control-container">
-                  <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" id="sshHost" name="sshHost" formControlName="sshHost">
-                      <option *ngFor="let ip of hostNameList" [value]='ip.address'>{{ip.address}}</option>
-                    </select>
-                  </div>
-                </div>
-              </li> -->
               <li>
-                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.APPTYPE' | translate}}</label>
+                <label class="clr-control-label" for="input7">{{'HOME.APPLICATION.NEW_INSTANCE.CLOUDPLATFORM' | translate}}</label>
                 <div class="clr-control-container">
                   <div class="clr-select-wrapper">
-                    <select placeholder="Select Option" id="input7" name="appType" formControlName="appType">
-                      <option value='jupyter'>jupyter</option>
-                      <option value='gromacs'>gromacs</option>
-                      <option value='openfoam'>openfoam</option>
+                    <select placeholder="Select Option" id="input7" name="cloud" formControlName="cloud">
+                      <option value='inside'>内部云</option>
+                      <option value='external'>外部云</option>
                     </select>
                   </div>
                 </div>

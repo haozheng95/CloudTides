@@ -260,7 +260,8 @@
         "GPU_TYPE": "GPU类型",
         "APPTYPE": "应用程序类型",
         "VERSION":"版本",
-        "NUM":"CPU数量"
+        "NUM":"CPU数量",
+        "CLOUDPLATFORM": "云平台"
       },
       "REFRESH": "刷新",
       "CREATE": "创建",
@@ -296,7 +297,8 @@
         "UPLOAD_TIME": "上传时间",
         "FILE_SIZE": "文件大小",
         "DRAGHERE": "将文件拖至此处，或点击",
-        "UPLOAD": "上传"
+        "UPLOAD": "上传",
+        "LOCATION": "位置"
       }
     },
     "VALIDATION": {

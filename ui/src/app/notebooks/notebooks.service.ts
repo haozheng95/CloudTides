@@ -7,7 +7,9 @@ import {FormBuilder, Validators} from '@angular/forms'
 import {LOCAL_STORAGE_KEY} from '@tide-config/const';
 import {WebSocketService} from '@tide-shared/service/web-socket.service'
 import {Observable} from 'rxjs';
-
+interface Fom {
+  v: Array<any>
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +34,7 @@ export class NotebooksService {
   })
   gromacsInstanceForm = this.fb.group({
     instanceName: ['', Validators.required],
+    cloud: ['', Validators.required],
     appType: [this.currentModel],
   })
   createInstanceTitle = 'HOME.NOTEBOOKS.Create'
