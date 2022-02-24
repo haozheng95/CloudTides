@@ -18,3 +18,5 @@ server/venv/
 .env
 .env.backup
 ui/node_modules
+.*
+venv/
