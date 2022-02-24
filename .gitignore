@@ -20,3 +20,4 @@ server/venv/
 ui/node_modules
 .*
 venv/
+/temp
