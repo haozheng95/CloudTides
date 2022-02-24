@@ -2480,6 +2480,8 @@ paths:
                   type: string
                 runningTime:
                   type: string
+                agentName:
+                  type: string
                 extra:
                   type: object
         401:
@@ -2503,14 +2505,8 @@ paths:
                 type: string
               port:
                 type: string
-              sshHost:
+              agentName:
                 type: string
-              sshUser:
-                type: string
-              sshPassword:
-                type: string
-              sshPort:
-                type: integer
               appType:
                 type: string
       responses:
@@ -2702,13 +2698,7 @@ paths:
             items:
               type: object
               properties:
-                address:
-                  type: string
-                sshUser:
-                  type: string
-                sshPort:
-                  type: string
-                sshPass:
+                agentName:
                   type: string
         401:
           description: 'Unauthorized'

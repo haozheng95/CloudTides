@@ -44,11 +44,14 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 
 	result := make([]*application.AchieveHostOKBodyItems0, 1)
 	result[0] = &application.AchieveHostOKBodyItems0{
-		Address: "120.133.15.12",
-		SSHPass: "ca$hc0w",
-		SSHPort: "20023",
-		SSHUser: "root",
+		AgentName: "联想云",
 	}
+	//result[0] = &application.AchieveHostOKBodyItems0{
+	//	Address: "120.133.15.12",
+	//	SSHPass: "ca$hc0w",
+	//	SSHPort: "20023",
+	//	SSHUser: "root",
+	//}
 	//result[1] = &application.AchieveHostOKBodyItems0{
 	//	Address: "172.16.0.10",
 	//	SSHPass: "admin123",
@@ -81,8 +84,12 @@ type Operate struct {
 }
 
 type OperateChan struct {
-	Combo string
-	Err   error
+	Combo       string
+	SSHHost     string `json:"ssh_host"`
+	SSHUser     string `json:"ssh_user"`
+	SSHPassword string `json:"ssh_password"`
+	SSHPort     string `json:"ssh_port"`
+	Err         error
 }
 
 func CreateApplicationInstance(params application.CreateApplicationInstanceParams) middleware.Responder {
@@ -114,39 +121,30 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		cmd = fmt.Sprintf("docker run -p %s:8888 -e JUPYTER_ENABLE_LAB=yes --rm -d --name %s jupyter/all-spark-notebook start-notebook.sh --NotebookApp.token='%s'", containerPort, containerName, containerToken)
 	default:
 		containerName = body.AppType + "-" + token
-		cmd = fmt.Sprintf("docker run --hostname %s -it -v $HOME/data/%s:/data -w /data -d --name %s yinhaozheng/%s:latest", body.AppType, body.AppType, containerName, body.AppType)
+		cmd = fmt.Sprintf("docker run --hostname %s -it -v $HOME/data/%s:/data -w /data -d --name %s yinhaozheng/%s:latest", body.InstanceName, body.AppType, containerName, body.AppType)
 	}
 
 	//run remote shell
 	cp := Operate{
-		Op:      "Create",
-		Host:    body.SSHHost,
-		User:    body.SSHUser,
-		Pass:    body.SSHPassword,
-		Token:   token,
-		Port:    fmt.Sprintf("%d", body.SSHPort),
+		Op: "Create",
+		//Host:    body.SSHHost,
+		//User:    body.SSHUser,
+		//Pass:    body.SSHPassword,
+		Token: token,
+		//Port:    fmt.Sprintf("%d", body.SSHPort),
 		SshType: sshType,
 		CMD:     cmd,
 	}
 
-	var combo []byte
-	if len(config.GetConfig().MqTopic) == 0 && len(config.GetConfig().MqHost) == 0 {
-		combo, err = execCmd(body.SSHHost, int(body.SSHPort), &models.Application{
-			SshPassword: body.SSHPassword,
-			SshUser:     body.SSHUser,
-		}, cmd)
-	} else {
+	log.Print("Using MQ")
 
-		log.Print("Using MQ")
+	msg, err := json.Marshal(cp)
+	failOnError(err, "Failed to marshal json")
 
-		msg, err := json.Marshal(cp)
-		failOnError(err, "Failed to marshal json")
-
-		ch := make(chan *OperateChan, 1)
-		chPool.Store(token, ch)
-		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
-		combo, err = readCh(ch, token)
-	}
+	ch := make(chan *OperateChan, 1)
+	chPool.Store(token, ch)
+	pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
+	combo, host, pwd, usr, port, err := readCh(ch, token)
 
 	if err != nil {
 		log.Println("remote run cmd failed", cmd, err)
@@ -155,17 +153,18 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 		})
 	}
 	log.Println("cmd output:", string(combo))
-	sshPortStr := strconv.Itoa(int(body.SSHPort))
+	sshPortStr := port
 
 	row := map[string]string{
+		"agent":         body.AgentName,
 		"containerID":   string(combo),
 		"containerName": containerName,
 		"instanceName":  body.InstanceName,
 		"token":         token,
 		"uid":           strconv.Itoa(int(uid)),
-		"sshHost":       body.SSHHost,
-		"sshUser":       body.SSHUser,
-		"sshPassword":   body.SSHPassword,
+		"sshHost":       host,
+		"sshUser":       usr,
+		"sshPassword":   pwd,
 		"sshType":       sshType,
 		"sshKeyPath":    sshKeyPath,
 		"sshPort":       sshPortStr,
@@ -174,7 +173,7 @@ func CreateApplicationInstance(params application.CreateApplicationInstanceParam
 	var extra interface{}
 	switch body.AppType {
 	case "jupyter":
-		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", body.SSHHost, containerPort, token)
+		row["link"] = fmt.Sprintf("%s:%s/lab?token=%s", host, containerPort, token)
 		row["port"] = containerPort
 	default:
 		row["link"] = config.GetConfig().WebSshServiceHost
@@ -281,7 +280,7 @@ func DeleteApplicationInstance(params application.DeleteApplicationInstanceParam
 		ch := make(chan *OperateChan, 1)
 		chPool.Store(data.Token, ch)
 		pushMsg2MQ(string(msg), config.GetConfig().MqTopic, config.GetConfig().MqHost)
-		combo, err = readCh(ch, data.Token)
+		combo, _, _, _, _, err = readCh(ch, data.Token)
 	}
 
 	if err != nil {
@@ -328,6 +327,7 @@ func ListApplicationInstance(params application.ListApplicationInstanceParams) m
 			SSHPort:      data[i].SshPort,
 			SSHUser:      data[i].SshUser,
 			Port:         data[i].Port,
+			AgentName:    data[i].Agent,
 			Extra:        jsonTemp,
 			CreateAt:     fmt.Sprintf("%d", data[i].CreatedAt.Unix()),
 			RunningTime:  fmt.Sprintf("%d", time.Now().Unix()-data[i].CreatedAt.Unix()),
@@ -611,13 +611,13 @@ func publicKeyAuthFunc(kPath string) ssh.AuthMethod {
 	return ssh.PublicKeys(signer)
 }
 
-func readCh(ch chan *OperateChan, token string) ([]byte, error) {
+func readCh(ch chan *OperateChan, token string) (combos []byte, host, pwd, usr, port string, err error) {
 	lastMsg := <-ch
 	combo := lastMsg.Combo
-	err := lastMsg.Err
+	err = lastMsg.Err
 	close(ch)
 	chPool.Delete(token)
-	return []byte(combo), err
+	return []byte(combo), lastMsg.SSHHost, lastMsg.SSHPassword, lastMsg.SSHUser, lastMsg.SSHPort, err
 }
 
 func getSession(sshHost string, sshPort int, config *ssh.ClientConfig) (session *ssh.Session) {

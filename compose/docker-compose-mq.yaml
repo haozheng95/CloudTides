@@ -62,6 +62,8 @@ services:
       - SERVER_URL=http://backend:8033/api/v1/application/instance/action/statue
     depends_on:
       - mq
+    volumes:
+      - ${PWD}/hosts.yaml:/build/hosts.yaml
 
   nginx:
     image: nginx:stable

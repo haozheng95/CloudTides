@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"golang.org/x/crypto/ssh"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,14 +26,22 @@ var sshPool sync.Map
 
 type Operate struct {
 	Op      string
-	Host    string
-	User    string
-	Pass    string
 	Token   string
 	Data    string
-	Port    string
 	CMD     string
 	SshType string
+
+	Host string `yaml:"host"`
+	User string `yaml:"user"`
+	Pass string `yaml:"pass"`
+	Port string `yaml:"port"`
+}
+
+type Host struct {
+	Host string `yaml:"host"`
+	User string `yaml:"user"`
+	Pass string `yaml:"pass"`
+	Port string `yaml:"port"`
 }
 
 var url string
@@ -46,6 +55,13 @@ func init() {
 }
 
 func main() {
+	hosts := make([]*Host, 0, 10)
+	yamlFile, err := ioutil.ReadFile("hosts.yaml")
+	log.Print(string(yamlFile))
+	err = yaml.Unmarshal(yamlFile, &hosts)
+	failOnError(err, "Failed to Unmarshal")
+	log.Print(hosts[0])
+
 	log.Print("MQ host ", mqHost)
 	conn, err := amqp.Dial(mqHost)
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -84,22 +100,30 @@ func main() {
 			op := &Operate{}
 			err = json.Unmarshal(d.Body, op)
 			failOnError(err, "Failed convert JSON string to struct")
-			combo, err := execCmd(op.Host, op.User, op.Pass, op.SshType, op.Port, op.CMD)
+
+			host := hosts[0]
+			combo, err := execCmd(host.Host, host.User, host.Pass, op.SshType, host.Port, op.CMD)
 			failOnError(err, "Failed to connect host by ssh")
 			log.Printf("Received a combo: %s", combo)
 
-			values := make(map[string]string)
-			log.Printf("Received a values: %v", values)
-			values["combo"] = string(combo)
-			log.Printf("Received a values: %v", values)
+			//SSHHost     string
+			//SSHUser     string
+			//SSHPassword string
+			//SSHPort     string
+			values := map[string]string{"combo": string(combo),
+				"token":        op.Token,
+				"ssh_host":     host.Host,
+				"ssh_user":     host.User,
+				"ssh_password": host.Pass,
+				"ssh_port":     host.Port,
+			}
+
 			if err != nil {
 				values["error"] = err.Error()
 			} else {
 				values["error"] = ""
 			}
-			log.Printf("Received a values: %v", values)
-			values["token"] = op.Token
-			//values := map[string]string{"combo": string(combo), "error": err.Error(), "token": op.Token}
+
 			log.Printf("Received a values: %v", values)
 
 			jsonData, err := json.Marshal(values)
