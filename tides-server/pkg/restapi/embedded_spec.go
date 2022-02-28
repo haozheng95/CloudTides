@@ -259,6 +259,18 @@ func init() {
                 "error": {
                   "type": "string"
                 },
+                "ssh_host": {
+                  "type": "string"
+                },
+                "ssh_password": {
+                  "type": "string"
+                },
+                "ssh_port": {
+                  "type": "string"
+                },
+                "ssh_user": {
+                  "type": "string"
+                },
                 "token": {
                   "type": "string"
                 }
@@ -4548,6 +4560,18 @@ func init() {
                   "type": "string"
                 },
                 "error": {
+                  "type": "string"
+                },
+                "ssh_host": {
+                  "type": "string"
+                },
+                "ssh_password": {
+                  "type": "string"
+                },
+                "ssh_port": {
+                  "type": "string"
+                },
+                "ssh_user": {
                   "type": "string"
                 },
                 "token": {

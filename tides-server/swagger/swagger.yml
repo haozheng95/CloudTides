@@ -2426,6 +2426,14 @@ paths:
                 type: string
               token:
                 type: string
+              ssh_host:
+                type: string
+              ssh_user:
+                type: string
+              ssh_password:
+                type: string
+              ssh_port:
+                type: string
               error:
                 type: string
       responses:
