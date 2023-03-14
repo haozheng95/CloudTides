@@ -37,8 +37,7 @@ var (
 )
 
 var agentRfWebsshLink = map[string]string{
-	"thinkcloud":  "http://www.cloudtides.org.cn:8000/webssh",
-	"schoolcloud": "xxxxxx/webssh",
+	"VMwareCloud":  "10.203.164.182:8000/webssh",
 }
 
 func AchieveHost(params application.AchieveHostParams) middleware.Responder {
@@ -47,12 +46,9 @@ func AchieveHost(params application.AchieveHostParams) middleware.Responder {
 		return application.NewCreateApplicationInstanceUnauthorized()
 	}
 
-	result := make([]*application.AchieveHostOKBodyItems0, 2)
+	result := make([]*application.AchieveHostOKBodyItems0, 1)
 	result[0] = &application.AchieveHostOKBodyItems0{
-		AgentName: "thinkcloud",
-	}
-	result[1] = &application.AchieveHostOKBodyItems0{
-		AgentName: "schoolcloud",
+		AgentName: "VMwareCloud",
 	}
 	return application.NewAchieveHostOK().WithPayload(result)
 }
